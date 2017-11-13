@@ -53,6 +53,7 @@
     <Compile Include="EntityTests.cs" />
     <Compile Include="GroupTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ComponentPoolTests.cs" />
     <Compile Include="WatcherTests.cs" />
   </ItemGroup>
   <ItemGroup>

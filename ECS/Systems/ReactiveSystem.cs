@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems
 {
-    class ReactiveSystem
+    public abstract class ReactiveSystem
     {
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECS.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,10 @@ namespace ECS.Components
     {
         private static List<Type> _components = new List<Type>();
 
+        public static List<Type> Components
+        {
+            get { return _components; }
+        }
         public static int GetComponentIndex<T>() where T : IComponent
         {
             for(int i = 0; i<_components.Count; i++)
@@ -35,6 +40,21 @@ namespace ECS.Components
         public static void RegisterComponent(Type compType)
         {
             _components.Add(compType);
+        }
+
+        public static void RegisterAllComponents()
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach(var assembly in assemblies)
+            {
+                foreach(Type type in assembly.GetTypes())
+                {
+                    if(type.GetCustomAttributes(typeof(ComponentAttribute), true).Length > 0)
+                    {
+                        RegisterComponent(type);
+                    }
+                }
+            }
         }
     }
 }
