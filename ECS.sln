@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Diagrams", "Diagrams\Diagrams.modelproj", "{DC045441-0EF7-41A5-B147-7BBB17040B09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECS", "ECS\ECS.csproj", "{50CB16FA-9FF3-45ED-BC58-FE55C1F9DE29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECSTests", "ECSTests\ECSTests.csproj", "{06AEAB86-B66B-4754-9B49-47FF1D076CAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC045441-0EF7-41A5-B147-7BBB17040B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC045441-0EF7-41A5-B147-7BBB17040B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC045441-0EF7-41A5-B147-7BBB17040B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC045441-0EF7-41A5-B147-7BBB17040B09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50CB16FA-9FF3-45ED-BC58-FE55C1F9DE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50CB16FA-9FF3-45ED-BC58-FE55C1F9DE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50CB16FA-9FF3-45ED-BC58-FE55C1F9DE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50CB16FA-9FF3-45ED-BC58-FE55C1F9DE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06AEAB86-B66B-4754-9B49-47FF1D076CAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06AEAB86-B66B-4754-9B49-47FF1D076CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06AEAB86-B66B-4754-9B49-47FF1D076CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06AEAB86-B66B-4754-9B49-47FF1D076CAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

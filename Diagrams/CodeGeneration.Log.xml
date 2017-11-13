@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="file:///C:/PROGRAM FILES (X86)/MICROSOFT VISUAL STUDIO 14.0/COMMON7/IDE/EXTENSIONS/MICROSOFT/ARCHITECTURE TOOLS/EXTENSIBILITY/Logging/CodeGenLog.xslt"?>
+<Log xmlns="http://schemas.microsoft.com/VisualStudio/2010/CodeGen.RE.Log" Label="Code Generation/Text Transformation Log">
+  <MessageClass Name="Message" Label="Message" Option="Show informational messages" />
+  <MessageClass Name="Warning" Label="Warning" Option="Show warnings" />
+  <MessageClass Name="Error" Label="Error" Option="Show errors" />
+  <MessageClass Name="Property" Label="Property" Option="Show metadata" />
+  <MessageClass Name="Diagnostic" Label="Message" Option="Show diagnostic messages" />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="High" Text="Code generation or text transformation started." />
+  <Error Timestamp="2017-11-08T23:32:48" Importance="High" Text="No templates were found to process.  Configure templates by choosing 'Configure Default Code Generation Settings...' from the 'Architecture' menu, or change the selection for which code generation is launched." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="The selection included 32 elements which were not bound to a template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Scene' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'5b34ee91-fb8d-467c-bf8d-8816affc81f3' -  (Comment): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Matcher' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Dependency): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::ComponentPool' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Watcher' -  (Class): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::IComponent' -  (Interface): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (InterfaceRealization): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::ExampleComponent' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'b2a21c57-8e04-46ef-8b3d-d794fafa5bde' -  (Comment): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Entity' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'7d5c4dd5-a03e-4f16-b16b-48d280c2955e' -  (Generalization): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::Systems' -  (Package): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::SystemManager' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::Systems::' -  (Association): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::ISystem' -  (Interface): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::IExecuteSystem' -  (Interface): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::IInitializeSystem' -  (Interface): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::IReactiveSystem' -  (Interface): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Systems::ReactiveSystem' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'a51a8ea0-63a4-47f4-9634-2b6123dfa2c0' -  (Generalization): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'b85f5984-3ae7-4dbe-a3dc-85dc37e772ba' -  (Generalization): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::' -  (Association): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'Diagrams::Systems::' -  (InterfaceRealization): no bound template." />
+  <Warning Timestamp="2017-11-08T23:32:48" Importance="Medium" Text="'Diagrams::Group' -  (Class): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="Diagnostic" Text="'5efc92f2-bab0-41f6-aae2-2db4caa2cf6c' -  (Comment): no bound template." />
+  <Message Timestamp="2017-11-08T23:32:48" Importance="High" Text="Code generation complete. Errors: 1. Warnings: 14." />
+</Log>
