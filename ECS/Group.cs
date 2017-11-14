@@ -33,6 +33,7 @@ namespace ECS
                     _HandleEntityComponentAddedEvent
                 );
                 _groupEntities.Add(entity);
+                _HandleEntityComponentAddedEvent(entity, 0, null);
             }
         }
 
@@ -57,7 +58,7 @@ namespace ECS
 
         #region Handling Entity Changes
 
-        private void _RemoveIfNotValid(Entity updatedEntity)
+        private bool _RemoveIfNotValid(Entity updatedEntity)
         {
             if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
             {
@@ -67,17 +68,23 @@ namespace ECS
                     _HandleEntityComponentRemovedEvent,
                     _HandleEntityComponentAddedEvent
                 );
+                return false;
             }
+            return true;
         }
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            _RemoveIfNotValid(updatedEntity);
-            _OnEntityComponentAdded?.Invoke(updatedEntity, componentIndex, component);
+            if (_RemoveIfNotValid(updatedEntity))
+            {
+                _OnEntityComponentAdded?.Invoke(updatedEntity, componentIndex, component);
+            }
         }
         private void _HandleEntityComponentRemovedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            _RemoveIfNotValid(updatedEntity);
-            _OnEntityComponentRemoved?.Invoke(updatedEntity, componentIndex, component);
+            if (_RemoveIfNotValid(updatedEntity))
+            {
+                _OnEntityComponentRemoved?.Invoke(updatedEntity, componentIndex, component);
+            }
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {

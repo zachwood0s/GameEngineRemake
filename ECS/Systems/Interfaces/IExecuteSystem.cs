@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems.Interfaces
 {
-    interface IExecuteSystem: ISystem
+    public interface IExecuteSystem: ISystem
     {
         void Execute();
     }

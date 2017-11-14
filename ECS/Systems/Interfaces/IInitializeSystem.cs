@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems.Interfaces
 {
-    interface IInitializeSystem: ISystem
+    public interface IInitializeSystem: ISystem
     {
         void Initialize();
     }

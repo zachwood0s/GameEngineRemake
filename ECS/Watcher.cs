@@ -24,14 +24,22 @@ namespace ECS
             );
         }
 
+        public void Enable()
+        {
+
+        }
+        public void Disable()
+        {
+
+        }
 
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            //Dont think these will be needed yet
+            _observedEntities.Add(updatedEntity);
         }
         private void _HandleEntityComponentRemovedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            //Dont think these will be needed yet
+            _observedEntities.Add(updatedEntity);
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {

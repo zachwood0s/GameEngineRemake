@@ -53,7 +53,6 @@
     <Compile Include="Systems\Interfaces\IInitializeSystem.cs" />
     <Compile Include="Systems\Interfaces\IReactiveSystem.cs" />
     <Compile Include="Systems\Interfaces\ISystem.cs" />
-    <Compile Include="Systems\ReactiveSystem.cs" />
     <Compile Include="Watcher.cs" />
   </ItemGroup>
   <ItemGroup />
