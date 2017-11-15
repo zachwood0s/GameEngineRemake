@@ -80,6 +80,12 @@ namespace ECS
                 _components.Add(newComp);
                 _componentTypeIndicies.Add(newCompIndex);
 
+                SettableComponent maybeSettable = newComp as SettableComponent;
+                if(maybeSettable != null)
+                {
+                    maybeSettable.SubscribeToChanges(SettableComponentUpdated);
+                }
+
                 _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
             }
             return this;
@@ -123,6 +129,12 @@ namespace ECS
                 _components.RemoveAt(compIndex);
                 _componentTypeIndicies.RemoveAt(compIndex);
 
+                SettableComponent maybeSettable = oldComp as SettableComponent;
+                if(maybeSettable != null)
+                {
+                    maybeSettable.UnSubscribeToChanges(SettableComponentUpdated);
+                }
+
                 _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
                 
             }
@@ -147,6 +159,11 @@ namespace ECS
                 Debug.WriteLine("Warning: Attempting to replace component that doesn't exist");
             }
            
+        }
+
+        public void SettableComponentUpdated(int componentIndex, IComponent component)
+        {
+            _OnComponentUpdated?.Invoke(this, componentIndex, component); 
         }
 
 

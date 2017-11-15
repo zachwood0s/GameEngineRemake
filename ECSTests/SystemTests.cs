@@ -25,23 +25,23 @@ namespace ECSTests
         [TestMethod]
         public void SimpleWatcher()
         {
-            System sys = new System();
+            System sys = new System(_scene);
             
         }
 
     }
 
-    public class System : IReactiveSystem
+    public class System : ReactiveSystem
     {
-        public Watcher WatchList
+        public System(Scene scene) : base(scene)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
         }
 
-        public void Execute(IEnumerable<Entity> entities)
+        protected override Watcher GetWatchList(Scene scene)
+        {
+            return new Watcher(scene.GetGroup(new Matcher().Of<TestPositionComponent>()));
+        }
+        public override void Execute(IEnumerable<Entity> entities)
         {
             foreach(Entity e in entities)
             {

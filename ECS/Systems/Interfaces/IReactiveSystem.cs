@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems.Interfaces
 {
-    public interface IReactiveSystem 
+    public interface IReactiveSystem
     {
-        Watcher WatchList
-        {
-            get;
-        }
-
-
+        Watcher WatchList { get; }
         void Execute(IEnumerable<Entity> entities);
     }
 
@@ -40,6 +35,30 @@ namespace ECS.Systems.Interfaces
                 system.Clear();
             }
         }
+    }
+
+
+    public abstract class ReactiveSystem: IReactiveSystem
+    {
+        protected Watcher _watchList;
+        
+        public Watcher WatchList
+        {
+            get
+            {
+                return _watchList;
+            }
+        }
+
+        public ReactiveSystem(Scene scene)
+        {
+            _watchList = GetWatchList(scene);
+        }
+
+        protected abstract Watcher GetWatchList(Scene scene);
+
+        public abstract void Execute(IEnumerable<Entity> entities);
+
     }
     //Wanna use extensions here I think. Would be neato
 }

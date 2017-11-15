@@ -32,18 +32,25 @@ namespace ECS
         {
 
         }
+        private void _AddToObserved(Entity updatedEntity)
+        {
+            if (!_observedEntities.Contains(updatedEntity))
+            {
+                _observedEntities.Add(updatedEntity);
+            }
+        }
 
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            _observedEntities.Add(updatedEntity);
+            _AddToObserved(updatedEntity);
         }
         private void _HandleEntityComponentRemovedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            _observedEntities.Add(updatedEntity);
+            _AddToObserved(updatedEntity);
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            _observedEntities.Add(updatedEntity);
+            _AddToObserved(updatedEntity);
         }
 
         public void ClearObservedEntities()
