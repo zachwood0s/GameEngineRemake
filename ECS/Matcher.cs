@@ -34,32 +34,14 @@ namespace ECS
 
         #region Getters/Setters
 
-        public List<int> AllOfTypeIndicies
-        {
-            get { return _allOfTypeIndicies; }
-        }
-        public List<Type> AllOfTypes
-        {
-            get { return _allOf; }
-        }
+        public List<int> AllOfTypeIndicies => _allOfTypeIndicies;
+        public List<Type> AllOfTypes => _allOf;
 
-        public List<int> AnyOfTypeIndicies
-        {
-            get { return _anyOfTypeIndicies; }
-        }
-        public List<Type> AnyOfTypes
-        {
-            get { return _anyOf; }
-        }
+        public List<int> AnyOfTypeIndicies => _anyOfTypeIndicies;
+        public List<Type> AnyOfTypes => _anyOf;
 
-        public List<int> NoneOfTypeIndicies
-        {
-            get { return _noneOfTypeIndicies; }
-        }
-        public List<Type> NoneOfTypes
-        {
-            get { return _noneOf; }
-        }
+        public List<int> NoneOfTypeIndicies => _noneOfTypeIndicies;
+        public List<Type> NoneOfTypes => _noneOf;
 
         #endregion
 

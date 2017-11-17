@@ -59,25 +59,16 @@ namespace ECS
         }
 
         #region IEnumerable Implementation
-        public IEnumerator<Entity> GetEnumerator()
-        {
-            return _observedEntities.GetEnumerator();
-        }
+        public IEnumerator<Entity> GetEnumerator() => _observedEntities.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public Entity this[int index]
         {
-            get { return _observedEntities[index]; }
-            set { _observedEntities.Insert(index, value); }
+            get => _observedEntities[index]; 
+            set => _observedEntities.Insert(index, value); 
         }
-        public int EntityCount
-        {
-            get { return _observedEntities.Count; }
-        }
+        public int EntityCount => _observedEntities.Count;
 
         #endregion
     }

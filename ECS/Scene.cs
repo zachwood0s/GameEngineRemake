@@ -1,4 +1,5 @@
 ﻿using ECS.Components;
+using ECS.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,39 @@ namespace ECS
         private Dictionary<Matcher, Group> _groups;
         private List<List<Group>> _groupsForIndex;
         private List<Entity> _entities;
+        private SystemPool _systemPool;
 
         public Scene()
         {
+            _systemPool = new SystemPool();
             _entities = new List<Entity>();
             _groupsForIndex = new List<List<Group>>();
             _groups = new Dictionary<Matcher, Group>(); 
         }
+
+        #region Getters/Setters
+
+        public SystemPool SystemPool => _systemPool;
+
+        #endregion
+
+        #region Systems
+
+        public void Initialize()
+        {
+            _systemPool.Initialize();
+        }
+        public void Execute()
+        {
+            _systemPool.Execute();
+        }
+        public void CleanUp()
+        {
+
+        }
+
+        #endregion
+
         public Entity CreateEntity()
         {
             Entity entity = new Entity();
@@ -30,12 +57,9 @@ namespace ECS
             );
             return entity;
         }
-        public Watcher CreateWatcher(Matcher match)
-        {
-            throw new NotImplementedException();
-        }
 
         #region Groups
+
         public Group GetGroup(Matcher match)
         {
             if (!_groups.ContainsKey(match))

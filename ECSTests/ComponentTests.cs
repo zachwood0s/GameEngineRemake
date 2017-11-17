@@ -43,6 +43,38 @@ namespace ECSTests
         }
 
         [TestMethod]
+        public void RemoveNonSettableComponentTest()
+        {
+            Entity test = _scene.CreateEntity().With<TestPositionComponent>();
+            Group testGroup = _scene.GetGroup(new Matcher().Of<TestPositionComponent>());
+            Watcher watcher = new Watcher(testGroup);
+
+            Assert.AreEqual(0, watcher.EntityCount);
+
+            TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
+            comp.X = 200;
+            comp.Y = 140;
+
+            Assert.AreEqual(0, watcher.EntityCount);
+
+            test.UpdateComponent(comp);
+
+            Assert.AreEqual(1, watcher.EntityCount);
+
+            watcher.ClearObservedEntities();
+
+            Assert.AreEqual(0, watcher.EntityCount);
+
+            test.Remove<TestPositionComponent>();
+
+            comp.X = 50;
+
+            test.UpdateComponent(comp);
+
+            Assert.AreEqual(0, watcher.EntityCount);
+        }
+
+        [TestMethod]
         public void SettableComponentTest()
         {
             Entity test = _scene.CreateEntity().With<TestSettableComponent>();
@@ -58,6 +90,32 @@ namespace ECSTests
             Assert.AreEqual(1, watcher.EntityCount);
         }
 
+        [TestMethod]
+        public void RemovingSettableComponentTest()
+        {
+            Entity test = _scene.CreateEntity().With<TestSettableComponent>();
+            Group testGroup = _scene.GetGroup(new Matcher().Of<TestSettableComponent>());
+            Watcher watcher = new Watcher(testGroup);
+
+            Assert.AreEqual(0, watcher.EntityCount);
+
+            TestSettableComponent comp = test.GetComponent<TestSettableComponent>();
+            comp.X = 200;
+            comp.Y = 140;
+
+            Assert.AreEqual(1, watcher.EntityCount);
+
+            watcher.ClearObservedEntities();
+
+            Assert.AreEqual(0, watcher.EntityCount); 
+
+            test.Remove<TestSettableComponent>();
+
+            comp.X = 4000;
+
+            Assert.AreEqual(0, watcher.EntityCount); 
+        }
+
 
         [Component]
         public class TestSettableComponent: SettableComponent, IComponentHasDefault
@@ -67,14 +125,14 @@ namespace ECSTests
 
             public int X
             {
-                get { return _x.Value; }
-                set { _x.Value = value; }
+                get => _x.Value;
+                set => _x.Value = value; 
             }
 
             public int Y
             {
-                get { return _y.Value; }
-                set { _y.Value = value; }
+                get => _y.Value; 
+                set => _y.Value = value; 
             }
 
             public TestSettableComponent()

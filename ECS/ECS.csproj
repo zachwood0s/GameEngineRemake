@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,6 +58,8 @@
     <Compile Include="Systems\Interfaces\IInitializeSystem.cs" />
     <Compile Include="Systems\Interfaces\IReactiveSystem.cs" />
     <Compile Include="Systems\Interfaces\ISystem.cs" />
+    <Compile Include="Systems\ReactiveSystem.cs" />
+    <Compile Include="Systems\SystemPool.cs" />
     <Compile Include="Watcher.cs" />
   </ItemGroup>
   <ItemGroup />

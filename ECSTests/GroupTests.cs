@@ -106,5 +106,17 @@ namespace ECSTests
             Assert.AreEqual(0, positions1.EntityCount);
         }
 
+        [TestMethod]
+        public void GroupEntityComponentRemoved()
+        {
+            Entity test = _scene.CreateEntity().With<TestPositionComponent>();
+            Group positions1 = _scene.GetGroup(new Matcher().Of<TestPositionComponent>());
+
+            Assert.AreEqual(1, positions1.EntityCount);
+
+            test.Remove<TestPositionComponent>();
+            Assert.AreEqual(0, positions1.EntityCount);
+        }
+
     }
 }

@@ -25,10 +25,9 @@ namespace ECS
         }
 
         #region Getters/Setters
-        public List<IComponent> Components
-        {
-            get { return _components; }
-        }
+
+        public List<IComponent> Components => _components;
+
         #endregion
 
         #region Component Checking

@@ -10,11 +10,8 @@ namespace ECS.Components
     public static class ComponentPool
     {
         private static List<Type> _components = new List<Type>();
+        public static List<Type> Components => _components;
 
-        public static List<Type> Components
-        {
-            get { return _components; }
-        }
         public static int GetComponentIndex<T>() where T : IComponent
         {
             for(int i = 0; i<_components.Count; i++)
