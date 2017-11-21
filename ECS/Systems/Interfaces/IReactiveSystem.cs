@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems.Interfaces
 {
-    public interface IReactiveSystem
+    public interface IReactiveSystem: IExecuteSystem
     {
         Watcher WatchList { get; }
         void Execute(IEnumerable<Entity> entities);
@@ -27,14 +27,6 @@ namespace ECS.Systems.Interfaces
             system.WatchList.Enable();
         }
 
-        public static void Execute(this IReactiveSystem system)
-        {
-            if(system.WatchList.EntityCount != 0)
-            {
-                system.Execute(system.WatchList);
-                system.Clear();
-            }
-        }
     }
 
     //Wanna use extensions here I think. Would be neato

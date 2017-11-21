@@ -23,5 +23,13 @@ namespace ECS.Systems
 
         public abstract void Execute(IEnumerable<Entity> entities);
         
+        public void Execute()
+        {
+            if(WatchList.EntityCount != 0)
+            {
+                Execute(WatchList);
+                this.Clear();
+            }
+        }
     }
 }

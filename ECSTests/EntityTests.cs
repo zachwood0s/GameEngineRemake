@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ECS.Components;
 using ECS;
+using ECS.Attributes;
 
 namespace ECSTests
 {
@@ -163,7 +164,7 @@ namespace ECSTests
         }
     }
 
-
+    [Component]
     class TestPositionComponent2 : IComponentHasDefault
     {
         public int X { get; set; } 
@@ -174,6 +175,7 @@ namespace ECSTests
             Y = 14;
         }
     }
+    [Component]
     class TestPositionComponent : IComponentHasDefault
     {
         public int X { get; set; } 
