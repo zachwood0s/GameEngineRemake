@@ -29,6 +29,8 @@ namespace ECSTests
             Group testGroup = _scene.GetGroup(new Matcher().Of<TestPositionComponent>());
             Watcher watcher = new Watcher(testGroup);
 
+            
+
             Assert.AreEqual(0, watcher.EntityCount);
 
             TestPositionComponent comp = test.GetComponent<TestPositionComponent>();

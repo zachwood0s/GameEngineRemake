@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Threading;
 
 namespace ECS
 {
@@ -13,6 +14,7 @@ namespace ECS
         private List<Entity> _groupEntities;
         private Matcher _match;
 
+        private ReaderWriterLockSlim _readerWriterLock;
         
         private event EntityChangedEventHandler _OnEntityComponentUpdated;
         private event EntityChangedEventHandler _OnEntityComponentRemoved;
@@ -20,20 +22,41 @@ namespace ECS
 
         public Group(Matcher match)
         {
+            _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _match = match;
             _groupEntities = new List<Entity>();
         }
         public void AddEntity(Entity entity)
         {
-            if (!_groupEntities.Contains(entity))
+            _readerWriterLock.EnterUpgradeableReadLock();
+
+            try
             {
-                entity.SubscribeToChanges(
-                    _HandleEntityComponentUpdatedEvent,
-                    _HandleEntityComponentRemovedEvent,
-                    _HandleEntityComponentAddedEvent
-                );
-                _groupEntities.Add(entity);
-                _HandleEntityComponentAddedEvent(entity, 0, null);
+                if (!_groupEntities.Contains(entity))
+                {
+                    entity.SubscribeToChanges(
+                        _HandleEntityComponentUpdatedEvent,
+                        _HandleEntityComponentRemovedEvent,
+                        _HandleEntityComponentAddedEvent
+                    );
+
+                    _readerWriterLock.EnterWriteLock();
+
+                    try
+                    {
+                        _groupEntities.Add(entity);
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
+
+                    _HandleEntityComponentAddedEvent(entity, 0, null);
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
         }
 
@@ -42,16 +65,34 @@ namespace ECS
 
         public void SubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
         {
-            _OnEntityComponentUpdated += updated;
-            _OnEntityComponentRemoved += removed;
-            _OnEntityComponentAdded += added;
+            _readerWriterLock.EnterWriteLock();
+
+            try
+            {
+                _OnEntityComponentUpdated += updated;
+                _OnEntityComponentRemoved += removed;
+                _OnEntityComponentAdded += added;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
         }
 
         public void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
         {
-            _OnEntityComponentUpdated -= updated;
-            _OnEntityComponentRemoved -= removed;
-            _OnEntityComponentAdded -= added;
+            _readerWriterLock.EnterWriteLock();
+
+            try
+            {
+                _OnEntityComponentUpdated -= updated;
+                _OnEntityComponentRemoved -= removed;
+                _OnEntityComponentAdded -= added;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
         }
 
         #endregion
@@ -60,17 +101,39 @@ namespace ECS
 
         private bool _RemoveIfNotValid(Entity updatedEntity)
         {
-            if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
+            bool isValid = true;
+
+            _readerWriterLock.EnterUpgradeableReadLock();
+
+            try
             {
-                _groupEntities.Remove(updatedEntity);
-                updatedEntity.UnSubscribeToChanges(
-                    _HandleEntityComponentUpdatedEvent,
-                    _HandleEntityComponentRemovedEvent,
-                    _HandleEntityComponentAddedEvent
-                );
-                return false;
+                if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
+                {
+                    _readerWriterLock.EnterWriteLock();
+
+                    try
+                    {
+                        _groupEntities.Remove(updatedEntity);
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
+
+                    updatedEntity.UnSubscribeToChanges(
+                        _HandleEntityComponentUpdatedEvent,
+                        _HandleEntityComponentRemovedEvent,
+                        _HandleEntityComponentAddedEvent
+                    );
+                    isValid = false;
+                }
             }
-            return true;
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
+
+            return isValid;
         }
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
@@ -93,7 +156,6 @@ namespace ECS
         }
 
         #endregion
-
 
         #region IEnumberable Implementation
 

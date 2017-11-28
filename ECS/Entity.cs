@@ -40,30 +40,52 @@ namespace ECS
         #region Component Checking
         public T GetComponent<T>() where T : class, IComponent
         {
+            T returnComp = null;
             _readerWriterLock.EnterReadLock();
-            foreach(IComponent comp in _components)
+
+            try
             {
-                if(comp is T)
+                foreach (IComponent comp in _components)
                 {
-                    return (T) comp;
+                    if (comp is T)
+                    {
+                        returnComp = (T)comp;
+                    }
                 }
             }
-            _readerWriterLock.ExitReadLock();
-            return null;
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
+            return returnComp;
         }
         public bool HasComponent<T>() where T: class, IComponent
         {
             _readerWriterLock.EnterReadLock();
-            bool doesExist = _components.Exists(c => c is T);
-            _readerWriterLock.ExitReadLock();
+            bool doesExist;
+            try
+            {
+                doesExist = _components.Exists(c => c is T);
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
 
             return doesExist; 
         }
         public bool HasComponent(int componentPoolIndex)
         {
             _readerWriterLock.EnterReadLock();
-            bool doesExist = _componentTypeIndicies.Contains(componentPoolIndex);
-            _readerWriterLock.ExitReadLock();
+            bool doesExist;
+            try
+            {
+                doesExist = _componentTypeIndicies.Contains(componentPoolIndex);
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
 
             return doesExist;
         }
@@ -74,22 +96,32 @@ namespace ECS
         {
             _readerWriterLock.EnterWriteLock();
 
-            _OnComponentUpdated += updated;
-            _OnComponentRemoved += removed;
-            _OnComponentAdded += added;
-
-            _readerWriterLock.ExitReadLock();
+            try
+            {
+                _OnComponentUpdated += updated;
+                _OnComponentRemoved += removed;
+                _OnComponentAdded += added;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
         }
 
         public void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
         {
             _readerWriterLock.EnterWriteLock();
 
-            _OnComponentUpdated -= updated;
-            _OnComponentRemoved -= removed;
-            _OnComponentAdded -= added;
-
-            _readerWriterLock.ExitWriteLock();
+            try
+            {
+                _OnComponentUpdated -= updated;
+                _OnComponentRemoved -= removed;
+                _OnComponentAdded -= added;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
         }
 
         #endregion
@@ -157,27 +189,37 @@ namespace ECS
         {
             _readerWriterLock.EnterUpgradeableReadLock();
 
-            int compIndex = _componentTypeIndicies.IndexOf(oldCompIndex);
-            if (compIndex > -1)
+            try
             {
-                _readerWriterLock.EnterWriteLock();
-
-                IComponent oldComp = _components[compIndex];
-                _components.RemoveAt(compIndex);
-                _componentTypeIndicies.RemoveAt(compIndex);
-
-                SettableComponent maybeSettable = oldComp as SettableComponent;
-                if(maybeSettable != null)
+                int compIndex = _componentTypeIndicies.IndexOf(oldCompIndex);
+                if (compIndex > -1)
                 {
-                    maybeSettable.UnSubscribeToChanges(SettableComponentUpdated);
+                    _readerWriterLock.EnterWriteLock();
+                    IComponent oldComp;
+                    try
+                    {
+                        oldComp = _components[compIndex];
+                        _components.RemoveAt(compIndex);
+                        _componentTypeIndicies.RemoveAt(compIndex);
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
+
+                    SettableComponent maybeSettable = oldComp as SettableComponent;
+                    if (maybeSettable != null)
+                    {
+                        maybeSettable.UnSubscribeToChanges(SettableComponentUpdated);
+                    }
+
+                    _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
                 }
-
-                _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
-
-                _readerWriterLock.ExitWriteLock();
             }
-
-            _readerWriterLock.ExitUpgradeableReadLock();
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
         }
 
         #endregion
@@ -190,23 +232,33 @@ namespace ECS
 
             _readerWriterLock.EnterUpgradeableReadLock();
 
-            int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
-            if (existingCompIndex > -1)
+            try
             {
-                _readerWriterLock.EnterWriteLock();
+                int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
+                if (existingCompIndex > -1)
+                {
+                    _readerWriterLock.EnterWriteLock();
 
-                _components[existingCompIndex] = component;
+                    try
+                    {
+                        _components[existingCompIndex] = component;
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
 
-                _readerWriterLock.ExitWriteLock();
-
-                _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
+                    _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
+                }
+                else
+                {
+                    Debug.WriteLine("Warning: Attempting to replace component that doesn't exist");
+                }
             }
-            else
+            finally
             {
-                Debug.WriteLine("Warning: Attempting to replace component that doesn't exist");
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
-
-            _readerWriterLock.ExitUpgradeableReadLock();
            
         }
 
@@ -224,11 +276,20 @@ namespace ECS
         {
             _readerWriterLock.EnterReadLock();
 
-            bool allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
-            bool anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(_componentTypeIndicies).Any() : true;
-            bool noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
+            bool allOfMatch;
+            bool anyOfMatch;
+            bool noneOfMatch;
 
-            _readerWriterLock.ExitReadLock();
+            try
+            {
+                allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
+                anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(_componentTypeIndicies).Any() : true;
+                noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
 
             return allOfMatch && anyOfMatch && noneOfMatch;
         }

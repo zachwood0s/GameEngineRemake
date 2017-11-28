@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// These are not thread safe i don't think and I'm not sure if they can be.
+/// </summary>
 namespace ECS.Components
 {
     public delegate void ComponentPropertySet(int componentTypeIndex, IComponent component);

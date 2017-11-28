@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ECS
 {
@@ -15,8 +16,11 @@ namespace ECS
         private List<Entity> _entities;
         private SystemPool _systemPool;
 
+        private ReaderWriterLockSlim _readerWriterLock; 
+
         public Scene()
         {
+            _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _systemPool = new SystemPool();
             _entities = new List<Entity>();
             _groupsForIndex = new List<List<Group>>();
@@ -49,7 +53,18 @@ namespace ECS
         public Entity CreateEntity()
         {
             Entity entity = new Entity();
-            _entities.Add(entity);
+
+            _readerWriterLock.EnterWriteLock();
+
+            try
+            {
+                _entities.Add(entity);
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
+
             entity.SubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent, 
                 _HandleEntityComponentRemovedEvent, 
@@ -62,34 +77,74 @@ namespace ECS
 
         public Group GetGroup(Matcher match)
         {
-            if (!_groups.ContainsKey(match))
+            _readerWriterLock.EnterUpgradeableReadLock();
+
+            Group returnGroup;
+
+            try
             {
-                _groups.Add(match, _CreateGroup(match));
+                if (!_groups.ContainsKey(match))
+                {
+                    _readerWriterLock.EnterWriteLock();
+
+                    try
+                    {
+                        _groups.Add(match, _CreateGroup(match));
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock(); 
+                    }
+                }
+                returnGroup = _groups[match];
+            }
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
 
-            return _groups[match];
+            return returnGroup;
         }
 
         private void _AddToExistingGroups(Entity entity)
         {
-            foreach(KeyValuePair<Matcher, Group> pair in _groups)
+            _readerWriterLock.EnterReadLock();
+
+            try
             {
-                if (entity.IsMatch(pair.Key))
+                foreach (KeyValuePair<Matcher, Group> pair in _groups)
                 {
-                    pair.Value.AddEntity(entity);
+                    if (entity.IsMatch(pair.Key))
+                    {
+                        pair.Value.AddEntity(entity);
+                    }
                 }
             }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
         }
+
         private Group _CreateGroup(Matcher match)
         {
             Group newGroup = new Group(match);
 
-            foreach(Entity entity in _entities)
+            _readerWriterLock.EnterReadLock();
+
+            try
             {
-                if (entity.IsMatch(match))
+                foreach (Entity entity in _entities)
                 {
-                    newGroup.AddEntity(entity);
+                    if (entity.IsMatch(match))
+                    {
+                        newGroup.AddEntity(entity);
+                    }
                 }
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
             }
 
             return newGroup;

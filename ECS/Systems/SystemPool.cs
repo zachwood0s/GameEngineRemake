@@ -24,14 +24,14 @@ namespace ECS.Systems
             _otherSystems = new List<ISystem>();
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             foreach(IInitializeSystem iSystem in _initializeSystems)
             {
                 iSystem.Initialize();
             }
         }
-        public void Execute()
+        public virtual void Execute()
         {
             foreach(IExecuteSystem eSystem in _executeSystems)
             {
@@ -53,7 +53,6 @@ namespace ECS.Systems
 
         public T GetSystem<T>() where T: class, ISystem
         {
-
             foreach (IExecuteSystem e in _executeSystems)
             {
                 if(e is T tSys)
@@ -75,7 +74,6 @@ namespace ECS.Systems
                     return tSys;
                 }
             }
-
             return null;
         }
     }

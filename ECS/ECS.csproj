@@ -60,6 +60,7 @@
     <Compile Include="Systems\Interfaces\ISystem.cs" />
     <Compile Include="Systems\ReactiveSystem.cs" />
     <Compile Include="Systems\SystemPool.cs" />
+    <Compile Include="Systems\ThreadedSystemPool.cs" />
     <Compile Include="Watcher.cs" />
   </ItemGroup>
   <ItemGroup />
