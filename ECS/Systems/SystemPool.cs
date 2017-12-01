@@ -38,6 +38,10 @@ namespace ECS.Systems
                 eSystem.Execute();
             }
         }
+        public virtual void CleanUp()
+        {
+
+        }
         public SystemPool Register(ISystem system)
         {
             if(system is IExecuteSystem eSystem)

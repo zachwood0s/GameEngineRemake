@@ -27,8 +27,9 @@ namespace ECS.Systems
         {
             if(WatchList.EntityCount != 0)
             {
-                Execute(WatchList);
+                IEnumerable<Entity> buffer = WatchList.ToList();
                 this.Clear();
+                Execute(buffer);
             }
         }
     }

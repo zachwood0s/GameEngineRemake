@@ -14,14 +14,15 @@ namespace ECS
         private Dictionary<Matcher, Group> _groups;
         private List<List<Group>> _groupsForIndex;
         private List<Entity> _entities;
-        private SystemPool _systemPool;
+
+        private List<SystemPool> _systemPools;
 
         private ReaderWriterLockSlim _readerWriterLock; 
 
         public Scene()
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-            _systemPool = new SystemPool();
+            _systemPools = new List<SystemPool>();
             _entities = new List<Entity>();
             _groupsForIndex = new List<List<Group>>();
             _groups = new Dictionary<Matcher, Group>(); 
@@ -29,7 +30,7 @@ namespace ECS
 
         #region Getters/Setters
 
-        public SystemPool SystemPool => _systemPool;
+        public List<SystemPool> SystemPools => _systemPools;
 
         #endregion
 
@@ -37,15 +38,24 @@ namespace ECS
 
         public void Initialize()
         {
-            _systemPool.Initialize();
+            foreach (SystemPool pool in _systemPools)
+            {
+                pool.Initialize();
+            }
         }
         public void Execute()
         {
-            _systemPool.Execute();
+            foreach (SystemPool pool in _systemPools)
+            {
+                pool.Execute();
+            }
         }
         public void CleanUp()
         {
-
+            foreach (SystemPool pool in _systemPools)
+            {
+                pool.CleanUp();
+            }
         }
 
         #endregion
