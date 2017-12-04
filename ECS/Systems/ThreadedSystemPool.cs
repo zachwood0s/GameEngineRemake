@@ -15,12 +15,14 @@ namespace ECS.Systems
         private int _targetFps;
         private long _currentFps;
         private long _frameCount;
-        private DateTime _lastTime;
+        private DateTime _lastFrameReadTime;
         private double _avgFps = 0;
 
-        private double _updateTime;
+        private TimeSpan _targetElapsedTime;
         private bool _noFpsLimit;
-        private Stopwatch _stopWatch;
+        private Stopwatch _stopwatch;
+        private long _previousTicks = 0;
+        private TimeSpan _accumulatedElapsedTime;
 
         private bool _isRunning = false;
 
@@ -31,51 +33,62 @@ namespace ECS.Systems
         public ThreadedSystemPool(int fps)
         {
             _targetFps = fps;
-            _updateTime = 1000 / _targetFps;
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000 / _targetFps);
             _thread = new Thread(_ThreadUpdate);
-            _stopWatch = new Stopwatch();
         }
         public ThreadedSystemPool()
         {
             _thread = new Thread(_ThreadUpdate);
             _noFpsLimit = true;
-            _stopWatch = new Stopwatch();
         }
         public override void Execute()
         {
             _isRunning = true;
+            _lastFrameReadTime = DateTime.Now;
+            _stopwatch = Stopwatch.StartNew();
             _thread.Start();
-            _lastTime = DateTime.Now;
         }
 
         private void _ThreadUpdate()
         {
+           
             while (_isRunning)
             {
-                _frameCount++;
-                if((DateTime.Now - _lastTime).TotalSeconds >= 1)
-                {
-                    _currentFps = _frameCount;
-                    _avgFps += _currentFps;
-                    _avgFps /= 2;
+                //Pulled this from Monogame Game class's tick function`
+                RetryTick:
 
-                    _frameCount = 0;
-                    _lastTime = DateTime.Now;
-                }
+                    var currentTicks = _stopwatch.Elapsed.Ticks;
+                    _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks - _previousTicks);
+                    _previousTicks = currentTicks;
 
-                _stopWatch.Restart();
-                base.Execute();
-                _stopWatch.Stop();
-
-                if (!_noFpsLimit)
-                {
-                    long millis = _stopWatch.ElapsedMilliseconds;
-                    int waitTime = (int)(_updateTime - millis);
-                    if (waitTime > 0)
+                    if (!_noFpsLimit)
                     {
-                        Thread.Sleep(waitTime);
+                        if(_accumulatedElapsedTime < _targetElapsedTime)
+                        {
+                            var sleepTime = (int)(_targetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+
+                            Thread.Sleep(sleepTime);
+
+                            goto RetryTick;
+                        }
                     }
-                }
+
+
+                    _frameCount++;
+                    if((DateTime.Now - _lastFrameReadTime).TotalSeconds >= 1)
+                    {
+                        _currentFps = _frameCount;
+                        _avgFps += _currentFps;
+                        _avgFps /= 2;
+
+                        _frameCount = 0;
+                        _lastFrameReadTime = DateTime.Now;
+                    }
+
+                    base.Execute();
+
+                    _accumulatedElapsedTime = TimeSpan.Zero;
+
             }
         }
 
@@ -83,6 +96,7 @@ namespace ECS.Systems
         {
             base.CleanUp();
             _isRunning = false;
+            _stopwatch.Stop();
         }
     }
 }

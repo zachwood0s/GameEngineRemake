@@ -216,12 +216,15 @@ namespace ECSTests
         {
             ThreadedSystemPool update = new ECS.Systems.ThreadedSystemPool(60);
             update.Register(new TestTransformSystem(_scene));
+            Assert.AreEqual(1, update.ExecuteSystems.Count);
 
-            ThreadedSystemPool render = new ECS.Systems.ThreadedSystemPool();
+            ThreadedSystemPool render = new ECS.Systems.ThreadedSystemPool(120);
             render.Register(new TestRenderSystem(_scene));
+            Assert.AreEqual(1, render.ExecuteSystems.Count);
 
             ThreadedSystemPool physics = new ECS.Systems.ThreadedSystemPool(80);
             physics.Register(new TestRecoilSystem(_scene));
+            Assert.AreEqual(1, physics.ExecuteSystems.Count);
 
             _scene.SystemPools.Add(update);
             _scene.SystemPools.Add(render);
@@ -308,7 +311,7 @@ namespace ECSTests
 
 
 
-    public class TestRenderSystem: IExecuteSystem
+    /*public class TestRenderSystem: IExecuteSystem
     {
         private Scene _scene;
         private Group _group;
@@ -325,8 +328,29 @@ namespace ECSTests
                 Debug.WriteLine("{0}, {1}", comp.X, comp.Y);
             }
         }
+    }*/
+    public class TestRenderSystem: GroupExecuteSystem
+    {
+        public TestRenderSystem(Scene scene) : base(scene) { }
+        public override Matcher GetMatcher() => new Matcher().Of<PositionComponent>();
+        public override void Execute(Entity entity)
+        {
+            PositionComponent comp = entity.GetComponent<PositionComponent>();
+            //Debug.WriteLine("{0}, {1}", comp.X, comp.Y);
+        }
     }
-    public class TestRecoilSystem : IExecuteSystem
+    public class TestRecoilSystem: GroupExecuteSystem
+    {
+        public TestRecoilSystem(Scene scene) : base(scene) { }
+        public override Matcher GetMatcher() => new Matcher().Of<PositionComponent>();
+        public override void Execute(Entity entity)
+        {
+            PositionComponent comp = entity.GetComponent<PositionComponent>();
+            int newX = comp.X - 100;
+            entity.UpdateComponent(new PositionComponent(newX, comp.Y));
+        }
+    }
+    /*public class TestRecoilSystem : IExecuteSystem
     {
         private Scene _scene;
         private Group _group;
@@ -344,8 +368,8 @@ namespace ECSTests
                 entity.UpdateComponent(new PositionComponent(newX, comp.Y));
             }
         }
-    }
-    public class TestTransformSystem : ReactiveSystem
+    }*/
+    public class TestTransformSystem : ThreadSafeReactiveSystem
     {
         public TestTransformSystem(Scene scene) : base(scene)
         {
@@ -354,15 +378,12 @@ namespace ECSTests
         {
             return new Matcher().Of<PositionComponent>();
         }
-        public override void Execute(IEnumerable<Entity> entities)
+        public override void Execute(Entity entity)
         {
-            foreach(Entity entity in entities)
-            {
-                PositionComponent comp = entity.GetComponent<PositionComponent>();
-                int newX = comp.X + 1;
-                int newY = comp.Y + 1;
-                entity.UpdateComponent(new PositionComponent(newX, newY));
-            }
+            PositionComponent comp = entity.GetComponent<PositionComponent>();
+            int newX = comp.X + 1;
+            int newY = comp.Y + 1;
+            entity.UpdateComponent(new PositionComponent(newX, newY));
         }
     }
     [Component]

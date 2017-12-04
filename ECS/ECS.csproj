@@ -54,6 +54,7 @@
     <Compile Include="Components\ComponentPool.cs" />
     <Compile Include="Components\IComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\GroupExecuteSystem.cs" />
     <Compile Include="Systems\Interfaces\IExecuteSystem.cs" />
     <Compile Include="Systems\Interfaces\IInitializeSystem.cs" />
     <Compile Include="Systems\Interfaces\IReactiveSystem.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Systems\ReactiveSystem.cs" />
     <Compile Include="Systems\SystemPool.cs" />
     <Compile Include="Systems\ThreadedSystemPool.cs" />
+    <Compile Include="Systems\ThreadSafeReactiveSystem.cs" />
     <Compile Include="Watcher.cs" />
   </ItemGroup>
   <ItemGroup />
