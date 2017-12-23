@@ -30,13 +30,13 @@ namespace ECS.Systems
         public bool IsRunning => _isRunning;
         public double AvgFps => _avgFps;
 
-        public ThreadedSystemPool(int fps)
+        public ThreadedSystemPool(string poolName, int fps):base(poolName)
         {
             _targetFps = fps;
             _targetElapsedTime = TimeSpan.FromMilliseconds(1000 / _targetFps);
             _thread = new Thread(_ThreadUpdate);
         }
-        public ThreadedSystemPool()
+        public ThreadedSystemPool(string poolName):base(poolName)
         {
             _thread = new Thread(_ThreadUpdate);
             _noFpsLimit = true;
@@ -54,7 +54,9 @@ namespace ECS.Systems
            
             while (_isRunning)
             {
-                //Pulled this from Monogame Game class's tick function`
+                //Pulled this from Monogame Game class's tick function
+                //The goto is a little wierd but I guess it works?
+                //Wouldn't a while loop work just as good
                 RetryTick:
 
                     var currentTicks = _stopwatch.Elapsed.Ticks;
@@ -90,6 +92,7 @@ namespace ECS.Systems
                     _accumulatedElapsedTime = TimeSpan.Zero;
 
             }
+
         }
 
         public override void CleanUp()

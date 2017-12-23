@@ -13,6 +13,7 @@ namespace ECS
     public class Entity
     {
 
+        
         private ReaderWriterLockSlim _readerWriterLock;
         private List<IComponent> _components;
         private List<int> _componentTypeIndicies;
@@ -38,6 +39,7 @@ namespace ECS
         #endregion
 
         #region Component Checking
+
         public T GetComponent<T>() where T : class, IComponent
         {
             T returnComp = null;

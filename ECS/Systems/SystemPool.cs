@@ -13,12 +13,17 @@ namespace ECS.Systems
         private List<IInitializeSystem> _initializeSystems;
         private List<ISystem> _otherSystems;
 
-        public List<IExecuteSystem> ExecuteSystems => _executeSystems;
-        public List<IInitializeSystem> InitializeSystems => _initializeSystems;
-        public List<ISystem> OtherSystems => _otherSystems;
+        private string _poolName;
+
+        public IReadOnlyList<IExecuteSystem> ExecuteSystems => _executeSystems;
+        public IReadOnlyList<IInitializeSystem> InitializeSystems => _initializeSystems;
+        public IReadOnlyList<ISystem> OtherSystems => _otherSystems;
+
+        public string PoolName => _poolName;
         
-        public SystemPool()
+        public SystemPool(string poolName)
         {
+            _poolName = poolName;
             _executeSystems = new List<IExecuteSystem>();
             _initializeSystems = new List<IInitializeSystem>();
             _otherSystems = new List<ISystem>();

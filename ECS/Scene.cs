@@ -31,6 +31,10 @@ namespace ECS
         #region Getters/Setters
 
         public List<SystemPool> SystemPools => _systemPools;
+        public SystemPool GetSystemPoolByName(string name)
+        {
+            return _systemPools.Find(p => p.PoolName == name);
+        }
 
         #endregion
 

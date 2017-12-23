@@ -84,7 +84,7 @@ namespace ECSTests
         [TestMethod]
         public void SystemPoolInitSystems()
         {
-            SystemPool sys = new SystemPool();
+            SystemPool sys = new SystemPool("test");
             sys.Register(new TestInitSystem(_scene));
             _scene.SystemPools.Add(sys);
             _scene.Initialize();
@@ -102,7 +102,7 @@ namespace ECSTests
         public void SystemPoolExecuteSystems()
         {
 
-            _scene.SystemPools.Add(new SystemPool().Register(new TestExecuteSystem()));
+            _scene.SystemPools.Add(new SystemPool("test").Register(new TestExecuteSystem()));
             _scene.Execute();
 
             Assert.AreEqual(1, _scene.SystemPools[0].ExecuteSystems.Count);
@@ -115,7 +115,7 @@ namespace ECSTests
         [TestMethod]
         public void SystemPoolMixedSystems()
         {
-            _scene.SystemPools.Add(new SystemPool().Register(new TestExecuteInitSystem())
+            _scene.SystemPools.Add(new SystemPool("test").Register(new TestExecuteInitSystem())
                              .Register(new TestExecuteSystem())
                              .Register(new TestInitSystem(_scene)));
             Assert.AreEqual(2, _scene.SystemPools[0].InitializeSystems.Count);
@@ -133,7 +133,7 @@ namespace ECSTests
         [TestMethod]
         public void SystemPoolReactiveSystems()
         {
-            _scene.SystemPools.Add(new SystemPool().Register(new TestPositionSystem(_scene)));
+            _scene.SystemPools.Add(new SystemPool("test").Register(new TestPositionSystem(_scene)));
             _scene.CreateEntity().With<TestPositionComponent>();
 
             Assert.AreEqual(1, _scene.SystemPools[0].ExecuteSystems.Count);
@@ -148,7 +148,7 @@ namespace ECSTests
         [TestMethod]
         public void ThreadedSystemPool()
         {
-            ThreadedSystemPool pool = new ThreadedSystemPool();
+            ThreadedSystemPool pool = new ThreadedSystemPool("test");
             pool.Register(new TestExecuteSystem());
 
             pool.Execute();
@@ -166,7 +166,7 @@ namespace ECSTests
         [TestMethod]
         public void ThreadedSystemPoolLockedFps()
         {
-            ThreadedSystemPool pool = new ThreadedSystemPool(60);
+            ThreadedSystemPool pool = new ThreadedSystemPool("test",60);
             pool.Register(new TestExecuteSystem());
 
             pool.Execute();
@@ -183,9 +183,9 @@ namespace ECSTests
         [TestMethod]
         public void ThreadedSystemMultipleSystems()
         {
-            ThreadedSystemPool pool = new ThreadedSystemPool(60);
+            ThreadedSystemPool pool = new ThreadedSystemPool("test1", 60);
             pool.Register(new TestExecuteSystem());
-            ThreadedSystemPool pool2 = new ThreadedSystemPool();
+            ThreadedSystemPool pool2 = new ThreadedSystemPool("test2");
             pool2.Register(new TestExecuteInitSystem());
 
             _scene.SystemPools.Add(pool);
@@ -214,15 +214,15 @@ namespace ECSTests
         [TestMethod]
         public void ThreadedReactiveSystems()
         {
-            ThreadedSystemPool update = new ECS.Systems.ThreadedSystemPool(60);
+            ThreadedSystemPool update = new ECS.Systems.ThreadedSystemPool("update",60);
             update.Register(new TestTransformSystem(_scene));
             Assert.AreEqual(1, update.ExecuteSystems.Count);
 
-            ThreadedSystemPool render = new ECS.Systems.ThreadedSystemPool(120);
+            ThreadedSystemPool render = new ECS.Systems.ThreadedSystemPool("render", 120);
             render.Register(new TestRenderSystem(_scene));
             Assert.AreEqual(1, render.ExecuteSystems.Count);
 
-            ThreadedSystemPool physics = new ECS.Systems.ThreadedSystemPool(80);
+            ThreadedSystemPool physics = new ECS.Systems.ThreadedSystemPool("physics", 80);
             physics.Register(new TestRecoilSystem(_scene));
             Assert.AreEqual(1, physics.ExecuteSystems.Count);
 
@@ -242,6 +242,7 @@ namespace ECSTests
 
             Debug.WriteLine(update.AvgFps);
             Debug.WriteLine(render.AvgFps);
+            Debug.WriteLine(physics.AvgFps);
         }
         
 
@@ -336,7 +337,7 @@ namespace ECSTests
         public override void Execute(Entity entity)
         {
             PositionComponent comp = entity.GetComponent<PositionComponent>();
-            //Debug.WriteLine("{0}, {1}", comp.X, comp.Y);
+            Debug.WriteLine("{0}, {1}", comp.X, comp.Y);
         }
     }
     public class TestRecoilSystem: GroupExecuteSystem
