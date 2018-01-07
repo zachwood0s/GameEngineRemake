@@ -1,8 +1,11 @@
 ﻿using ECS;
+using ECS.Components;
 using ECS.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using EngineCore.Components;
+using EngineCore.Systems.Rendering;
 
 namespace ExampleGame
 {
@@ -47,9 +50,23 @@ namespace ExampleGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            SystemPool render = new SystemPool("render");
+            ThreadedSystemPool render = new ThreadedSystemPool("render", 60);
+            //render.Register(new ClearScreenSystem(GraphicsDevice, Color.CornflowerBlue));
+            render.Register(new BasicRenderingSystem(_scene, Content, spriteBatch));
             //rendering.Register()
-            SystemPool update = new SystemPool("update");
+            ThreadedSystemPool update = new ThreadedSystemPool("update");
+
+            ComponentPool.RegisterAllComponents();
+
+            _scene.SystemPools.Add(render);
+            _scene.SystemPools.Add(update);
+
+            _scene.CreateEntity()
+                  .With<Transform2DComponent>()
+                  .With(new BasicTexture("test"));
+
+            _scene.Initialize();
+            _scene.Execute();
 
             // TODO: use this.Content to load your game content here
         }
@@ -71,8 +88,10 @@ namespace ExampleGame
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                _scene.CleanUp();
                 Exit();
-
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -84,7 +103,7 @@ namespace ExampleGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
 

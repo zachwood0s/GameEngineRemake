@@ -43,13 +43,17 @@ namespace ECS.Systems
         }
         public override void Execute()
         {
+            _ResetTiming();
+            _thread.Start();
+        }
+        protected void _ResetTiming()
+        {
             _isRunning = true;
             _lastFrameReadTime = DateTime.Now;
             _stopwatch = Stopwatch.StartNew();
-            _thread.Start();
         }
 
-        private void _ThreadUpdate()
+        protected void _ThreadUpdate()
         {
            
             while (_isRunning)

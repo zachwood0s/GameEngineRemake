@@ -61,6 +61,7 @@ namespace ECS
             }
             return returnComp;
         }
+
         public bool HasComponent<T>() where T: class, IComponent
         {
             _readerWriterLock.EnterReadLock();
@@ -76,6 +77,7 @@ namespace ECS
 
             return doesExist; 
         }
+
         public bool HasComponent(int componentPoolIndex)
         {
             _readerWriterLock.EnterReadLock();
