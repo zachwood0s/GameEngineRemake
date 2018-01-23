@@ -46,9 +46,9 @@
     <Compile Include="Components\BasicTexture.cs" />
     <Compile Include="Components\Transform2DComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Systems\RenderingSystemPool.cs" />
     <Compile Include="Systems\Rendering\BasicRenderingSystem.cs" />
     <Compile Include="Systems\Rendering\ClearScreenSystem.cs" />
+    <Compile Include="Systems\TestMovementSystem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

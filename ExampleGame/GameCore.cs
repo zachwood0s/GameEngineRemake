@@ -1,11 +1,12 @@
 ﻿using ECS;
 using ECS.Components;
 using ECS.Systems;
+using EngineCore.Components;
+using EngineCore.Systems;
+using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using EngineCore.Components;
-using EngineCore.Systems.Rendering;
 
 namespace ExampleGame
 {
@@ -17,14 +18,14 @@ namespace ExampleGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private Scene _scene;
+        Scene testScene;
         
         public GameCore()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            _scene = new Scene();
+            testScene = new Scene();
         }
 
         /// <summary>
@@ -36,8 +37,9 @@ namespace ExampleGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            
-
+            ComponentPool.RegisterAllComponents();
+            ComponentPool.RegisterComponent<BasicTexture>();
+            ComponentPool.RegisterComponent<Transform2DComponent>();
             base.Initialize();
         }
 
@@ -50,25 +52,27 @@ namespace ExampleGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            ThreadedSystemPool render = new ThreadedSystemPool("render", 60);
-            //render.Register(new ClearScreenSystem(GraphicsDevice, Color.CornflowerBlue));
-            render.Register(new BasicRenderingSystem(_scene, Content, spriteBatch));
-            //rendering.Register()
-            ThreadedSystemPool update = new ThreadedSystemPool("update");
-
-            ComponentPool.RegisterAllComponents();
-
-            _scene.SystemPools.Add(render);
-            _scene.SystemPools.Add(update);
-
-            _scene.CreateEntity()
-                  .With<Transform2DComponent>()
-                  .With(new BasicTexture("test"));
-
-            _scene.Initialize();
-            _scene.Execute();
-
             // TODO: use this.Content to load your game content here
+            SystemPool rendering = new SystemPool("render");
+            rendering.Register(new ClearScreenSystem(graphics.GraphicsDevice, Color.CornflowerBlue));
+            rendering.Register(new BasicRenderingSystem(testScene, Content, spriteBatch));
+
+            SystemPool update = new ThreadedSystemPool("update", 200);
+            update.Register(new TestMovementSystem(testScene));
+
+            testScene.AddSystemPool(rendering);
+            testScene.AddSystemPool(update);
+
+            Entity e = testScene.CreateEntity()
+                .With<Transform2DComponent>()
+                .With(new BasicTexture("test"));
+
+            Entity e2 = testScene.CreateEntity()
+                .With(new Transform2DComponent(20, 100))
+                .With(new BasicTexture("test"));
+            
+
+            testScene.Initialize();
         }
 
         /// <summary>
@@ -78,6 +82,7 @@ namespace ExampleGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            testScene.CleanUp();
         }
 
         /// <summary>
@@ -88,26 +93,12 @@ namespace ExampleGame
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                _scene.CleanUp();
                 Exit();
-            }
+
             // TODO: Add your update logic here
+            testScene.Execute();
 
             base.Update(gameTime);
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-
-            base.Draw(gameTime);
         }
     }
 }

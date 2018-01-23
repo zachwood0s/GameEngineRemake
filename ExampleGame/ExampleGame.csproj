@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A03677C0-8C0B-47E7-9C12-3FB36DC20472}</ProjectGuid>
+    <ProjectGuid>{4BF0C037-808E-4FAE-B99E-E1DC3B0CB5FE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ExampleGame</RootNamespace>

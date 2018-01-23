@@ -43,8 +43,11 @@ namespace ECS.Systems
         }
         public override void Execute()
         {
-            _ResetTiming();
-            _thread.Start();
+            if (!_isRunning)
+            {
+                _ResetTiming();
+                _thread.Start();
+            }
         }
         protected void _ResetTiming()
         {
@@ -103,7 +106,7 @@ namespace ECS.Systems
         {
             base.CleanUp();
             _isRunning = false;
-            _stopwatch.Stop();
+            _stopwatch?.Stop();
         }
     }
 }
