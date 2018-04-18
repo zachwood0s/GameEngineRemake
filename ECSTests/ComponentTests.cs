@@ -29,8 +29,6 @@ namespace ECSTests
             Group testGroup = _scene.GetGroup(new Matcher().Of<TestPositionComponent>());
             Watcher watcher = new Watcher(testGroup);
 
-            
-
             Assert.AreEqual(0, watcher.EntityCount);
 
             TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
@@ -42,6 +40,55 @@ namespace ECSTests
             test.UpdateComponent(comp);
 
             Assert.AreEqual(1, watcher.EntityCount);
+        }
+
+        [TestMethod]
+        public void UpdateFunctionTest()
+        {
+            Entity test = _scene.CreateEntity()
+                                .With<TestPositionComponent>()
+                                .With<TestPositionComponent2>();
+
+            TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
+            TestPositionComponent2 comp2 = test.GetComponent<TestPositionComponent2>();
+
+            Assert.AreEqual(0, comp.X);
+
+            test.UpdateComponent<TestPositionComponent>(c =>
+            {
+                c.X = 200;
+
+                test.UpdateComponent<TestPositionComponent2>(c2 =>
+                {
+                    c2.X = 400;
+                });
+            });
+
+            Assert.AreEqual(200, comp.X);
+            Assert.AreEqual(400, comp2.X);
+        }
+
+        [TestMethod]
+        public void UpdateFunctionMultiple()
+        {
+            Entity test = _scene.CreateEntity()
+                                .With<TestPositionComponent>()
+                                .With<TestPositionComponent2>();
+
+            TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
+            TestPositionComponent2 comp2 = test.GetComponent<TestPositionComponent2>();
+
+            Assert.AreEqual(0, comp.X);
+
+            test.UpdateComponents<TestPositionComponent, TestPositionComponent2>((c1, c2) =>
+            {
+                c1.X = 20;
+                c2.X = -20;
+            });
+                      
+
+            Assert.AreEqual(20, comp.X);
+            Assert.AreEqual(-20, comp2.X);
         }
 
         [TestMethod]

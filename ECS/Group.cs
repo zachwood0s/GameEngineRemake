@@ -12,9 +12,9 @@ namespace ECS
     public class Group: IEnumerable<Entity>
     {
         private List<Entity> _groupEntities;
-        private Matcher _match;
+        protected Matcher _match;
 
-        private ReaderWriterLockSlim _readerWriterLock;
+        protected ReaderWriterLockSlim _readerWriterLock;
         
         private event EntityChangedEventHandler _OnEntityComponentUpdated;
         private event EntityChangedEventHandler _OnEntityComponentRemoved;
@@ -99,7 +99,27 @@ namespace ECS
 
         #region Handling Entity Changes
 
-        private bool _RemoveIfNotValid(Entity updatedEntity)
+        protected void _RemoveAndUnsubscribe(Entity removeEntity)
+        {
+            _readerWriterLock.EnterWriteLock();
+
+            try
+            {
+                _groupEntities.Remove(removeEntity);
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
+
+            removeEntity.UnSubscribeToChanges(
+                _HandleEntityComponentUpdatedEvent,
+                _HandleEntityComponentRemovedEvent,
+                _HandleEntityComponentAddedEvent
+            );
+        }
+
+        protected virtual bool _RemoveIfNotValid(Entity updatedEntity)
         {
             bool isValid = true;
 
@@ -109,22 +129,7 @@ namespace ECS
             {
                 if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
                 {
-                    _readerWriterLock.EnterWriteLock();
-
-                    try
-                    {
-                        _groupEntities.Remove(updatedEntity);
-                    }
-                    finally
-                    {
-                        _readerWriterLock.ExitWriteLock();
-                    }
-
-                    updatedEntity.UnSubscribeToChanges(
-                        _HandleEntityComponentUpdatedEvent,
-                        _HandleEntityComponentRemovedEvent,
-                        _HandleEntityComponentAddedEvent
-                    );
+                    _RemoveAndUnsubscribe(updatedEntity);
                     isValid = false;
                 }
             }
@@ -151,8 +156,11 @@ namespace ECS
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            //This will update any watchers we have 
-            _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
+            if (_RemoveIfNotValid(updatedEntity))
+            {
+                //This will update any watchers we have 
+                _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
+            }
         }
 
         #endregion

@@ -86,7 +86,7 @@ namespace ECSTests
         {
             SystemPool sys = new SystemPool("test");
             sys.Register(new TestInitSystem(_scene));
-            _scene.SystemPools.Add(sys);
+            _scene.AddSystemPool(sys);
             _scene.Initialize();
 
             Assert.AreEqual(1, _scene.SystemPools[0].InitializeSystems.Count);
@@ -102,7 +102,7 @@ namespace ECSTests
         public void SystemPoolExecuteSystems()
         {
 
-            _scene.SystemPools.Add(new SystemPool("test").Register(new TestExecuteSystem()));
+            _scene.AddSystemPool(new SystemPool("test").Register(new TestExecuteSystem()));
             _scene.Execute();
 
             Assert.AreEqual(1, _scene.SystemPools[0].ExecuteSystems.Count);
@@ -115,7 +115,7 @@ namespace ECSTests
         [TestMethod]
         public void SystemPoolMixedSystems()
         {
-            _scene.SystemPools.Add(new SystemPool("test").Register(new TestExecuteInitSystem())
+            _scene.AddSystemPool(new SystemPool("test").Register(new TestExecuteInitSystem())
                              .Register(new TestExecuteSystem())
                              .Register(new TestInitSystem(_scene)));
             Assert.AreEqual(2, _scene.SystemPools[0].InitializeSystems.Count);
@@ -133,7 +133,7 @@ namespace ECSTests
         [TestMethod]
         public void SystemPoolReactiveSystems()
         {
-            _scene.SystemPools.Add(new SystemPool("test").Register(new TestPositionSystem(_scene)));
+            _scene.AddSystemPool(new SystemPool("test").Register(new TestPositionSystem(_scene)));
             _scene.CreateEntity().With<TestPositionComponent>();
 
             Assert.AreEqual(1, _scene.SystemPools[0].ExecuteSystems.Count);
@@ -188,8 +188,8 @@ namespace ECSTests
             ThreadedSystemPool pool2 = new ThreadedSystemPool("test2");
             pool2.Register(new TestExecuteInitSystem());
 
-            _scene.SystemPools.Add(pool);
-            _scene.SystemPools.Add(pool2);
+            _scene.AddSystemPool(pool);
+            _scene.AddSystemPool(pool2);
 
             _scene.Initialize();
 
@@ -226,9 +226,9 @@ namespace ECSTests
             physics.Register(new TestRecoilSystem(_scene));
             Assert.AreEqual(1, physics.ExecuteSystems.Count);
 
-            _scene.SystemPools.Add(update);
-            _scene.SystemPools.Add(render);
-            _scene.SystemPools.Add(physics);
+            _scene.AddSystemPool(update);
+            _scene.AddSystemPool(render);
+            _scene.AddSystemPool(physics);
 
             Entity testEntity = _scene.CreateEntity().With<PositionComponent>();
 

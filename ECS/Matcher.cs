@@ -18,6 +18,8 @@ namespace ECS
         private List<int> _noneOfTypeIndicies;
         private List<Type> _noneOf;
 
+        private List<Predicate<Entity>> _filters;
+
         private bool _isHashCached;
         private int _cachedHash;
 
@@ -30,6 +32,7 @@ namespace ECS
             _anyOf = new List<Type>();
             _noneOf = new List<Type>();
             _allOf = new List<Type>();
+            _filters = new List<Predicate<Entity>>();
         }
 
         #region Getters/Setters
@@ -42,6 +45,8 @@ namespace ECS
 
         public IReadOnlyList<int> NoneOfTypeIndicies => _noneOfTypeIndicies;
         public IReadOnlyList<Type> NoneOfTypes => _noneOf;
+
+        public IReadOnlyList<Predicate<Entity>> Filters => _filters;
 
         #endregion
 
@@ -101,6 +106,15 @@ namespace ECS
             return AllOf(typeof(T));
         }
 
+        public Matcher WithFilter(params Predicate<Entity>[] conditions)
+        {
+            if(conditions != null)
+            {
+                _filters.AddRange(conditions);
+            }
+            return this;
+        }
+
         #endregion
 
         public override bool Equals(object obj)
@@ -130,6 +144,7 @@ namespace ECS
                 hash = _ApplyHash(hash, _allOfTypeIndicies.ToArray(), 3, 53);
                 hash = _ApplyHash(hash, _anyOfTypeIndicies.ToArray(), 307, 367);
                 hash = _ApplyHash(hash, _noneOfTypeIndicies.ToArray(), 647, 683);
+                hash *= _filters.GetHashCode();
                 _cachedHash = hash;
                 _isHashCached = true;
             }

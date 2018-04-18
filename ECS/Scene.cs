@@ -30,7 +30,7 @@ namespace ECS
 
         #region Getters/Setters
 
-        //public List<SystemPool> SystemPools => _systemPools;
+        public IReadOnlyList<SystemPool> SystemPools => _systemPools;
         public void AddSystemPool(SystemPool pool) => _systemPools.Add(pool);
 
         public SystemPool GetSystemPoolByName(string name)
