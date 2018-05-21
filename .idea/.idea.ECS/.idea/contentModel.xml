@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.Rider2017.3/system/resharper-host/local/Transient/ReSharperHost/v11/SolutionCaches/_ECS.-1262771301.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="ECS" t="IncludeRecursive">
+        <e p="Attributes" t="Include">
+          <e p="ComponentAttribute.cs" t="Include" />
+        </e>
+        <e p="Components" t="Include">
+          <e p="ComponentPool.cs" t="Include" />
+          <e p="ComponentProperty.cs" t="Include" />
+          <e p="IComponent.cs" t="Include" />
+          <e p="IComponentHasDefault.cs" t="Include" />
+        </e>
+        <e p="ECS.csproj" t="IncludeRecursive" />
+        <e p="Entity.cs" t="Include" />
+        <e p="Group.cs" t="Include" />
+        <e p="Matcher.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Scene.cs" t="Include" />
+        <e p="Systems" t="Include">
+          <e p="GroupExecuteSystem.cs" t="Include" />
+          <e p="Interfaces" t="Include">
+            <e p="IExecuteSystem.cs" t="Include" />
+            <e p="IInitializeSystem.cs" t="Include" />
+            <e p="IReactiveSystem.cs" t="Include" />
+            <e p="ISystem.cs" t="Include" />
+          </e>
+          <e p="ReactiveSystem.cs" t="Include" />
+          <e p="SystemPool.cs" t="Include" />
+          <e p="ThreadSafeReactiveSystem.cs" t="Include" />
+          <e p="ThreadedSystemPool.cs" t="Include" />
+        </e>
+        <e p="Watcher.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+      </e>
+      <e p="ECS.sln" t="IncludeFlat" />
+      <e p="ECSTests" t="IncludeRecursive">
+        <e p="ComponentPoolTests.cs" t="Include" />
+        <e p="ComponentTests.cs" t="Include" />
+        <e p="ECSTests.csproj" t="IncludeRecursive" />
+        <e p="EntityTests.cs" t="Include" />
+        <e p="GroupTests.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="SystemTests.cs" t="Include" />
+        <e p="WatcherTests.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+      </e>
+      <e p="EngineCore" t="IncludeRecursive">
+        <e p="Components" t="Include">
+          <e p="BasicTexture.cs" t="Include" />
+          <e p="Transform2DComponent.cs" t="Include" />
+        </e>
+        <e p="EngineCore.csproj" t="IncludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Systems" t="Include">
+          <e p="Rendering" t="Include">
+            <e p="BasicRenderingSystem.cs" t="Include" />
+            <e p="ClearScreenSystem.cs" t="Include" />
+          </e>
+          <e p="TestMovementSystem.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+      </e>
+      <e p="ExampleGame" t="IncludeRecursive">
+        <e p="Content" t="Include">
+          <e p="Content.mgcb" t="Include" />
+        </e>
+        <e p="ExampleGame.csproj" t="IncludeRecursive" />
+        <e p="GameCore.cs" t="Include" />
+        <e p="Icon.bmp" t="Include" />
+        <e p="Icon.ico" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="app.config" t="Include" />
+        <e p="app.manifest" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>
