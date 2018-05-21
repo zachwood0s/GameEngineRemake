@@ -24,7 +24,7 @@ namespace ECS
 
         public Entity()
         {
-            _readerWriterLock = new ReaderWriterLockSlim();
+            _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>();
             _componentTypeIndicies = new List<int>();
         }
@@ -266,6 +266,58 @@ namespace ECS
            
         }
 
+        /*
+         * TODO:
+         * I think these functions could be sped up every so slightly by not
+         * actually calling the UpdateComponent() base method because it does
+         * other things that these functions have already guaranteed. (ex: 
+         * it checks whether the component is already in the entity, which in
+         * these cases we already know it is.) We should be able to just notify
+         * all of our watchers
+         */
+        public void UpdateComponent<T>(Action<T> updateAction) where T: class, IComponent
+        {
+            T comp = GetComponent<T>();
+            updateAction(comp);
+            UpdateComponent(comp);
+        }
+        //Only 5 cuz I don't feel like going farther. If there's a need I will
+        public void UpdateComponents<T1, T2>(Action<T1, T2> updateAction) where T1: class, IComponent 
+                                                                          where T2: class, IComponent
+        {
+            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>();
+            updateAction(c1, c2);
+            UpdateComponent(c1); UpdateComponent(c2);
+        }
+        public void UpdateComponents<T1, T2, T3>(Action<T1, T2, T3> updateAction) where T1: class, IComponent 
+                                                                                  where T2: class, IComponent
+                                                                                  where T3: class, IComponent
+        {
+            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>();
+            updateAction(c1, c2, c3);
+            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3);
+        }
+        public void UpdateComponents<T1, T2, T3, T4>(Action<T1, T2, T3, T4> updateAction) where T1: class, IComponent 
+                                                                                  where T2: class, IComponent
+                                                                                  where T3: class, IComponent
+                                                                                  where T4: class, IComponent
+        {
+            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
+            updateAction(c1, c2, c3, c4);
+            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4);
+        }
+        public void UpdateComponents<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> updateAction) where T1: class, IComponent 
+                                                                                  where T2: class, IComponent
+                                                                                  where T3: class, IComponent
+                                                                                  where T4: class, IComponent
+                                                                                  where T5: class, IComponent
+        {
+            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
+            T5 c5 = GetComponent<T5>();
+            updateAction(c1, c2, c3, c4, c5);
+            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
+        }
+
         public void SettableComponentUpdated(int componentIndex, IComponent component)
         {
             _OnComponentUpdated?.Invoke(this, componentIndex, component); 
@@ -283,19 +335,21 @@ namespace ECS
             bool allOfMatch;
             bool anyOfMatch;
             bool noneOfMatch;
+            bool filterMatch;
 
             try
             {
                 allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
                 anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(_componentTypeIndicies).Any() : true;
                 noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(_componentTypeIndicies.Contains) : true;
+                filterMatch = (match.Filters.Count > 0) ? match.Filters.All(p => p(this)) : true;
             }
             finally
             {
                 _readerWriterLock.ExitReadLock();
             }
 
-            return allOfMatch && anyOfMatch && noneOfMatch;
+            return allOfMatch && anyOfMatch && noneOfMatch && filterMatch;
         }
 
         #endregion

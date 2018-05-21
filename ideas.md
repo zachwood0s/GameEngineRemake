@@ -123,5 +123,4 @@ Lets say we have a method like pathfinding which we would like to open up to mod
     to call the GetSystem command because it will return only the first type so I'll need to add a GetSystems function to account for
     that but I think it'll still be just fine
 
-    
 

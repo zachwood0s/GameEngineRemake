@@ -118,5 +118,32 @@ namespace ECSTests
             Assert.AreEqual(0, positions1.EntityCount);
         }
 
+
+        [TestMethod]
+        public void GroupWithFilter()
+        {
+            TestPositionComponent comp = new TestPositionComponent
+            {
+                X = 10,
+                Y = 20
+            };
+            Entity test = _scene.CreateEntity().With(comp);
+            Group positions = _scene.GetGroup(
+                new Matcher()
+                    .Of<TestPositionComponent>()
+                    .WithFilter(e =>
+                    {
+                        TestPositionComponent c = e.GetComponent<TestPositionComponent>();
+                        return c?.X > 0;
+                    }));
+
+            Assert.AreEqual(1, positions.EntityCount);
+
+            comp.X = -20;
+            test.UpdateComponent(comp);
+
+            Assert.AreEqual(0, positions.EntityCount);
+        }
+
     }
 }
