@@ -3,6 +3,7 @@ using ECS.Attributes;
 using ECS.Components;
 using ECS.Systems;
 using ECS.Systems.Interfaces;
+using ECSTests.TestHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace ECSTests
         {
             TestPositionSystem sys = new TestPositionSystem(_scene);
 
-            Entity test = _scene.CreateEntity().With<TestPositionComponent>();
+            Entity test = _scene.CreateEntity().With<TestComponent1>();
 
             sys.WatchList.ClearObservedEntities();
             sys.Execute();
@@ -40,7 +41,7 @@ namespace ECSTests
             Assert.AreEqual(0, sys.updatedEntities.Count);
 
             {
-                TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
+                TestComponent1 comp = test.GetComponent<TestComponent1>();
                 comp.X = 15000;
                 test.UpdateComponent(comp);
             }
@@ -48,7 +49,7 @@ namespace ECSTests
             sys.Execute();
 
             Assert.AreEqual(1, sys.updatedEntities.Count);
-            Assert.AreEqual(15000, sys.updatedEntities[0].GetComponent<TestPositionComponent>().X);
+            Assert.AreEqual(15000, sys.updatedEntities[0].GetComponent<TestComponent1>().X);
         }
 
         [TestMethod]
@@ -56,8 +57,8 @@ namespace ECSTests
         {
             TestPositionSystem sys = new TestPositionSystem(_scene);
 
-            Entity test = _scene.CreateEntity().With<TestPositionComponent>();
-            Entity test2 = _scene.CreateEntity().With<TestPositionComponent>();
+            Entity test = _scene.CreateEntity().With<TestComponent1>();
+            Entity test2 = _scene.CreateEntity().With<TestComponent1>();
 
             sys.WatchList.ClearObservedEntities();
             sys.Execute();
@@ -65,13 +66,13 @@ namespace ECSTests
             Assert.AreEqual(0, sys.updatedEntities.Count);
 
             {
-                TestPositionComponent comp = test.GetComponent<TestPositionComponent>();
+                TestComponent1 comp = test.GetComponent<TestComponent1>();
                 comp.X = 15000;
                 test.UpdateComponent(comp);
             }
 
             {
-                TestPositionComponent comp2 = test2.GetComponent<TestPositionComponent>();
+                TestComponent1 comp2 = test2.GetComponent<TestComponent1>();
                 comp2.X = 14000;
                 test2.UpdateComponent(comp2);
             }
@@ -134,7 +135,7 @@ namespace ECSTests
         public void SystemPoolReactiveSystems()
         {
             _scene.AddSystemPool(new SystemPool("test").Register(new TestPositionSystem(_scene)));
-            _scene.CreateEntity().With<TestPositionComponent>();
+            _scene.CreateEntity().With<TestComponent1>();
 
             Assert.AreEqual(1, _scene.SystemPools[0].ExecuteSystems.Count);
 
@@ -283,7 +284,7 @@ namespace ECSTests
 
         protected override Matcher GetMatcher()
         {
-            return new Matcher().Of<TestPositionComponent>();
+            return new Matcher().Of<TestComponent1>();
         }
         public override void Execute(IEnumerable<Entity> entities)
         {
