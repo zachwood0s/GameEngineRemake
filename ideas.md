@@ -1,5 +1,41 @@
 # IDEAS
 
+## Prefab factory stuff
+
+    I've been thinking about how I want things like prefabs to be stored. We have a few options:
+
+    1. Some sort of entity cloning
+        PrefabFactory.StorePrefab(name, Entity).
+        PrefabFactory.CreatePrefab(name): Entity;
+
+        Where the create prefab just clones the stored entity and returns it. 
+        Downside is most likely all the components would need some sort of clone
+        method because I'd like the default values to transfer. Not the best option
+        I don't think. Still could be done and could actually be nice for later but still.
+
+    2. An entity creation function
+        PrefabFactory.StorePrefab(name, 
+                (scene) => {
+                    Entity e = scene.CreateEntity().With<blah>();
+                    return e;
+                });
+        PrefabFactory.CreatePrefab(name);
+
+        I like this thought quite a bit. Its essentially the same as the last option but
+        without storing an already created Entity.
+
+        CreatePrefab could also take a second function argument to set additional defaults.
+
+        PrefabFactory.CreatePrefab(name, 
+            (e) => { 
+                e.UpdateComponent<blah>((b)=>b.text = "eh"); 
+            });
+        
+        One problem with this is figuring out how to translate a json style prefab into a creation function like this.
+        That could be a little tricky to make efficient without using too much reflection. Maybe I wouldn't need to and could
+        use some other method to store those and the CreatePrefab would check in both places.
+
+
 ## Entity Group Managers
 
     Right now the entities controll if they get matched with a group with their IsMatch function. I think it would be better
