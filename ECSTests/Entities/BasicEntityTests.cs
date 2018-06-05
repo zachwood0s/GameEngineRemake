@@ -449,5 +449,76 @@ namespace ECSTests.Entities
 
         #endregion
 
+        #region Update Function
+
+        [TestCategory("Entity Update Function"), TestCategory("Updating Components"), TestMethod]
+        public void UpdateComponentWithUpdateFunction()
+        {
+            var entity = EntityFactory.EntityWithOneComponent(_scene);
+            entity.UpdateComponent<TestComponent1>(
+                c => c.X = 200
+                );
+
+            var comp = entity.GetComponent<TestComponent1>();
+            Assert.AreEqual(200, comp.X);
+        }
+
+        [TestCategory("Entity Update Function"), TestCategory("Updating Components"), TestMethod]
+        public void UpdateInvalidComponentWithUpdateFunction()
+        {
+            var entity = EntityFactory.EntityWithOneComponent(_scene);
+            bool neverRuns = true;
+            entity.UpdateComponent<TestComponent2>(c =>
+            {
+                c.W = 200;
+                neverRuns = false;
+            });
+
+            Assert.IsTrue(neverRuns);
+            var comp = entity.GetComponent<TestComponent1>();
+            Assert.AreEqual(0, comp.X);
+        }
+
+        [TestCategory("Entity Update Function"), TestCategory("Updating Components"), TestMethod]
+        public void UpdateComponentWithUpdateFunctionNested()
+        {
+            var entity = EntityFactory.EntityWithTwoComponents(_scene);
+            int newX = 200;
+            int newW = 300;
+            entity.UpdateComponent<TestComponent1>(c =>
+            {
+                c.X = newX;
+
+                entity.UpdateComponent<TestComponent2>(c2 =>
+                {
+                    c2.W = newW;
+                });
+            });
+
+            var comp1 = entity.GetComponent<TestComponent1>();
+            var comp2 = entity.GetComponent<TestComponent2>();
+            Assert.AreEqual(newX, comp1.X);
+            Assert.AreEqual(newW, comp2.W);
+        }
+
+        [TestCategory("Entity Update Function"), TestCategory("Updating Components"), TestMethod]
+        public void UpdateComponentsWithUpdateFunction()
+        {
+            var entity = EntityFactory.EntityWithTwoComponents(_scene);
+            int newX = 200;
+            int newW = 300;
+            entity.UpdateComponents<TestComponent1, TestComponent2>((c1, c2) =>
+            {
+                c1.X = newX;
+                c2.W = newW;
+            });
+
+            var comp1 = entity.GetComponent<TestComponent1>();
+            var comp2 = entity.GetComponent<TestComponent2>();
+            Assert.AreEqual(newX, comp1.X);
+            Assert.AreEqual(newW, comp2.W);
+        }
+        
+        #endregion
     }
 }

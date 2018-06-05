@@ -32,7 +32,6 @@ namespace ECSTests.TestHelper
         }
     }
 
-    [Component]
     class UnregisteredComponent : IComponentHasDefault
     {
         public int Z { get; set; }

@@ -119,11 +119,9 @@ namespace ECS
 
         public override bool Equals(object obj)
         {
-            Matcher match = obj as Matcher;
-
-            if(match != null && GetHashCode() == match.GetHashCode())
+            if (obj is Matcher match && GetHashCode() == match.GetHashCode())
             {
-                if(match._allOfTypeIndicies.Count != _allOfTypeIndicies.Count ||
+                if (match._allOfTypeIndicies.Count != _allOfTypeIndicies.Count ||
                    match._anyOfTypeIndicies.Count != _anyOfTypeIndicies.Count ||
                    match._noneOfTypeIndicies.Count != _noneOfTypeIndicies.Count)
                 {

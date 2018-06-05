@@ -284,24 +284,33 @@ namespace ECS
         public void UpdateComponent<T>(Action<T> updateAction) where T: class, IComponent
         {
             T comp = GetComponent<T>();
-            updateAction(comp);
-            UpdateComponent(comp);
+            if (comp != null)
+            {
+                updateAction(comp);
+                UpdateComponent(comp);
+            }
         }
         //Only 5 cuz I don't feel like going farther. If there's a need I will
         public void UpdateComponents<T1, T2>(Action<T1, T2> updateAction) where T1: class, IComponent 
                                                                           where T2: class, IComponent
         {
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>();
-            updateAction(c1, c2);
-            UpdateComponent(c1); UpdateComponent(c2);
+            if (c1 != null && c2 != null)
+            {
+                updateAction(c1, c2);
+                UpdateComponent(c1); UpdateComponent(c2);
+            }
         }
         public void UpdateComponents<T1, T2, T3>(Action<T1, T2, T3> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
                                                                                   where T3: class, IComponent
         {
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>();
-            updateAction(c1, c2, c3);
-            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3);
+            if (c1 != null && c2 != null && c3 != null)
+            {
+                updateAction(c1, c2, c3);
+                UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3);
+            }
         }
         public void UpdateComponents<T1, T2, T3, T4>(Action<T1, T2, T3, T4> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
@@ -309,8 +318,11 @@ namespace ECS
                                                                                   where T4: class, IComponent
         {
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
-            updateAction(c1, c2, c3, c4);
-            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4);
+            if (c1 != null && c2 != null && c3 != null && c4 != null)
+            {
+                updateAction(c1, c2, c3, c4);
+                UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4);
+            }
         }
         public void UpdateComponents<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
@@ -318,10 +330,12 @@ namespace ECS
                                                                                   where T4: class, IComponent
                                                                                   where T5: class, IComponent
         {
-            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
-            T5 c5 = GetComponent<T5>();
-            updateAction(c1, c2, c3, c4, c5);
-            UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
+            T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>(); T5 c5 = GetComponent<T5>();
+            if (c1 != null && c2 != null && c3 != null && c4 != null && c5 != null)
+            {
+                updateAction(c1, c2, c3, c4, c5);
+                UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
+            }
         }
 
         /*
