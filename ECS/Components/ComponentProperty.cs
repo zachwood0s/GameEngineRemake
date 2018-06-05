@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 /// </summary>
 namespace ECS.Components
 {
+    /*
     public delegate void ComponentPropertySet(int componentTypeIndex, IComponent component);
     public class ComponentProperty<T>
     {
@@ -28,6 +29,7 @@ namespace ECS.Components
             }
         }
     }
+    I dont think these are a good idea
 
     public class SettableComponent : IComponent
     {
@@ -54,4 +56,5 @@ namespace ECS.Components
             _OnComponentSet -= handler;
         }
     }
+    */
 }

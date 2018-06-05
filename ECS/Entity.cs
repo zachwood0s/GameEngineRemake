@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using ECS.Components.Exceptions;
 
 namespace ECS
 {
@@ -32,9 +33,9 @@ namespace ECS
         #region Getters/Setters
 
         /// <summary>
-        /// NOT THREAD SAVE I DON'T THINK
+        /// NOT THREAD SAFE I DON'T THINK
         /// </summary>
-        public List<IComponent> Components => _components;
+        public IReadOnlyList<IComponent> Components => _components;
 
         #endregion
 
@@ -93,6 +94,7 @@ namespace ECS
 
             return doesExist;
         }
+
         #endregion
 
         #region Subscribing/Unscubscribing To Changes
@@ -135,6 +137,9 @@ namespace ECS
         {
             int newCompIndex = ComponentPool.GetComponentIndex(newComp.GetType());
 
+            if (newCompIndex < 0)
+                throw new UnregisteredComponentException($"Component of type {newComp.GetType()} has not been registered with the ComponentPool.");
+
             _readerWriterLock.EnterUpgradeableReadLock();
 
             if (!_componentTypeIndicies.Contains(newCompIndex))
@@ -144,11 +149,12 @@ namespace ECS
                 _components.Add(newComp);
                 _componentTypeIndicies.Add(newCompIndex);
 
-                SettableComponent maybeSettable = newComp as SettableComponent;
-                if(maybeSettable != null)
+                /*
+                if (newComp is SettableComponent maybeSettable)
                 {
                     maybeSettable.SubscribeToChanges(SettableComponentUpdated);
                 }
+                */
 
                 _readerWriterLock.ExitWriteLock();
 
@@ -177,9 +183,7 @@ namespace ECS
         }
         public Entity Remove(IComponent oldComp)
         {
-            int oldCompIndex = ComponentPool.GetComponentIndex(oldComp.GetType());
-            _Remove(oldCompIndex);
-            return this;
+            return Remove(oldComp.GetType());
         }
 
         public Entity Remove<T>() where T : IComponent
@@ -196,29 +200,34 @@ namespace ECS
             try
             {
                 int compIndex = _componentTypeIndicies.IndexOf(oldCompIndex);
-                if (compIndex > -1)
+
+                if(compIndex < 0)
+                    throw new UnregisteredComponentException($"Component of type " +
+                        $"{ComponentPool.Components[oldCompIndex].GetType()} has not been added to the current entity and is trying to be removed.");
+
+                _readerWriterLock.EnterWriteLock();
+                IComponent oldComp;
+                try
                 {
-                    _readerWriterLock.EnterWriteLock();
-                    IComponent oldComp;
-                    try
-                    {
-                        oldComp = _components[compIndex];
-                        _components.RemoveAt(compIndex);
-                        _componentTypeIndicies.RemoveAt(compIndex);
-                    }
-                    finally
-                    {
-                        _readerWriterLock.ExitWriteLock();
-                    }
-
-                    SettableComponent maybeSettable = oldComp as SettableComponent;
-                    if (maybeSettable != null)
-                    {
-                        maybeSettable.UnSubscribeToChanges(SettableComponentUpdated);
-                    }
-
-                    _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
+                    oldComp = _components[compIndex];
+                    _components.RemoveAt(compIndex);
+                    _componentTypeIndicies.RemoveAt(compIndex);
                 }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+
+                /*
+                SettableComponent maybeSettable = oldComp as SettableComponent;
+                if (maybeSettable != null)
+                {
+                    maybeSettable.UnSubscribeToChanges(SettableComponentUpdated);
+                }
+
+                */
+
+                _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
@@ -239,25 +248,22 @@ namespace ECS
             try
             {
                 int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
-                if (existingCompIndex > -1)
-                {
-                    _readerWriterLock.EnterWriteLock();
 
-                    try
-                    {
-                        _components[existingCompIndex] = component;
-                    }
-                    finally
-                    {
-                        _readerWriterLock.ExitWriteLock();
-                    }
+                if (existingCompIndex < 0)
+                    throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
 
-                    _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
-                }
-                else
+                _readerWriterLock.EnterWriteLock();
+
+                try
                 {
-                    Debug.WriteLine("Warning: Attempting to replace component that doesn't exist");
+                    _components[existingCompIndex] = component;
                 }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+
+                _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
             }
             finally
             {
@@ -318,10 +324,12 @@ namespace ECS
             UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
         }
 
+        /*
         public void SettableComponentUpdated(int componentIndex, IComponent component)
         {
             _OnComponentUpdated?.Invoke(this, componentIndex, component); 
         }
+        */
 
 
         #endregion

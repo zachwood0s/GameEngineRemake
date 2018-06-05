@@ -123,6 +123,7 @@ namespace ECSTests
             Assert.AreEqual(0, watcher.EntityCount);
         }
 
+        /*
         [TestMethod]
         public void SettableComponentTest()
         {
@@ -165,7 +166,6 @@ namespace ECSTests
             Assert.AreEqual(0, watcher.EntityCount); 
         }
 
-
         [Component]
         public class TestSettableComponent: SettableComponent, IComponentHasDefault
         {
@@ -196,5 +196,6 @@ namespace ECSTests
                 Y = 200;
             }
         }
+        */
     }
 }
