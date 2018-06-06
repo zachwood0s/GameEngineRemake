@@ -25,7 +25,7 @@ namespace ECS
         //private event EntityChangedEventHandler _OnComponentRemoved;
         //private event EntityChangedEventHandler _OnComponentAdded;
 
-        public Entity(IEntityGroupManager groupManager)
+        internal Entity(IEntityGroupManager groupManager)
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>();
