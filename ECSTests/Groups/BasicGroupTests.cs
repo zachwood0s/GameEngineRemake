@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ECS;
 using ECSTests.TestHelper;
+using ECS.Matching;
 
 namespace ECSTests.Groups
 {

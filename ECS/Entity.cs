@@ -7,35 +7,42 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ECS.Components.Exceptions;
+using ECS.EntityGroupManager;
+using ECS.Matching;
 
 namespace ECS
 {
     public delegate void EntityChangedEventHandler(Entity entity, int componentPoolIndex, IComponent component);
     public class Entity
     {
-
+        private IEntityGroupManager _groupManager;
         
         private ReaderWriterLockSlim _readerWriterLock;
         private List<IComponent> _components;
         private List<int> _componentTypeIndicies;
 
-        private event EntityChangedEventHandler _OnComponentUpdated;
-        private event EntityChangedEventHandler _OnComponentRemoved;
-        private event EntityChangedEventHandler _OnComponentAdded;
+        //private event EntityChangedEventHandler _OnComponentUpdated;
+        //private event EntityChangedEventHandler _OnComponentRemoved;
+        //private event EntityChangedEventHandler _OnComponentAdded;
 
-        public Entity()
+        public Entity(IEntityGroupManager groupManager)
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>();
             _componentTypeIndicies = new List<int>();
+            _groupManager = groupManager;
         }
 
         #region Getters/Setters
 
         /// <summary>
-        /// NOT THREAD SAFE I DON'T THINK
+        /// NOT THREAD SAFE!
         /// </summary>
         public IReadOnlyList<IComponent> Components => _components;
+        /// <summary>
+        /// NOT THREAD SAFE!
+        /// </summary>
+        public IReadOnlyList<int> ComponentTypeIndicies => _componentTypeIndicies;
 
         #endregion
 
@@ -98,8 +105,11 @@ namespace ECS
         #endregion
 
         #region Subscribing/Unscubscribing To Changes
+
         public void SubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
         {
+            _groupManager.SubscribeToChanges(updated, removed, added);
+            /*
             _readerWriterLock.EnterWriteLock();
 
             try
@@ -110,12 +120,14 @@ namespace ECS
             }
             finally
             {
-                _readerWriterLock.ExitWriteLock();
-            }
+            //    _readerWriterLock.ExitWriteLock();
+            }*/
         }
 
         public void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
         {
+            _groupManager.UnSubscribeToChanges(updated, removed, added);
+            /*
             _readerWriterLock.EnterWriteLock();
 
             try
@@ -127,7 +139,7 @@ namespace ECS
             finally
             {
                 _readerWriterLock.ExitWriteLock();
-            }
+            }*/
         }
 
         #endregion
@@ -158,7 +170,8 @@ namespace ECS
 
                 _readerWriterLock.ExitWriteLock();
 
-                _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
+                _groupManager.EntityAddedComponent(this, newCompIndex, newComp);
+                //_OnComponentAdded?.Invoke(this, newCompIndex, newComp);
             }
 
             _readerWriterLock.ExitUpgradeableReadLock();
@@ -227,7 +240,8 @@ namespace ECS
 
                 */
 
-                _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
+                _groupManager.EntityRemovedComponent(this, oldCompIndex, oldComp);
+                //_OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
@@ -263,7 +277,8 @@ namespace ECS
                     _readerWriterLock.ExitWriteLock();
                 }
 
-                _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
+                _groupManager.EntityUpdatedComponent(this, newCompPoolIndex, component);
+                //_OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
             }
             finally
             {
@@ -352,8 +367,21 @@ namespace ECS
 
         public bool IsMatch(Matcher match)
         {
-            _readerWriterLock.EnterReadLock();
+            //I think the lock is still necessary because the IsMatch
+            //Function in the groupManager will iterate through the Component Lists
 
+            _readerWriterLock.EnterReadLock();
+            bool result;
+            try
+            {
+                result = _groupManager.IsMatch(match, this);
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
+            return result;
+/*
             bool allOfMatch;
             bool anyOfMatch;
             bool noneOfMatch;
@@ -372,6 +400,7 @@ namespace ECS
             }
 
             return allOfMatch && anyOfMatch && noneOfMatch && filterMatch;
+            */
         }
 
         #endregion

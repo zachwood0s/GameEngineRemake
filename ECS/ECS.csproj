@@ -49,8 +49,10 @@
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\IComponentHasDefault.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="EntityGroupManager\EntityGroupManager.cs" />
     <Compile Include="Group.cs" />
-    <Compile Include="Matcher.cs" />
+    <Compile Include="EntityGroupManager\IEntityGroupManager.cs" />
+    <Compile Include="Matcher\Matcher.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Components\ComponentPool.cs" />
     <Compile Include="Components\IComponent.cs" />

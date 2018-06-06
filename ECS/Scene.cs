@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using ECS.Matching;
 
 namespace ECS
 {
+    public delegate Entity EntityFactoryMethod();
     public class Scene
     {
+        public static EntityFactoryMethod EntityFactoryMethod = () => new Entity(new EntityGroupManager.EntityGroupManager());
+
         private Dictionary<Matcher, Group> _groups;
         private List<List<Group>> _groupsForIndex;
         private List<Entity> _entities;
@@ -68,7 +72,7 @@ namespace ECS
 
         public Entity CreateEntity()
         {
-            Entity entity = new Entity();
+            Entity entity = EntityFactoryMethod();
 
             _readerWriterLock.EnterWriteLock();
 
