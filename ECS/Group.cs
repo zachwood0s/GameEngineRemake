@@ -13,6 +13,12 @@ namespace ECS
     public class Group: IEnumerable<Entity>
     {
         private List<Entity> _groupEntities;
+        /// <summary>
+        /// This is for all the entities that don't meet the filter requirements
+        /// but still meet all the component requirements. We need to keep a list
+        /// so that they can be added back when their filter passes again.
+        /// </summary>
+        private List<Entity> _cachedEntities; 
         protected Matcher _match;
 
         protected ReaderWriterLockSlim _readerWriterLock;
@@ -26,6 +32,7 @@ namespace ECS
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _match = match;
             _groupEntities = new List<Entity>();
+            _cachedEntities = new List<Entity>();
         }
         public void AddEntity(Entity entity)
         {
@@ -45,7 +52,15 @@ namespace ECS
 
                     try
                     {
-                        _groupEntities.Add(entity);
+                        if (entity.IsMatch(_match)) //Entity matches filter and everything
+                        {
+                            _groupEntities.Add(entity);
+                        }
+                        else
+                        {
+                            //Otherwise we need to keep it for later when it could be updated
+                            _AddToCached(entity);
+                        }
                     }
                     finally
                     {
@@ -60,7 +75,6 @@ namespace ECS
                 _readerWriterLock.ExitUpgradeableReadLock();
             }
         }
-
 
         #region Subscribing / Unsubscribing
 
@@ -120,6 +134,53 @@ namespace ECS
             );
         }
 
+        protected void _RemoveOnlyBecauseFilter(Entity removeEntity)
+        {
+            _readerWriterLock.EnterWriteLock();
+
+            try
+            {
+                _groupEntities.Remove(removeEntity);
+                _AddToCached(removeEntity);
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
+        }
+
+        protected void _AddBackIfCached(Entity updatedEntity)
+        {
+            _readerWriterLock.EnterUpgradeableReadLock();
+            try
+            {
+                if (_cachedEntities.Contains(updatedEntity))
+                {
+                    _readerWriterLock.EnterWriteLock();
+                    try
+                    {
+                        _cachedEntities.Remove(updatedEntity);
+                        _groupEntities.Add(updatedEntity);
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
+        }
+
+        private void _AddToCached(Entity entity)
+        {
+            if (!_cachedEntities.Contains(entity)){
+                _cachedEntities.Add(entity);
+            }
+        }
+
         protected virtual bool _RemoveIfNotValid(Entity updatedEntity)
         {
             bool isValid = true;
@@ -128,10 +189,19 @@ namespace ECS
 
             try
             {
-                if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
+                if (!updatedEntity.IsMatchNoFilter(_match))
                 {
                     _RemoveAndUnsubscribe(updatedEntity);
                     isValid = false;
+                }
+                else if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
+                {
+                    _RemoveOnlyBecauseFilter(updatedEntity);
+                    isValid = false;
+                }
+                else
+                {
+                    _AddBackIfCached(updatedEntity);
                 }
             }
             finally
@@ -141,6 +211,7 @@ namespace ECS
 
             return isValid;
         }
+
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
             if (_RemoveIfNotValid(updatedEntity))
@@ -178,6 +249,7 @@ namespace ECS
             set => _groupEntities.Insert(index, value); 
         }
         public int EntityCount => _groupEntities.Count;
+        public int CachedEntityCount => _cachedEntities.Count;
 
         #endregion
     }

@@ -43,19 +43,26 @@ namespace ECS.EntityGroupManager
             _OnComponentAdded -= added;
         }
 
-        public virtual bool IsMatch(Matcher match, Entity entity)
+        public bool IsMatch(Matcher match, Entity entity)
+        {
+            bool filterMatch;
+
+            filterMatch = (match.Filters.Count > 0) ? match.Filters.All(p => p(entity)) : true;
+
+            return IsMatchNoFilter(match, entity) && filterMatch;
+        }
+
+        public bool IsMatchNoFilter(Matcher match, Entity entity)
         {
             bool allOfMatch;
             bool anyOfMatch;
             bool noneOfMatch;
-            bool filterMatch;
 
             allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(entity.ComponentTypeIndicies.Contains) : true;
             anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(entity.ComponentTypeIndicies).Any() : true;
             noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(entity.ComponentTypeIndicies.Contains) : true;
-            filterMatch = (match.Filters.Count > 0) ? match.Filters.All(p => p(entity)) : true;
 
-            return allOfMatch && anyOfMatch && noneOfMatch && filterMatch;
+            return allOfMatch && anyOfMatch && noneOfMatch;
         }
     }
 }

@@ -134,7 +134,7 @@ namespace ECS
             {
                 foreach (KeyValuePair<Matcher, Group> pair in _groups)
                 {
-                    if (entity.IsMatch(pair.Key))
+                    if (entity.IsMatchNoFilter(pair.Key))
                     {
                         pair.Value.AddEntity(entity);
                     }
@@ -156,7 +156,7 @@ namespace ECS
             {
                 foreach (Entity entity in _entities)
                 {
-                    if (entity.IsMatch(match))
+                    if (entity.IsMatchNoFilter(match))
                     {
                         newGroup.AddEntity(entity);
                     }

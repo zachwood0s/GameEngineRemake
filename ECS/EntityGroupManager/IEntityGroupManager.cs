@@ -17,5 +17,6 @@ namespace ECS.EntityGroupManager
         void SubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added);
         void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added);
         bool IsMatch(Matcher match, Entity entity);
+        bool IsMatchNoFilter(Matcher match, Entity entity);
     }
 }

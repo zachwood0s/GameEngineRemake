@@ -365,6 +365,21 @@ namespace ECS
 
         #region Matching
 
+        public bool IsMatchNoFilter(Matcher match)
+        {
+            _readerWriterLock.EnterReadLock();
+            bool result;
+            try
+            {
+                result = _groupManager.IsMatchNoFilter(match, this);
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
+            return result;
+        }
+
         public bool IsMatch(Matcher match)
         {
             //I think the lock is still necessary because the IsMatch
