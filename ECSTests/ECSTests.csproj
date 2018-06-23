@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Components\ComponentPoolTests.cs" />
     <Compile Include="Entities\BasicEntityTests.cs" />
+    <Compile Include="Entities\EntityBuilderTests.cs" />
     <Compile Include="Groups\BasicGroupTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemTests.cs" />

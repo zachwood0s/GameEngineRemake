@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ECS;
 using ECSTests.TestHelper;
 using ECS.Components.Exceptions;
+using ECS.Entities;
 
 namespace ECSTests.Entities
 {
@@ -17,6 +18,25 @@ namespace ECSTests.Entities
             ComponentHelper.RegisterTestComponents();
             _scene = new Scene();
         }
+
+        #region Adding/Removing Entities to Scene
+
+        [TestCategory("Adding entity to scene"), TestMethod]
+        public void AddEntityToScene()
+        {
+            var entity = _scene.CreateEntity();
+            Assert.AreEqual(1, _scene.EntityCount);
+        }
+
+        [TestCategory("Removing entity from scene"), TestMethod]
+        public void RemoveEntityFromScene()
+        {
+            var entity = _scene.CreateEntity();
+            _scene.RemoveEntity(entity);
+            Assert.AreEqual(0, _scene.EntityCount);
+        }
+
+        #endregion
 
         #region Adding Components
 
@@ -285,6 +305,7 @@ namespace ECSTests.Entities
 
         #region Subscribing/Unsubscribing
 
+
         [TestCategory("Adding Components"), TestCategory("Subscribing"), TestMethod]
         public void AddEventHandlerCalledOnAdd()
         {
@@ -297,7 +318,7 @@ namespace ECSTests.Entities
                     addHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
@@ -319,7 +340,7 @@ namespace ECSTests.Entities
                     removeHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
@@ -350,7 +371,7 @@ namespace ECSTests.Entities
                     updateHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);
@@ -372,11 +393,11 @@ namespace ECSTests.Entities
                     addHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
-            entity.UnSubscribeToChanges(
+            entity.GroupManager.UnSubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
@@ -397,12 +418,12 @@ namespace ECSTests.Entities
                     removeHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
                 );
-            entity.UnSubscribeToChanges(
+            entity.GroupManager.UnSubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
@@ -433,11 +454,11 @@ namespace ECSTests.Entities
                     updateHandlerWasCalled = true;
                 };
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);
-            entity.UnSubscribeToChanges(
+            entity.GroupManager.UnSubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);

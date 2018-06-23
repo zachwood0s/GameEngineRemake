@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Threading;
 using ECS.Matching;
+using ECS.Entities;
 
 namespace ECS
 {
@@ -42,7 +43,7 @@ namespace ECS
             {
                 if (!_groupEntities.Contains(entity))
                 {
-                    entity.SubscribeToChanges(
+                    entity.GroupManager.SubscribeToChanges(
                         _HandleEntityComponentUpdatedEvent,
                         _HandleEntityComponentRemovedEvent,
                         _HandleEntityComponentAddedEvent
@@ -121,13 +122,14 @@ namespace ECS
             try
             {
                 _groupEntities.Remove(removeEntity);
+                _cachedEntities.Remove(removeEntity);
             }
             finally
             {
                 _readerWriterLock.ExitWriteLock();
             }
 
-            removeEntity.UnSubscribeToChanges(
+            removeEntity.GroupManager.UnSubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent,
                 _HandleEntityComponentRemovedEvent,
                 _HandleEntityComponentAddedEvent
@@ -233,6 +235,11 @@ namespace ECS
                 //This will update any watchers we have 
                 _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
             }
+        }
+
+        internal void SceneRemovedEntity(Entity e)
+        {
+            _RemoveAndUnsubscribe(e);
         }
 
         #endregion

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ECS.Matching;
+using ECS.Entities;
+using ECS.EntityGroupManager;
 
 namespace ECS
 {
@@ -34,6 +36,7 @@ namespace ECS
 
         #region Getters/Setters
 
+        public int EntityCount => _entities.Count;
         public IReadOnlyList<SystemPool> SystemPools => _systemPools;
         public void AddSystemPool(SystemPool pool) => _systemPools.Add(pool);
 
@@ -69,7 +72,7 @@ namespace ECS
         }
 
         #endregion
-
+        //TODO: ADD REMOVE ENTITY
         public Entity CreateEntity()
         {
             Entity entity = EntityFactoryMethod();
@@ -85,12 +88,69 @@ namespace ECS
                 _readerWriterLock.ExitWriteLock();
             }
 
-            entity.SubscribeToChanges(
+            entity.GroupManager.SubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent, 
                 _HandleEntityComponentRemovedEvent, 
                 _HandleEntityComponentAddedEvent
             );
             return entity;
+        }
+
+        public bool RemoveEntity(Entity entity)
+        {
+            _readerWriterLock.EnterWriteLock();
+
+            bool wasRemoved;
+
+            try
+            {
+                wasRemoved = _entities.Remove(entity);
+                foreach (KeyValuePair<Matcher, Group> pair in _groups)
+                {
+                    pair.Value.SceneRemovedEntity(entity);
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
+            if (wasRemoved)
+            {
+                entity.GroupManager.UnSubscribeToChanges(
+                    _HandleEntityComponentUpdatedEvent,
+                    _HandleEntityComponentRemovedEvent,
+                    _HandleEntityComponentAddedEvent
+                );
+                return true;
+            }
+
+            return false;
+        }
+
+        public Entity CreateEntityFromBuilder(IEntityBuilder builder)
+        {
+            return builder.Build(this);
+        }
+
+        public void AddEntity(Entity newEntity)
+        {
+            _readerWriterLock.EnterWriteLock();
+            try
+            {
+                _entities.Add(newEntity);
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
+
+            newEntity.GroupManager.SubscribeToChanges(
+                _HandleEntityComponentUpdatedEvent, 
+                _HandleEntityComponentRemovedEvent, 
+                _HandleEntityComponentAddedEvent
+            );
+
+            _AddToExistingGroups(newEntity);
         }
 
         #region Groups

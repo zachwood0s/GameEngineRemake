@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ECS;
 using EngineCore.Components;
 using ECS.Matching;
+using ECS.Entities;
 
 namespace EngineCore.Systems
 {

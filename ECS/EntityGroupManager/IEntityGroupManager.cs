@@ -1,4 +1,5 @@
 ﻿using ECS.Components;
+using ECS.Entities;
 using ECS.Matching;
 using System;
 using System.Collections.Generic;

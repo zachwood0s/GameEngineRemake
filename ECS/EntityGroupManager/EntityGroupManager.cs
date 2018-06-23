@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ECS.Components;
 using ECS.Matching;
+using ECS.Entities;
 
 namespace ECS.EntityGroupManager
 {

@@ -1,5 +1,6 @@
 ﻿using ECS;
 using ECS.Components;
+using ECS.Entities;
 using ECS.Matching;
 using ECSTests.TestHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

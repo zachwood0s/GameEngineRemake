@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ECS;
 using ECSTests.TestHelper;
 using ECS.Matching;
+using ECS.Entities;
 
 namespace ECSTests.Groups
 {
@@ -145,7 +146,7 @@ namespace ECSTests.Groups
             Assert.AreEqual(0, group.CachedEntityCount);
         }
 
-        [TestMethod]
+        [TestCategory("Groups Filters"), TestMethod]
         public void GroupWithFilter()
         {
             TestComponent1 comp = new TestComponent1
@@ -172,7 +173,7 @@ namespace ECSTests.Groups
             Assert.AreEqual(1, group.CachedEntityCount);
         }
 
-        [TestMethod]
+        [TestCategory("Groups Filters"), TestMethod]
         public void GroupWithFilterEntityRemovedAndThenAddedBack()
         {
             var comp = new TestComponent1
@@ -203,7 +204,7 @@ namespace ECSTests.Groups
             Assert.AreEqual(0, group.CachedEntityCount);
         }
 
-        [TestMethod]
+        [TestCategory("Groups Filters"), TestMethod]
         public void GroupWithFilterEntityAddedAfterGroupCreation()
         {
             var comp = new TestComponent1
@@ -226,7 +227,7 @@ namespace ECSTests.Groups
             Assert.AreEqual(0, group.CachedEntityCount);
         }
 
-        [TestMethod]
+        [TestCategory("Groups Filters"), TestMethod]
         public void GroupWithFilterEntityAddedAfterGroupCreationWasInvalidAtFirst()
         {
             var comp = new TestComponent1
@@ -250,6 +251,69 @@ namespace ECSTests.Groups
             comp.X = 10;
             test.UpdateComponent(comp);
             Assert.AreEqual(1, group.EntityCount);
+            Assert.AreEqual(0, group.CachedEntityCount);
+        }
+
+        [TestCategory("Groups Filters"), TestMethod]
+        public void GroupWithFilterEntityRemovedFromCachedAfterComponentRemoved()
+        {
+            var comp = new TestComponent1
+            {
+                X = -10,
+                Y = 20
+            };
+
+            var group = _scene.GetGroup(
+                new Matcher()
+                .Of<TestComponent1>()
+                .WithFilter(e =>
+                {
+                    var c = e.GetComponent<TestComponent1>();
+                    return c?.X > 0;
+                }));
+
+            var test = _scene.CreateEntity().With(comp);
+            Assert.AreEqual(1, group.CachedEntityCount);
+            test.Remove<TestComponent1>();
+            Assert.AreEqual(0, group.CachedEntityCount);
+        }
+
+        [TestCategory("Removing entity from scene"), TestMethod]
+        public void RemovingEntityFromSceneRemovesFromGroupAswell()
+        {
+            var entity = EntityFactory.EntityWithOneComponent(_scene);
+            var group = _scene.GetGroup(
+                new Matcher()
+                .Of<TestComponent1>());
+
+            Assert.AreEqual(1, group.EntityCount);
+            _scene.RemoveEntity(entity);
+            Assert.AreEqual(0, group.EntityCount);
+        }
+
+        [TestCategory("Removing entity from scene"), TestMethod]
+        public void RemovingEntityFromSceneRemovesFromFilterGroup()
+        {
+            var comp = new TestComponent1
+            {
+                X = -10,
+                Y = 10
+            };
+            var entity = _scene.CreateEntity().With(comp);
+
+            var group = _scene.GetGroup(
+                new Matcher()
+                .Of<TestComponent1>()
+                .WithFilter(e =>
+                {
+                    var c = e.GetComponent<TestComponent1>();
+                    return c?.X > 0;
+                }));
+
+            Assert.AreEqual(0, group.EntityCount);
+            Assert.AreEqual(1, group.CachedEntityCount);
+            _scene.RemoveEntity(entity);
+            Assert.AreEqual(0, group.EntityCount);
             Assert.AreEqual(0, group.CachedEntityCount);
         }
 

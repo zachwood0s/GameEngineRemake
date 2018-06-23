@@ -48,8 +48,10 @@
     <Compile Include="Components\ComponentExceptions.cs" />
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\IComponentHasDefault.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\EntityBuilder.cs" />
     <Compile Include="EntityGroupManager\EntityGroupManager.cs" />
+    <Compile Include="Entities\IEntityBuilder.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="EntityGroupManager\IEntityGroupManager.cs" />
     <Compile Include="Matcher\Matcher.cs" />

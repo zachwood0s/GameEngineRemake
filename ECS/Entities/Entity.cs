@@ -10,7 +10,7 @@ using ECS.Components.Exceptions;
 using ECS.EntityGroupManager;
 using ECS.Matching;
 
-namespace ECS
+namespace ECS.Entities
 {
     public delegate void EntityChangedEventHandler(Entity entity, int componentPoolIndex, IComponent component);
     public class Entity
@@ -33,6 +33,17 @@ namespace ECS
             _groupManager = groupManager;
         }
 
+        internal Entity(IEntityGroupManager groupManager,
+                        List<IComponent> components,
+                        List<int> componentTypeIndicies)
+        {
+            _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+            _components = new List<IComponent>(components);
+            _componentTypeIndicies = new List<int>(componentTypeIndicies);
+            _groupManager = groupManager;
+
+        }
+
         #region Getters/Setters
 
         /// <summary>
@@ -43,6 +54,8 @@ namespace ECS
         /// NOT THREAD SAFE!
         /// </summary>
         public IReadOnlyList<int> ComponentTypeIndicies => _componentTypeIndicies;
+
+        public IEntityGroupManager GroupManager => _groupManager;
 
         #endregion
 
@@ -100,46 +113,6 @@ namespace ECS
             }
 
             return doesExist;
-        }
-
-        #endregion
-
-        #region Subscribing/Unscubscribing To Changes
-
-        public void SubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
-        {
-            _groupManager.SubscribeToChanges(updated, removed, added);
-            /*
-            _readerWriterLock.EnterWriteLock();
-
-            try
-            {
-                _OnComponentUpdated += updated;
-                _OnComponentRemoved += removed;
-                _OnComponentAdded += added;
-            }
-            finally
-            {
-            //    _readerWriterLock.ExitWriteLock();
-            }*/
-        }
-
-        public void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
-        {
-            _groupManager.UnSubscribeToChanges(updated, removed, added);
-            /*
-            _readerWriterLock.EnterWriteLock();
-
-            try
-            {
-                _OnComponentUpdated -= updated;
-                _OnComponentRemoved -= removed;
-                _OnComponentAdded -= added;
-            }
-            finally
-            {
-                _readerWriterLock.ExitWriteLock();
-            }*/
         }
 
         #endregion
@@ -365,6 +338,9 @@ namespace ECS
 
         #region Matching
 
+            //I Don't really like how this looks
+            //I'm not sure it makes a lot of sense for the groupmanager
+            //to handle the matching side of things
         public bool IsMatchNoFilter(Matcher match)
         {
             _readerWriterLock.EnterReadLock();

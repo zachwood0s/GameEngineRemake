@@ -1,5 +1,6 @@
 ﻿using ECS;
 using ECS.Components;
+using ECS.Entities;
 using ECS.Systems;
 using EngineCore.Components;
 using EngineCore.Systems;
@@ -15,17 +16,17 @@ namespace ExampleGame
     /// </summary>
     public class GameCore : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
 
-        Scene testScene;
+        Scene _testScene;
         
         public GameCore()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            testScene = new Scene();
+            _testScene = new Scene();
         }
 
         /// <summary>
@@ -50,29 +51,29 @@ namespace ExampleGame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
             SystemPool rendering = new SystemPool("render");
-            rendering.Register(new ClearScreenSystem(graphics.GraphicsDevice, Color.CornflowerBlue));
-            rendering.Register(new BasicRenderingSystem(testScene, Content, spriteBatch));
+            rendering.Register(new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue));
+            rendering.Register(new BasicRenderingSystem(_testScene, Content, _spriteBatch));
 
             SystemPool update = new ThreadedSystemPool("update", 200);
-            update.Register(new TestMovementSystem(testScene));
+            update.Register(new TestMovementSystem(_testScene));
 
-            testScene.AddSystemPool(rendering);
-            testScene.AddSystemPool(update);
+            _testScene.AddSystemPool(rendering);
+            _testScene.AddSystemPool(update);
 
-            Entity e = testScene.CreateEntity()
+            Entity e = _testScene.CreateEntity()
                 .With<Transform2DComponent>()
                 .With(new BasicTexture("test"));
 
-            Entity e2 = testScene.CreateEntity()
+            Entity e2 = _testScene.CreateEntity()
                 .With(new Transform2DComponent(20, 100))
                 .With(new BasicTexture("test"));
             
 
-            testScene.Initialize();
+            _testScene.Initialize();
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace ExampleGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            testScene.CleanUp();
+            _testScene.CleanUp();
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace ExampleGame
                 Exit();
 
             // TODO: Add your update logic here
-            testScene.Execute();
+            _testScene.Execute();
 
             base.Update(gameTime);
         }

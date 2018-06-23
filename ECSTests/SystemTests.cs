@@ -1,6 +1,7 @@
 ﻿using ECS;
 using ECS.Attributes;
 using ECS.Components;
+using ECS.Entities;
 using ECS.Matching;
 using ECS.Systems;
 using ECS.Systems.Interfaces;
