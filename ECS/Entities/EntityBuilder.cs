@@ -84,7 +84,7 @@ namespace ECS.Entities
             //and only the entity group manager dealt with it. 
 
 
-            _entity = new Entity(new EntityGroupManager.EntityGroupManager(), components, _componentTypeIndicies);
+            _entity = new Entity(components, _componentTypeIndicies);
             scene.AddEntity(_entity);
             return _entity;
         }

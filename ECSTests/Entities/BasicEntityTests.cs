@@ -318,7 +318,7 @@ namespace ECSTests.Entities
                     addHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
@@ -340,7 +340,7 @@ namespace ECSTests.Entities
                     removeHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
@@ -371,7 +371,7 @@ namespace ECSTests.Entities
                     updateHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);
@@ -393,11 +393,11 @@ namespace ECSTests.Entities
                     addHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
-            entity.GroupManager.UnSubscribeToChanges(
+            entity.UnSubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler,
                 handler);
@@ -418,12 +418,12 @@ namespace ECSTests.Entities
                     removeHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
                 );
-            entity.GroupManager.UnSubscribeToChanges(
+            entity.UnSubscribeToChanges(
                 EntityFactory.EmptyEntityChangedHandler, 
                 handler,
                 EntityFactory.EmptyEntityChangedHandler
@@ -454,11 +454,11 @@ namespace ECSTests.Entities
                     updateHandlerWasCalled = true;
                 };
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);
-            entity.GroupManager.UnSubscribeToChanges(
+            entity.UnSubscribeToChanges(
                 handler, 
                 EntityFactory.EmptyEntityChangedHandler, 
                 EntityFactory.EmptyEntityChangedHandler);

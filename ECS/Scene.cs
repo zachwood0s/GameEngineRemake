@@ -15,7 +15,7 @@ namespace ECS
     public delegate Entity EntityFactoryMethod();
     public class Scene
     {
-        public static EntityFactoryMethod EntityFactoryMethod = () => new Entity(new EntityGroupManager.EntityGroupManager());
+        public static EntityFactoryMethod EntityFactoryMethod = () => new Entity();
 
         private Dictionary<Matcher, Group> _groups;
         private List<List<Group>> _groupsForIndex;
@@ -88,7 +88,7 @@ namespace ECS
                 _readerWriterLock.ExitWriteLock();
             }
 
-            entity.GroupManager.SubscribeToChanges(
+            entity.SubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent, 
                 _HandleEntityComponentRemovedEvent, 
                 _HandleEntityComponentAddedEvent
@@ -116,7 +116,7 @@ namespace ECS
             }
             if (wasRemoved)
             {
-                entity.GroupManager.UnSubscribeToChanges(
+                entity.UnSubscribeToChanges(
                     _HandleEntityComponentUpdatedEvent,
                     _HandleEntityComponentRemovedEvent,
                     _HandleEntityComponentAddedEvent
@@ -144,7 +144,7 @@ namespace ECS
                 _readerWriterLock.ExitWriteLock();
             }
 
-            newEntity.GroupManager.SubscribeToChanges(
+            newEntity.SubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent, 
                 _HandleEntityComponentRemovedEvent, 
                 _HandleEntityComponentAddedEvent

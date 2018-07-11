@@ -43,7 +43,7 @@ namespace ECS
             {
                 if (!_groupEntities.Contains(entity))
                 {
-                    entity.GroupManager.SubscribeToChanges(
+                    entity.SubscribeToChanges(
                         _HandleEntityComponentUpdatedEvent,
                         _HandleEntityComponentRemovedEvent,
                         _HandleEntityComponentAddedEvent
@@ -129,7 +129,7 @@ namespace ECS
                 _readerWriterLock.ExitWriteLock();
             }
 
-            removeEntity.GroupManager.UnSubscribeToChanges(
+            removeEntity.UnSubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent,
                 _HandleEntityComponentRemovedEvent,
                 _HandleEntityComponentAddedEvent

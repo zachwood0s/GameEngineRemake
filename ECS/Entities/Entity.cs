@@ -15,33 +15,26 @@ namespace ECS.Entities
     public delegate void EntityChangedEventHandler(Entity entity, int componentPoolIndex, IComponent component);
     public class Entity
     {
-        private IEntityGroupManager _groupManager;
-        
         private ReaderWriterLockSlim _readerWriterLock;
         private List<IComponent> _components;
         private List<int> _componentTypeIndicies;
 
-        //private event EntityChangedEventHandler _OnComponentUpdated;
-        //private event EntityChangedEventHandler _OnComponentRemoved;
-        //private event EntityChangedEventHandler _OnComponentAdded;
+        private event EntityChangedEventHandler _OnComponentUpdated;
+        private event EntityChangedEventHandler _OnComponentRemoved;
+        private event EntityChangedEventHandler _OnComponentAdded;
 
-        internal Entity(IEntityGroupManager groupManager)
+        internal Entity()
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>();
             _componentTypeIndicies = new List<int>();
-            _groupManager = groupManager;
         }
 
-        internal Entity(IEntityGroupManager groupManager,
-                        List<IComponent> components,
-                        List<int> componentTypeIndicies)
+        internal Entity(List<IComponent> components, List<int> componentTypeIndicies)
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>(components);
             _componentTypeIndicies = new List<int>(componentTypeIndicies);
-            _groupManager = groupManager;
-
         }
 
         #region Getters/Setters
@@ -55,7 +48,24 @@ namespace ECS.Entities
         /// </summary>
         public IReadOnlyList<int> ComponentTypeIndicies => _componentTypeIndicies;
 
-        public IEntityGroupManager GroupManager => _groupManager;
+        #endregion
+
+
+        #region Subscribing/Unsubscribing
+
+        public void SubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
+        {
+            _OnComponentUpdated += updated;
+            _OnComponentRemoved += removed;
+            _OnComponentAdded += added;
+        }
+
+        public void UnSubscribeToChanges(EntityChangedEventHandler updated, EntityChangedEventHandler removed, EntityChangedEventHandler added)
+        {
+            _OnComponentUpdated -= updated;
+            _OnComponentRemoved -= removed;
+            _OnComponentAdded -= added;
+        }
 
         #endregion
 
@@ -143,8 +153,7 @@ namespace ECS.Entities
 
                 _readerWriterLock.ExitWriteLock();
 
-                _groupManager.EntityAddedComponent(this, newCompIndex, newComp);
-                //_OnComponentAdded?.Invoke(this, newCompIndex, newComp);
+                _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
             }
 
             _readerWriterLock.ExitUpgradeableReadLock();
@@ -213,8 +222,7 @@ namespace ECS.Entities
 
                 */
 
-                _groupManager.EntityRemovedComponent(this, oldCompIndex, oldComp);
-                //_OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
+                _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
@@ -250,8 +258,7 @@ namespace ECS.Entities
                     _readerWriterLock.ExitWriteLock();
                 }
 
-                _groupManager.EntityUpdatedComponent(this, newCompPoolIndex, component);
-                //_OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
+                _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
             }
             finally
             {
@@ -347,7 +354,15 @@ namespace ECS.Entities
             bool result;
             try
             {
-                result = _groupManager.IsMatchNoFilter(match, this);
+                bool allOfMatch;
+                bool anyOfMatch;
+                bool noneOfMatch;
+
+                allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(ComponentTypeIndicies.Contains) : true;
+                anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(ComponentTypeIndicies).Any() : true;
+                noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(ComponentTypeIndicies.Contains) : true;
+
+                result = allOfMatch && anyOfMatch && noneOfMatch;
             }
             finally
             {
@@ -363,9 +378,12 @@ namespace ECS.Entities
 
             _readerWriterLock.EnterReadLock();
             bool result;
-            try
-            {
-                result = _groupManager.IsMatch(match, this);
+            try { 
+                bool filterMatch;
+
+                filterMatch = (match.Filters.Count > 0) ? match.Filters.All(p => p(this)) : true;
+
+                result = IsMatchNoFilter(match) && filterMatch;
             }
             finally
             {
