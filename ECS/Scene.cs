@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using ECS.Matching;
 using ECS.Entities;
-using ECS.EntityGroupManager;
 
 namespace ECS
 {

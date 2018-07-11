@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ECS.Components.Exceptions;
-using ECS.EntityGroupManager;
 using ECS.Matching;
 
 namespace ECS.Entities

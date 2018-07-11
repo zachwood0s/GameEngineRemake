@@ -31,12 +31,15 @@ namespace ECS.Components
 
         public static void RegisterComponent<T>() where T: IComponent
         {
-            _components.Add(typeof(T));
+            RegisterComponent(typeof(T));
         }
 
         public static void RegisterComponent(Type compType)
         {
-            _components.Add(compType);
+            if (!_components.Contains(compType))
+            {
+                _components.Add(compType);
+            }
         }
 
         public static void RegisterAllComponents()
