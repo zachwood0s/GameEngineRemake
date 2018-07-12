@@ -55,10 +55,11 @@
     <Compile Include="Entities\EntityBuilderTests.cs" />
     <Compile Include="Groups\BasicGroupTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SystemTests.cs" />
+    <Compile Include="Systems\BasicSystemTests.cs" />
     <Compile Include="TestHelper\ComponentHelper.cs" />
     <Compile Include="TestHelper\EntityFactory.cs" />
     <Compile Include="TestHelper\TestComponents.cs" />
+    <Compile Include="TestHelper\TestSystems.cs" />
     <Compile Include="WatcherTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,9 +68,7 @@
       <Name>ECS</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Systems\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

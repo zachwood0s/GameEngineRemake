@@ -15,9 +15,9 @@ namespace ECS.Systems
 
         private string _poolName;
 
-        public IReadOnlyList<IExecuteSystem> ExecuteSystems => _executeSystems;
-        public IReadOnlyList<IInitializeSystem> InitializeSystems => _initializeSystems;
-        public IReadOnlyList<ISystem> OtherSystems => _otherSystems;
+        public int ExecuteSystemCount => _executeSystems.Count;
+        public int InitializeSystemCount => _initializeSystems.Count;
+        public int OtherSystemCount => _otherSystems.Count;
 
         public string PoolName => _poolName;
         
