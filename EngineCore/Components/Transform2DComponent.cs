@@ -12,8 +12,8 @@ namespace EngineCore.Components
     [Component]
     public class Transform2DComponent : IComponentHasDefault
     {
-        public Vector2 Position { get; private set; }
-        public float Rotation { get; private set; }
+        public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
 
         public Transform2DComponent() { }
 

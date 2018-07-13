@@ -30,10 +30,18 @@ namespace ECS.Systems
         public bool IsRunning => _isRunning;
         public double AvgFps => _avgFps;
 
+        public int TargetFPS
+        {
+            get => _targetFps;
+            set
+            {
+                if (value > 0) _SetTargetFPS(value);
+            }
+        }
+
         public ThreadedSystemPool(string poolName, int fps):base(poolName)
         {
-            _targetFps = fps;
-            _targetElapsedTime = TimeSpan.FromMilliseconds(1000 / _targetFps);
+            _SetTargetFPS(fps);
             _thread = new Thread(_ThreadUpdate);
         }
         public ThreadedSystemPool(string poolName):base(poolName)
@@ -107,6 +115,12 @@ namespace ECS.Systems
             base.CleanUp();
             _isRunning = false;
             _stopwatch?.Stop();
+        }
+
+        private void _SetTargetFPS(int fps)
+        {
+            _targetFps = fps;
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000 / _targetFps);
         }
     }
 }
