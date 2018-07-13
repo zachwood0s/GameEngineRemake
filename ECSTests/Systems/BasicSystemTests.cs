@@ -26,8 +26,10 @@ namespace ECSTests.Systems
             ComponentHelper.RegisterTestComponents();
         }
 
+        #region System Pool
+
         [TestCategory("Adding to System Pool"), TestMethod]
-        public void RegisterExecuteToSystemPool()
+        public void SystemPoolRegisterExecuteSystem()
         {
             var pool = new SystemPool("pool");
             pool.Register(new TestExecuteSystem());
@@ -35,7 +37,7 @@ namespace ECSTests.Systems
         }
 
         [TestCategory("Adding to System Pool"), TestMethod]
-        public void RegisterInitToSystemPool()
+        public void SystemPoolRegisterInitSystem()
         {
             var pool = new SystemPool("pool");
             pool.Register(new TestInitSystem());
@@ -43,7 +45,7 @@ namespace ECSTests.Systems
         }
 
         [TestCategory("Adding to System Pool"), TestMethod]
-        public void RegisterInitAndExecuteToSystemPool()
+        public void SystemPoolRegisterInitAndExecuteSystem()
         {
             var pool = new SystemPool("pool");
             pool.Register(new TestExecuteInitSystem());
@@ -75,7 +77,7 @@ namespace ECSTests.Systems
         }
 
         [TestCategory("Get System from System Pool"), TestMethod]
-        public void RetrieveSystemFromSystemPool()
+        public void SystemPoolRetrieveSystem()
         {
             var pool = new SystemPool("pool");
             var e = new TestExecuteSystem();
@@ -87,8 +89,12 @@ namespace ECSTests.Systems
             Assert.AreEqual(i, pool.GetSystem<TestInitSystem>());
         }
 
+        #endregion
+
+        #region Execute/Init Systems
+
         [TestCategory("Execute Systems"), TestMethod]
-        public void SimpleExecuteSystem()
+        public void ExecuteSystemSimple()
         {
             var pool = new SystemPool("pool");
             var sys = new TestExecuteSystem();
@@ -99,7 +105,7 @@ namespace ECSTests.Systems
         }
 
         [TestCategory("Init Systems"), TestMethod]
-        public void SimpleInitSystem()
+        public void InitSystemSimple()
         {
             var pool = new SystemPool("pool");
             var sys = new TestInitSystem();
@@ -108,8 +114,12 @@ namespace ECSTests.Systems
             Assert.IsTrue(sys.DidInit);
         }
 
+        #endregion
+
+        #region Reactive Systems
+
         [TestCategory("Reactive Systems"), TestMethod]
-        public void SimpleReactiveSystem()
+        public void ReactiveSystemSimple()
         {
             var pool = new SystemPool("pool");
             var sys = new TestReactiveSystem(_scene);
@@ -140,7 +150,7 @@ namespace ECSTests.Systems
         }
 
         [TestCategory("Reactive Systems"), TestMethod]
-        public void SimpleReactiveSystemTwoEntities()
+        public void ReactiveSystemTwoEntities()
         {
             var pool = new SystemPool("pool");
             var sys = new TestReactiveSystem(_scene);
@@ -170,7 +180,11 @@ namespace ECSTests.Systems
             Assert.AreEqual(15000, sys.UpdatedEntities[0].GetComponent<TestComponent1>().X);
         }
 
-        [TestCategory("Reactive Systems"), TestMethod]
+        #endregion
+
+        #region Threaded System Pool
+
+        [TestCategory("Threaded System Pool"), TestMethod]
         public void ThreadedSystemPool()
         {
             var pool = new ThreadedSystemPool("pool");
@@ -188,7 +202,7 @@ namespace ECSTests.Systems
             Assert.IsFalse(pool.IsRunning);
         }
 
-        [TestCategory("Reactive Systems"), TestMethod]
+        [TestCategory("Threaded System Pool"), TestMethod]
         public void ThreadedSystemPoolLockedFps()
         {
             ThreadedSystemPool pool = new ThreadedSystemPool("test",60);
@@ -210,8 +224,8 @@ namespace ECSTests.Systems
             Assert.IsTrue(pool.AvgFps < 120);
         }
 
-        [TestCategory("Reactive Systems"), TestMethod]
-        public void ThreadedSystemMultipleSystems()
+        [TestCategory("Threaded System Pool"), TestMethod]
+        public void ThreadedSystemPoolMultipleSystemPools()
         {
             ThreadedSystemPool pool = new ThreadedSystemPool("test1", 60);
             pool.Register(new TestExecuteSystem());
@@ -244,6 +258,8 @@ namespace ECSTests.Systems
             //Limited fps vs unlimited
             Assert.IsTrue(pool.AvgFps < pool2.AvgFps);
         }
+
+        #endregion
 
     }
 }

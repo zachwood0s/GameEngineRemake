@@ -16,6 +16,14 @@ namespace ECS.Entities
         private List<Type> _componentTypes;
         private List<int> _componentTypeIndicies;
         private List<Func<IComponent>> _creationFunctions;
+
+        /// <summary>
+        /// This is necessary because I found it quite hard to figure out
+        /// exaclty what the return types were of the creation functions.
+        /// Because they had been cast into an IComponent it was hard to tell 
+        /// exactly what type of component they were
+        /// </summary>
+        private List<int> _creationFunctionReturnTypes;
         private Entity _entity;
 
         public EntityBuilder()
@@ -23,6 +31,18 @@ namespace ECS.Entities
             _creationFunctions = new List<Func<IComponent>>();
             _componentTypeIndicies = new List<int>();
             _componentTypes = new List<Type>();
+            _creationFunctionReturnTypes = new List<int>();
+        }
+
+        private EntityBuilder(List<Func<IComponent>> funcs,
+                              List<int> indicies,
+                              List<Type> types,
+                              List<int> returnTypes)
+        {
+            _creationFunctions = new List<Func<IComponent>>(funcs);
+            _componentTypeIndicies = new List<int>(indicies);
+            _componentTypes = new List<Type>(types);
+            _creationFunctionReturnTypes = new List<int>(returnTypes);
         }
 
         public EntityBuilder With<T>() where T : IComponentHasDefault
@@ -37,17 +57,44 @@ namespace ECS.Entities
 
         public EntityBuilder With<T>(Func<T> creationFunc) where T: IComponent
         {
-            bool added = _AddTypeIndice(creationFunc.Method.ReturnParameter.ParameterType);
+            bool added = _AddTypeIndice<T>();
             //Okay so why does this line work, and not
             // _creationFunction.Add(creationFunc); ??
             // why would the extra function call be necessary?
-            if(added) _creationFunctions.Add(() => creationFunc());
+            if (added)
+            {
+                _creationFunctions.Add(() => creationFunc());
+                _creationFunctionReturnTypes.Add(ComponentPool.GetComponentIndex<T>());
+            }
+            return this;
+        }
+
+        public EntityBuilder Without<T>() where T : IComponent
+        {
+            Type t = typeof(T);
+            int compIndex = ComponentPool.GetComponentIndex(t);
+
+            if (compIndex < 0)
+                throw new UnregisteredComponentException($"Component of type {t} has not been registered with the ComponentPool.");
+
+            if (_componentTypeIndicies.Contains(compIndex))
+            {
+                _componentTypeIndicies.Remove(compIndex);
+
+                if (_componentTypes.Contains(t)) _componentTypes.Remove(t);
+
+                int functionIndex = _creationFunctionReturnTypes.IndexOf(compIndex);
+                if (functionIndex >= 0)
+                {
+                    _creationFunctionReturnTypes.RemoveAt(functionIndex);
+                    _creationFunctions.RemoveAt(functionIndex);
+                }
+            }
             return this;
         }
 
         private bool _AddTypeIndice(Type t)
         {
-
             int newCompIndex = ComponentPool.GetComponentIndex(t);
 
             if (newCompIndex < 0)
@@ -59,6 +106,11 @@ namespace ECS.Entities
                 return true;
             }
             return false;
+        }
+
+        private bool _AddTypeIndice<T>() where T: IComponent
+        {
+            return _AddTypeIndice(typeof(T));
         }
 
         public Entity Build(Scene scene)
@@ -80,14 +132,19 @@ namespace ECS.Entities
             {
                 components.Add(function());
             }
-            //It would be really nice if the Entity no longer had to deal with the subscriptions
-            //and only the entity group manager dealt with it. 
-
-
             _entity = new Entity(components, _componentTypeIndicies);
             scene.AddEntity(_entity);
             return _entity;
         }
 
+        public EntityBuilder Copy()
+        {
+            return new EntityBuilder(
+                _creationFunctions, 
+                _componentTypeIndicies, 
+                _componentTypes, 
+                _creationFunctionReturnTypes
+                );
+        }
     }
 }
