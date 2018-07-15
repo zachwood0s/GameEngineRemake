@@ -13,7 +13,7 @@ namespace ExampleGame
         [STAThread]
         static void Main()
         {
-            using (var game = new GameCore())
+            using (var game = new TestGame())
                 game.Run();
         }
     }

@@ -18,7 +18,7 @@ namespace EngineCore.Systems
         {
             entity.UpdateComponent((Transform2DComponent comp) =>
             {
-                comp.Position = new Microsoft.Xna.Framework.Vector2(comp.Position.X + .1f, comp.Position.Y);
+                comp.Position = new Microsoft.Xna.Framework.Vector2(comp.Position.X + .5f, comp.Position.Y);
             });
 
             //Transform2DComponent component = entity.GetComponent<Transform2DComponent>();

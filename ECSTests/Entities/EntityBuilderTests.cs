@@ -263,6 +263,22 @@ namespace ECSTests.Entities
             Assert.AreNotEqual(newXVal, comp2.X);
         }
 
+        [TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderCopy()
+        {
+            var builder1 = new EntityBuilder().With<TestComponent1>();
+            var builder2 = builder1.Copy();
+
+            Assert.AreNotEqual(builder1, builder2);
+
+            builder2.Without<TestComponent1>();
+
+            var e1 = builder1.Build(_scene);
+            var e2 = builder2.Build(_scene);
+
+            Assert.AreNotEqual(e1.Components.Count, e2.Components.Count);
+        }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using ECS.Components;
+﻿using ECS.Attributes;
+using ECS.Components;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace EngineCore.Components
 {
+    [Component]
     public class BasicTexture: IComponent
     {
         public string FileName { get; private set; }

@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace ECS.Entities
 {
+    /// <summary>
+    /// TODO: 
+    /// I think I'd like to change without to returning a copy and removing
+    /// and then add a separate remove function to handle just removing.
+    /// </summary>
     public class EntityBuilder : IEntityBuilder
     {
         //private List<IComponent> _components; //I think the solution might be to only keep the types
