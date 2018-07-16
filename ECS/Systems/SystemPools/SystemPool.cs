@@ -1,6 +1,7 @@
 ﻿using ECS.Systems.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,16 @@ namespace ECS.Systems
         private List<IExecuteSystem> _executeSystems;
         private List<IInitializeSystem> _initializeSystems;
         private List<ISystem> _otherSystems;
+        protected long _currentFps;
+        protected double _avgFps = 0;
 
         private string _poolName;
+
+        private int _frameCount;
+        private DateTime _lastFrameReadTime;
+
+        public long CurrentFps => _currentFps;
+        public double AvgFps => _avgFps;
 
         public int ExecuteSystemCount => _executeSystems.Count;
         public int InitializeSystemCount => _initializeSystems.Count;
@@ -38,6 +47,16 @@ namespace ECS.Systems
         }
         public virtual void Execute()
         {
+            _frameCount++;
+            if((DateTime.Now - _lastFrameReadTime).TotalSeconds >= 1)
+            {
+                _currentFps = _frameCount;
+                _avgFps += _currentFps;
+                _avgFps /= 2;
+
+                _frameCount = 0;
+                _lastFrameReadTime = DateTime.Now;
+            }
             foreach(IExecuteSystem eSystem in _executeSystems)
             {
                 eSystem.Execute();

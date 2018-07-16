@@ -183,7 +183,7 @@ namespace ECS
             }
         }
 
-        protected virtual bool _RemoveIfNotValid(Entity updatedEntity)
+        protected virtual bool _RemoveIfNotValid(Entity updatedEntity, bool componentAddedOrRemoved)
         {
             bool isValid = true;
 
@@ -191,12 +191,15 @@ namespace ECS
 
             try
             {
-                if (!updatedEntity.IsMatchNoFilter(_match))
+                if (componentAddedOrRemoved && !updatedEntity.IsMatchNoFilter(_match))
                 {
+                    //We don't need to check if its a match without filter if the component was
+                    //just updated and not removed/added. The filter will check if it's invalid because
+                    //of an update
                     _RemoveAndUnsubscribe(updatedEntity);
                     isValid = false;
                 }
-                else if (!updatedEntity.IsMatch(_match)) //Adding this component now made it invalid for this group
+                else if (!updatedEntity.IsMatchJustFilter(_match)) //Adding this component now made it invalid for this group
                 {
                     _RemoveOnlyBecauseFilter(updatedEntity);
                     isValid = false;
@@ -216,21 +219,21 @@ namespace ECS
 
         private void _HandleEntityComponentAddedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            if (_RemoveIfNotValid(updatedEntity))
+            if (_RemoveIfNotValid(updatedEntity, true))
             {
                 _OnEntityComponentAdded?.Invoke(updatedEntity, componentIndex, component);
             }
         }
         private void _HandleEntityComponentRemovedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            if (_RemoveIfNotValid(updatedEntity))
+            if (_RemoveIfNotValid(updatedEntity, true))
             {
                 _OnEntityComponentRemoved?.Invoke(updatedEntity, componentIndex, component);
             }
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
-            if (_RemoveIfNotValid(updatedEntity))
+            if (_RemoveIfNotValid(updatedEntity, false))
             {
                 //This will update any watchers we have 
                 _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);

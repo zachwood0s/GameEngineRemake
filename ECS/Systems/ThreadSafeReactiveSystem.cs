@@ -16,7 +16,7 @@ namespace ECS.Systems
         {
             foreach(Entity entity in entities)
             {
-                //lock (entity)
+                lock (entity)
                 {
                     Execute(entity);
                 }

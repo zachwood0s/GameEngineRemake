@@ -374,6 +374,21 @@ namespace ECS.Entities
             return result;
         }
 
+        public bool IsMatchJustFilter(Matcher match)
+        {
+            _readerWriterLock.EnterReadLock();
+            bool result;
+            try
+            {
+                result = (match.Filters.Count > 0) ? match.Filters.All(p => p(this)) : true;
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
+            return result;
+        }
+
         public bool IsMatch(Matcher match)
         {
             //I think the lock is still necessary because the IsMatch

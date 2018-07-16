@@ -38,9 +38,9 @@ namespace EngineCore.Systems.Rendering
 
             if(tex.Texture != null)
             {
-                _spriteBatch.Begin();
+                //_spriteBatch.Begin();
                 _spriteBatch.Draw(tex.Texture, transform2D.Position, Color.White);
-                _spriteBatch.End();
+                //_spriteBatch.End();
             }
         }
 

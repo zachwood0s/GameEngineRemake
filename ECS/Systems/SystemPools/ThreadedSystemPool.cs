@@ -13,10 +13,8 @@ namespace ECS.Systems
         private Thread _thread;
 
         private int _targetFps;
-        private long _currentFps;
         private long _frameCount;
         private DateTime _lastFrameReadTime;
-        private double _avgFps = 0;
 
         private TimeSpan _targetElapsedTime;
         private bool _noFpsLimit;
@@ -26,9 +24,7 @@ namespace ECS.Systems
 
         private bool _isRunning = false;
 
-        public long CurrentFps => _currentFps;
         public bool IsRunning => _isRunning;
-        public double AvgFps => _avgFps;
 
         public int TargetFPS
         {
@@ -78,16 +74,13 @@ namespace ECS.Systems
                     _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks - _previousTicks);
                     _previousTicks = currentTicks;
 
-                    if (!_noFpsLimit)
+                    if(!_noFpsLimit && _accumulatedElapsedTime < _targetElapsedTime)
                     {
-                        if(_accumulatedElapsedTime < _targetElapsedTime)
-                        {
-                            var sleepTime = (int)(_targetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+                        var sleepTime = (int)(_targetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
 
-                            Thread.Sleep(sleepTime);
+                        Thread.Sleep(sleepTime);
 
-                            goto RetryTick;
-                        }
+                        goto RetryTick;
                     }
 
 
@@ -102,9 +95,22 @@ namespace ECS.Systems
                         _lastFrameReadTime = DateTime.Now;
                     }
 
-                    base.Execute();
+                if (!_noFpsLimit)
+                {
+                    var stepCount = 0;
+                    while(_accumulatedElapsedTime >= _targetElapsedTime)
+                    {
+                        _accumulatedElapsedTime -= _targetElapsedTime;
+                        ++stepCount; 
 
+                        base.Execute();
+                    }
+                }
+                else
+                {
                     _accumulatedElapsedTime = TimeSpan.Zero;
+                }
+
 
             }
 

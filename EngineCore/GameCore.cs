@@ -9,6 +9,7 @@ using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +52,9 @@ namespace ExampleGame
             ComponentPool.RegisterAllComponents();
             //ComponentPool.RegisterComponent<BasicTexture>();
             //ComponentPool.RegisterComponent<Transform2DComponent>();
+            _graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = false;
+            TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
             base.Initialize();
         }
 
@@ -73,11 +77,13 @@ namespace ExampleGame
         {
             CreateSystemPoolBuilder("render")
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
-                .With(s => new BasicRenderingSystem(s, Content, _spriteBatch));
+                .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
+                .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
+                .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("update")
                 .With(s => new TestMovementSystem(s))
-                .WithFPS(200);
+                .WithFPS(60);
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)
@@ -99,22 +105,6 @@ namespace ExampleGame
         {
             // TODO: Unload any non ContentManager content here
             //_testScene.CleanUp();
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //Exit();
-
-            // TODO: Add your update logic here
-            //_testScene.Execute();
-
-            base.Update(gameTime);
         }
     }
 }
