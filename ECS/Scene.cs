@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using ECS.Matching;
 using ECS.Entities;
+using ECS.Systems.SystemPools;
 
 namespace ECS
 {
@@ -37,12 +38,6 @@ namespace ECS
 
         public int EntityCount => _entities.Count;
         public IReadOnlyList<SystemPool> SystemPools => _systemPools;
-        public void AddSystemPool(SystemPool pool) => _systemPools.Add(pool);
-
-        public SystemPool GetSystemPoolByName(string name)
-        {
-            return _systemPools.Find(p => p.PoolName == name);
-        }
 
         #endregion
 
@@ -70,8 +65,24 @@ namespace ECS
             }
         }
 
+        public void AddSystemPool(SystemPool pool) => _systemPools.Add(pool);
+
+        public SystemPool AddSystemPoolFromBuilder(SystemPoolBuilder builder, string suffix = "")
+        {
+            SystemPool pool = builder.Build(this, suffix);
+            AddSystemPool(pool);
+            return pool;
+        }
+
+        public SystemPool GetSystemPoolByName(string name)
+        {
+            return _systemPools.Find(p => p.PoolName == name);
+        }
+
         #endregion
-        //TODO: ADD REMOVE ENTITY
+
+        #region Entities
+
         public Entity CreateEntity()
         {
             Entity entity = EntityFactoryMethod();
@@ -151,6 +162,8 @@ namespace ECS
 
             _AddToExistingGroups(newEntity);
         }
+
+        #endregion
 
         #region Groups
 

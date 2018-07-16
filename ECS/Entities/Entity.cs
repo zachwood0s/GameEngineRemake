@@ -17,6 +17,7 @@ namespace ECS.Entities
         private ReaderWriterLockSlim _readerWriterLock;
         private List<IComponent> _components;
         private List<int> _componentTypeIndicies;
+        private HashSet<int> _componentTypeIndiciesLookup;
 
         private event EntityChangedEventHandler _OnComponentUpdated;
         private event EntityChangedEventHandler _OnComponentRemoved;
@@ -27,6 +28,7 @@ namespace ECS.Entities
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>();
             _componentTypeIndicies = new List<int>();
+            _componentTypeIndiciesLookup = new HashSet<int>();
         }
 
         internal Entity(List<IComponent> components, List<int> componentTypeIndicies)
@@ -34,6 +36,7 @@ namespace ECS.Entities
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _components = new List<IComponent>(components);
             _componentTypeIndicies = new List<int>(componentTypeIndicies);
+            _componentTypeIndiciesLookup = new HashSet<int>(componentTypeIndicies);
         }
 
         #region Getters/Setters
@@ -48,7 +51,6 @@ namespace ECS.Entities
         public IReadOnlyList<int> ComponentTypeIndicies => _componentTypeIndicies;
 
         #endregion
-
 
         #region Subscribing/Unsubscribing
 
@@ -114,7 +116,7 @@ namespace ECS.Entities
             bool doesExist;
             try
             {
-                doesExist = _componentTypeIndicies.Contains(componentPoolIndex);
+                doesExist = _componentTypeIndiciesLookup.Contains(componentPoolIndex);
             }
             finally
             {
@@ -136,12 +138,13 @@ namespace ECS.Entities
 
             _readerWriterLock.EnterUpgradeableReadLock();
 
-            if (!_componentTypeIndicies.Contains(newCompIndex))
+            if (!_componentTypeIndiciesLookup.Contains(newCompIndex))
             {
                 _readerWriterLock.EnterWriteLock();
 
                 _components.Add(newComp);
                 _componentTypeIndicies.Add(newCompIndex);
+                _componentTypeIndiciesLookup.Add(newCompIndex);
 
                 /*
                 if (newComp is SettableComponent maybeSettable)
@@ -206,6 +209,7 @@ namespace ECS.Entities
                     oldComp = _components[compIndex];
                     _components.RemoveAt(compIndex);
                     _componentTypeIndicies.RemoveAt(compIndex);
+                    _componentTypeIndiciesLookup.Remove(oldCompIndex);
                 }
                 finally
                 {
@@ -257,7 +261,7 @@ namespace ECS.Entities
                     _readerWriterLock.ExitWriteLock();
                 }
 
-                _OnComponentUpdated?.Invoke(this, newCompPoolIndex, component);
+                _OnComponentUpdated(this, newCompPoolIndex, component);
             }
             finally
             {
@@ -357,9 +361,9 @@ namespace ECS.Entities
                 bool anyOfMatch;
                 bool noneOfMatch;
 
-                allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(ComponentTypeIndicies.Contains) : true;
-                anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(ComponentTypeIndicies).Any() : true;
-                noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(ComponentTypeIndicies.Contains) : true;
+                allOfMatch = (match.AllOfTypeIndicies.Count > 0) ? match.AllOfTypeIndicies.All(_componentTypeIndiciesLookup.Contains) : true;
+                anyOfMatch = (match.AnyOfTypeIndicies.Count > 0) ? match.AnyOfTypeIndicies.Intersect(_componentTypeIndicies).Any() : true;
+                noneOfMatch = (match.NoneOfTypeIndicies.Count > 0) ? !match.NoneOfTypeIndicies.All(_componentTypeIndiciesLookup.Contains) : true;
 
                 result = allOfMatch && anyOfMatch && noneOfMatch;
             }

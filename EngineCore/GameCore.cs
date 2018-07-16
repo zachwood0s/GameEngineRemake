@@ -71,46 +71,24 @@ namespace ExampleGame
 
         protected virtual void LoadSystemPools()
         {
-            SystemPoolBuilder rendering = new SystemPoolBuilder("render")
+            CreateSystemPoolBuilder("render")
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch));
-            _systemPoolBuilders.Add("render", rendering);
 
-            SystemPoolBuilder update = new SystemPoolBuilder("update")
+            CreateSystemPoolBuilder("update")
                 .With(s => new TestMovementSystem(s))
                 .WithFPS(200);
-            _systemPoolBuilders.Add("update", update);
+        }
 
+        protected SystemPoolBuilder CreateSystemPoolBuilder(string name)
+        {
+            SystemPoolBuilder builder = new SystemPoolBuilder(name);
+            _systemPoolBuilders.Add(name, builder);
+            return builder;
         }
 
         protected virtual void LoadScenes()
         {
-            Scene scene1 = new Scene();
-            scene1.AddSystemPool(_systemPoolBuilders["render"].Build(scene1));
-            scene1.AddSystemPool(_systemPoolBuilders["update"].Build(scene1));
-
-            Entity e = scene1.CreateEntity()
-                .With<Transform2DComponent>()
-                .With(new BasicTexture("test"));
-
-            Entity e2 = scene1.CreateEntity()
-                .With(new Transform2DComponent(20, 100))
-                .With(new BasicTexture("test"));
-
-            scene1.Initialize();
-            _scenes.Add("test", scene1);
-
-            Scene scene2 = new Scene();
-            scene2.AddSystemPool(_systemPoolBuilders["render"].Build(scene2));
-            scene2.AddSystemPool(_systemPoolBuilders["update"].Build(scene2));
-
-            Entity e3 = scene2.CreateEntity()
-                .With<Transform2DComponent>()
-                .With(new BasicTexture("test"));
-
-
-            scene2.Initialize();
-            _scenes.Add("test2", scene2);
         }
 
         /// <summary>
@@ -134,7 +112,6 @@ namespace ExampleGame
             //Exit();
 
             // TODO: Add your update logic here
-            _scenes["test2"].Execute();
             //_testScene.Execute();
 
             base.Update(gameTime);

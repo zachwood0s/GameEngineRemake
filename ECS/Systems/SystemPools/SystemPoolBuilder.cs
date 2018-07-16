@@ -124,7 +124,11 @@ namespace ECS.Systems.SystemPools
 
         public SystemPool Build(Scene scene, string suffix = "")
         {
-            SystemPool newPool = new SystemPool(_name + suffix);
+
+            SystemPool newPool;
+            if (_isThreaded) newPool = new ThreadedSystemPool(_name + suffix, _targetFps);
+            else newPool = new SystemPool(_name + suffix);
+
             foreach(var creationFunc in _creationFuncs)
             {
                 newPool.Register(creationFunc(scene));

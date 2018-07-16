@@ -11,12 +11,14 @@ namespace ECS
 {
     public class Watcher:IEnumerable<Entity>
     {
+        private HashSet<Entity> _observedEntitiesLookup;
         private List<Entity> _observedEntities;
         private Group _watchedGroup;
 
         public Watcher(Group groupToWatch)
         {
             _watchedGroup = groupToWatch;
+            _observedEntitiesLookup = new HashSet<Entity>();
             _observedEntities = new List<Entity>();
             _watchedGroup.SubscribeToChanges(
                 _HandleEntityComponentUpdatedEvent,
@@ -35,9 +37,10 @@ namespace ECS
         }
         private void _AddToObserved(Entity updatedEntity)
         {
-            if (!_observedEntities.Contains(updatedEntity))
+            if (!_observedEntitiesLookup.Contains(updatedEntity))
             {
                 _observedEntities.Add(updatedEntity);
+                _observedEntitiesLookup.Add(updatedEntity);
             }
         }
 
@@ -57,6 +60,7 @@ namespace ECS
         public void ClearObservedEntities()
         {
             _observedEntities.Clear();
+            _observedEntitiesLookup.Clear();
         }
 
         #region IEnumerable Implementation
@@ -64,12 +68,13 @@ namespace ECS
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        public int EntityCount => _observedEntities.Count;
+
         public Entity this[int index]
         {
             get => _observedEntities[index]; 
             set => _observedEntities.Insert(index, value); 
         }
-        public int EntityCount => _observedEntities.Count;
 
         #endregion
     }
