@@ -5,6 +5,7 @@ using ECS.Systems;
 using ECS.Systems.SystemPools;
 using EngineCore.Components;
 using EngineCore.Systems;
+using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,6 +24,7 @@ namespace ExampleGame
     {
         protected GraphicsDeviceManager _graphics;
         protected SpriteBatch _spriteBatch;
+        protected SystemPool _globalSystems;
 
         //Scene _testScene;
         protected Dictionary<string, Scene> _scenes;
@@ -38,6 +40,7 @@ namespace ExampleGame
             _scenes = new Dictionary<string, Scene>();
             _entityBuilders = new Dictionary<string, EntityBuilder>();
             _systemPoolBuilders = new Dictionary<string, SystemPoolBuilder>();
+            _globalSystems = new SystemPool("Global");
         }
 
         /// <summary>
@@ -71,19 +74,25 @@ namespace ExampleGame
             // TODO: use this.Content to load your game content here
 
             LoadScenes();
+
+            _globalSystems.Initialize();
         }
 
         protected virtual void LoadSystemPools()
         {
-            CreateSystemPoolBuilder("render")
+            CreateSystemPoolBuilder("Render")
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
-            CreateSystemPoolBuilder("update")
+            CreateSystemPoolBuilder("Update")
                 .With(s => new TestMovementSystem(s))
                 .WithFPS(60);
+
+            EntityBuilderLoader builderLoader = new EntityBuilderLoader(_entityBuilders);
+            builderLoader.RootDirectory = "Content/EntityBuilders";
+            _globalSystems.Register(builderLoader);
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)
@@ -104,7 +113,19 @@ namespace ExampleGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            foreach(Scene scene in _scenes.Values)
+            {
+                scene.CleanUp();
+            }
+            _globalSystems.CleanUp();
             //_testScene.CleanUp();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            _globalSystems.Execute();
+
+            base.Update(gameTime);
         }
     }
 }

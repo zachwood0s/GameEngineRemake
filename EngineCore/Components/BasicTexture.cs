@@ -12,8 +12,8 @@ namespace EngineCore.Components
     [Component]
     public class BasicTexture: IComponent
     {
-        public string FileName { get; private set; }
-        public Texture2D Texture { get; private set; }
+        public string FileName { get; set; }
+        public Texture2D Texture { get; set; }
         
         public BasicTexture(string file)
         {
