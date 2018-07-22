@@ -46,7 +46,7 @@ namespace EngineCore.Systems.Global.EntityBuilderLoader
             {
                 foreach (var componentConstruct in builderConstruct.Components)
                 {
-                    ICopyableComponent component = _LoadComponent(componentConstruct);
+                    ICopyableComponent component = LoaderHelper.LoadCopyableComponent(componentConstruct);
                     if (component != null)
                     {
                         builder.With(component);
@@ -86,42 +86,7 @@ namespace EngineCore.Systems.Global.EntityBuilderLoader
             return builder;
         }
 
-        private ICopyableComponent _LoadComponent(ComponentConstruct componentConstruct)
-        {
-            Type compType = Type.GetType(componentConstruct.Type);
-            try
-            {
-                IComponent comp = (IComponent)componentConstruct.Data.ToObject(compType);
-                if(comp is ICopyableComponent copyable)
-                {
-                    return copyable;
-                }
-                else
-                {
-                    Debug.WriteLine($"Component type {componentConstruct.Type} must implement" +
-                        " the IComponentCopyable interface to be loaded from a file");
-                }
-            }
-            catch(Exception e)
-            {
-                Debug.WriteLine($"Failed to create component from type {componentConstruct.Type}.");
-                Debug.WriteLine($"Message given: {e.Message}.");
-            }
-            return null;
-        }
 
     }
 
-    class BuilderConstruct
-    {
-        public string Name { get; set; }
-        public string Extends { get; set; }
-        public List<ComponentConstruct> Components { get; set; }
-        public List<string> Removes { get; set; }
-    }
-    class ComponentConstruct
-    {
-        public string Type { get; set; }
-        public JObject Data { get; set; }
-    }
 }
