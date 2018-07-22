@@ -48,6 +48,7 @@
     <Compile Include="Components\ComponentExceptions.cs" />
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\IComponentHasDefault.cs" />
+    <Compile Include="Components\ICopyableComponent.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityBuilder.cs" />
     <Compile Include="Entities\IEntityBuilder.cs" />

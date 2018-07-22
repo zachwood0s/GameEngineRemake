@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace EngineCore.Components
 {
     [Component]
-    public class BasicTexture: IComponent
+    public class BasicTexture: ICopyableComponent
     {
         public string FileName { get; set; }
         public Texture2D Texture { get; set; }
@@ -23,6 +23,11 @@ namespace EngineCore.Components
         public BasicTexture(Texture2D tex)
         {
             Texture = tex;
+        }
+
+        public IComponent Copy()
+        {
+            return new BasicTexture(FileName) { Texture = Texture };
         }
     }
 }

@@ -102,6 +102,95 @@ namespace ECSTests.Entities
             var getComp = e.GetComponent<TestComponent1>();
             Assert.AreEqual(compX, getComp.X);
         }
+
+        [TestCategory("Adding Components"), TestCategory("Non-Generic"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderEntityWithTemplateComponent()
+        {
+            int compX = 100;
+            var templateComponent = new TestComponent1() { X = compX, Y = 200 };
+            var e = new EntityBuilder()
+                      .With(templateComponent)
+                      .Build(_scene);
+            Assert.AreEqual(1, _scene.EntityCount);
+            Assert.AreEqual(1, e.Components.Count);
+
+            var getComp = e.GetComponent<TestComponent1>();
+            Assert.AreEqual(compX, getComp.X);
+        }
+
+        [TestCategory("Adding Components"), TestCategory("Non-Generic"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderTwoEntityWithTemplateComponent()
+        {
+            int compX = 100;
+            var templateComponent = new TestComponent1() { X = compX, Y = 200 };
+            var builder = new EntityBuilder()
+                      .With(templateComponent);
+
+            var e1 = builder.Build(_scene);
+            var e2 = builder.Build(_scene);
+
+            Assert.AreEqual(2, _scene.EntityCount);
+            Assert.AreEqual(1, e1.Components.Count);
+            Assert.AreEqual(1, e2.Components.Count);
+
+            var getComp1 = e1.GetComponent<TestComponent1>();
+
+            e2.UpdateComponent((TestComponent1 comp) => comp.X = 200);
+            var getComp2 = e2.GetComponent<TestComponent1>();
+
+            Assert.AreNotEqual(getComp1.X, getComp2.X);
+        }
+
+        [TestCategory("Adding Components"), TestCategory("Non-Generic"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderEntityWithTwoTemplateComponentSameType()
+        {
+            int compX = 100;
+            var templateComponent = new TestComponent1() { X = compX, Y = 200 };
+            var templateComponent2 = new TestComponent1() { X = compX+100, Y = 200 };
+            var e = new EntityBuilder()
+                      .With(templateComponent)
+                      .With(templateComponent2)
+                      .Build(_scene);
+            Assert.AreEqual(1, _scene.EntityCount);
+            Assert.AreEqual(1, e.Components.Count);
+
+            var getComp = e.GetComponent<TestComponent1>();
+            Assert.AreEqual(compX, getComp.X);
+        }
+
+        [TestCategory("Adding Components"), TestCategory("Non-Generic"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderEntityWithOneTemplateTypeAlreadyAdded()
+        {
+            int compX = 100;
+            var templateComponent = new TestComponent1() { X = compX, Y = 200 };
+            var e = new EntityBuilder()
+                      .With<TestComponent1>()
+                      .With(templateComponent)
+                      .Build(_scene);
+            Assert.AreEqual(1, _scene.EntityCount);
+            Assert.AreEqual(1, e.Components.Count);
+
+            var getComp = e.GetComponent<TestComponent1>();
+            Assert.AreNotEqual(compX, getComp.X);
+        }
+
+        [TestCategory("Adding Components"), TestCategory("Non-Generic"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderEntityWithTwoTemplateComponent()
+        {
+            int compX = 100;
+            int compW = 100 + compX;
+            var templateComponent = new TestComponent1() { X = compX, Y = 200 };
+            var templateComponent2 = new TestComponent2() { W = compW, Z = 200 };
+            var e = new EntityBuilder()
+                      .With(templateComponent)
+                      .With(templateComponent2)
+                      .Build(_scene);
+            Assert.AreEqual(1, _scene.EntityCount);
+            Assert.AreEqual(2, e.Components.Count);
+
+            var getComp = e.GetComponent<TestComponent1>();
+            Assert.AreEqual(compX, getComp.X);
+        }
         #endregion
 
         #region Removing Components
@@ -169,6 +258,37 @@ namespace ECSTests.Entities
             var builder = new EntityBuilder()
                                 .With(() => new TestComponent1() { X = 10 })
                                 .With<TestComponent2>();
+            var e1 = builder.Build(_scene);
+            Assert.AreEqual(2, e1.Components.Count);
+            builder.Without<TestComponent1>();
+            var e2 = builder.Build(_scene);
+            Assert.AreEqual(1, e2.Components.Count);
+            builder.Without<TestComponent2>();
+            var e3 = builder.Build(_scene);
+            Assert.AreEqual(0, e3.Components.Count);
+        }
+
+        [TestCategory("Removing Components"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderRemoveOneTemplateComponent()
+        {
+            var template = new TestComponent1() { X = 100, Y = 100 };
+            var builder = new EntityBuilder()
+                                .With(template);
+            var e1 = builder.Build(_scene);
+            Assert.AreEqual(1, e1.Components.Count);
+            builder.Without<TestComponent1>();
+            var e2 = builder.Build(_scene);
+            Assert.AreEqual(0, e2.Components.Count);
+        }
+
+        [TestCategory("Removing Components"), TestCategory("EntityBuilder"), TestMethod]
+        public void EntityBuilderRemoveOneTemplateComponentAndRegular()
+        {
+            var template = new TestComponent1() { X = 100, Y = 100 };
+            var builder = new EntityBuilder()
+                                .With(template)
+                                .With<TestComponent2>();
+
             var e1 = builder.Build(_scene);
             Assert.AreEqual(2, e1.Components.Count);
             builder.Without<TestComponent1>();

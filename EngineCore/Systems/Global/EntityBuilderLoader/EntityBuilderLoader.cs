@@ -1,4 +1,5 @@
-﻿using ECS.Entities;
+﻿using ECS.Components;
+using ECS.Entities;
 using ECS.Systems.Interfaces;
 using EngineCore.Components;
 using Newtonsoft.Json;
@@ -19,29 +20,43 @@ namespace EngineCore.Systems.Global.EntityBuilderLoader
     {
 
         private Dictionary<string, EntityBuilder> _entityBuilders;
-        private JsonSerializerSettings _settings;
 
         public string RootDirectory { get; set; }
 
         public EntityBuilderLoader(Dictionary<string, EntityBuilder> entityBuilders)
         {
             _entityBuilders = entityBuilders;
-            _settings = new JsonSerializerSettings()
-            {
-                TypeNameHandling = TypeNameHandling.All
-            };
         }
         public void Initialize()
         {
-            var list = JsonConvert.DeserializeObject<List<BuilderConstruct>>(File.ReadAllText("./"+RootDirectory+"/entity.json"), _settings);
+            
+            var list = JsonConvert.DeserializeObject<List<BuilderConstruct>>(File.ReadAllText("./"+RootDirectory+"/entity.json"));
             Console.WriteLine(list);
-                foreach(var item in list)
+            foreach(var item in list)
+            {
+                EntityBuilder newBuilder = new EntityBuilder();
+                foreach(var component in item.Components)
                 {
-                    foreach(var component in item.Components)
+                    Type compType = Type.GetType(component.Type);
+                    try
                     {
-                        Type compType = Type.GetType(component.Type);
+                        IComponent comp = (IComponent)component.Data.ToObject(compType);
+                        if(comp is ICopyableComponent copyable)
+                        {
+                            newBuilder.With(copyable); 
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Component type {component.Type} must implement" +
+                                " the IComponentCopyable interface to be loaded from a file");
+                        }
+                    }
+                    catch
+                    {
+                        Debug.WriteLine($"Failed to create component from type {component.Type}");
                     }
                 }
+            }
         }
 
         private static Func<T> GetActivator<T>(ConstructorInfo ctor)

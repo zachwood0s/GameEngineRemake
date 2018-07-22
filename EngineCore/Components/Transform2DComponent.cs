@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace EngineCore.Components
 {
     [Component]
-    public class Transform2DComponent : IComponentHasDefault
+    public class Transform2DComponent : IComponentHasDefault, ICopyableComponent
     {
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
@@ -31,6 +31,11 @@ namespace EngineCore.Components
         {
             Position = new Vector2(0, 0);
             Rotation = 0;
+        }
+
+        public IComponent Copy()
+        {
+            return new Transform2DComponent() { Position = Position, Rotation = Rotation };
         }
     }
 }

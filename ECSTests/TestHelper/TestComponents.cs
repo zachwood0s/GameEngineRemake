@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ECSTests.TestHelper
 {
     [Component]
-    class TestComponent1 : IComponentHasDefault
+    class TestComponent1 : IComponentHasDefault, ICopyableComponent
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -18,10 +18,14 @@ namespace ECSTests.TestHelper
             X = 0;
             Y = 0;
         }
+        public IComponent Copy()
+        {
+            return new TestComponent1() { X = X, Y = Y };
+        }
     }
 
     [Component]
-    class TestComponent2 : IComponentHasDefault
+    class TestComponent2 : IComponentHasDefault, ICopyableComponent
     {
         public int Z { get; set; }
         public int W { get; set; }
@@ -30,9 +34,13 @@ namespace ECSTests.TestHelper
             Z = 0;
             W = 0;
         }
+        public IComponent Copy()
+        {
+            return new TestComponent2() { Z = Z, W = W };
+        }
     }
 
-    class UnregisteredComponent : IComponentHasDefault
+    class UnregisteredComponent : IComponentHasDefault, ICopyableComponent
     {
         public int Z { get; set; }
         public int W { get; set; }
@@ -40,6 +48,10 @@ namespace ECSTests.TestHelper
         {
             Z = 0;
             W = 0;
+        }
+        public IComponent Copy()
+        {
+            return new TestComponent2() { Z = Z, W = W };
         }
     }
 }

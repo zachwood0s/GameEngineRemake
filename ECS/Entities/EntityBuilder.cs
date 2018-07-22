@@ -20,6 +20,7 @@ namespace ECS.Entities
         //private List<int> _componentTypeIndicies;
         private List<Type> _componentTypes;
         private List<int> _componentTypeIndicies;
+        private List<ICopyableComponent> _componentTemplates;
         private List<Func<IComponent>> _creationFunctions;
 
         /// <summary>
@@ -36,17 +37,20 @@ namespace ECS.Entities
             _creationFunctions = new List<Func<IComponent>>();
             _componentTypeIndicies = new List<int>();
             _componentTypes = new List<Type>();
+            _componentTemplates = new List<ICopyableComponent>();
             _creationFunctionReturnTypes = new List<int>();
         }
 
         private EntityBuilder(List<Func<IComponent>> funcs,
                               List<int> indicies,
                               List<Type> types,
+                              List<ICopyableComponent> templates,
                               List<int> returnTypes)
         {
             _creationFunctions = new List<Func<IComponent>>(funcs);
             _componentTypeIndicies = new List<int>(indicies);
             _componentTypes = new List<Type>(types);
+            _componentTemplates = new List<ICopyableComponent>(templates);
             _creationFunctionReturnTypes = new List<int>(returnTypes);
         }
 
@@ -74,6 +78,17 @@ namespace ECS.Entities
             return this;
         }
 
+        public EntityBuilder With(ICopyableComponent comp)
+        {
+            bool added = _AddTypeIndice(comp.GetType());
+
+            if (added)
+            {
+                _componentTemplates.Add(comp);
+            }
+            return this;
+        }
+
         public EntityBuilder Without<T>() where T : IComponent
         {
             Type t = typeof(T);
@@ -88,14 +103,26 @@ namespace ECS.Entities
 
                 if (_componentTypes.Contains(t)) _componentTypes.Remove(t);
 
-                int functionIndex = _creationFunctionReturnTypes.IndexOf(compIndex);
-                if (functionIndex >= 0)
-                {
-                    _creationFunctionReturnTypes.RemoveAt(functionIndex);
-                    _creationFunctions.RemoveAt(functionIndex);
-                }
+                _RemoveFromFunctions(compIndex);
+                _RemoveFromTemplates(t);
+
             }
             return this;
+        }
+
+        private void _RemoveFromFunctions(int compIndex)
+        {
+            int functionIndex = _creationFunctionReturnTypes.IndexOf(compIndex);
+            if (functionIndex >= 0)
+            {
+                _creationFunctionReturnTypes.RemoveAt(functionIndex);
+                _creationFunctions.RemoveAt(functionIndex);
+            }
+        }
+
+        private void _RemoveFromTemplates(Type compType)
+        {
+            _componentTemplates.RemoveAll(c => c.GetType() == compType);
         }
 
         private bool _AddTypeIndice(Type t)
@@ -137,6 +164,12 @@ namespace ECS.Entities
             {
                 components.Add(function());
             }
+
+            foreach(ICopyableComponent comp in _componentTemplates)
+            {
+                components.Add(comp.Copy());
+            }
+
             _entity = new Entity(components, _componentTypeIndicies);
             scene.AddEntity(_entity);
             return _entity;
@@ -148,6 +181,7 @@ namespace ECS.Entities
                 _creationFunctions, 
                 _componentTypeIndicies, 
                 _componentTypes, 
+                _componentTemplates,
                 _creationFunctionReturnTypes
                 );
         }
