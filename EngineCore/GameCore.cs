@@ -70,12 +70,12 @@ namespace ExampleGame
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _globalSystems.Initialize();
             LoadSystemPools();
             // TODO: use this.Content to load your game content here
 
             LoadScenes();
 
-            _globalSystems.Initialize();
         }
 
         protected virtual void LoadSystemPools()

@@ -1,6 +1,7 @@
 ﻿using ECS.Attributes;
 using ECS.Components;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +11,25 @@ using System.Threading.Tasks;
 namespace EngineCore.Components
 {
     [Component]
-    public class BasicTexture: ICopyableComponent
+    public class BasicTextureComponent: ICopyableComponent
     {
         public string FileName { get; set; }
         public Texture2D Texture { get; set; }
         
-        public BasicTexture(string file)
+        [JsonConstructor]
+        public BasicTextureComponent(string file)
         {
             FileName = file;
         }
 
-        public BasicTexture(Texture2D tex)
+        public BasicTextureComponent(Texture2D tex)
         {
             Texture = tex;
         }
 
         public IComponent Copy()
         {
-            return new BasicTexture(FileName) { Texture = Texture };
+            return new BasicTextureComponent(FileName) { Texture = Texture };
         }
     }
 }

@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\BasicTexture.cs" />
+    <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\Transform2DComponent.cs" />
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

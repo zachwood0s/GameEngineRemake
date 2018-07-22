@@ -91,7 +91,11 @@ namespace ECS.Entities
 
         public EntityBuilder Without<T>() where T : IComponent
         {
-            Type t = typeof(T);
+            return Without(typeof(T));
+        }
+
+        public EntityBuilder Without(Type t)
+        {
             int compIndex = ComponentPool.GetComponentIndex(t);
 
             if (compIndex < 0)

@@ -28,12 +28,12 @@ namespace EngineCore.Systems.Rendering
 
         public override Matcher GetMatcher()
         {
-            return new Matcher().AllOf(typeof(Transform2DComponent), typeof(BasicTexture));
+            return new Matcher().AllOf(typeof(Transform2DComponent), typeof(BasicTextureComponent));
         }
 
         public override void Execute(Entity entity)
         {
-            BasicTexture tex = entity.GetComponent<BasicTexture>();
+            BasicTextureComponent tex = entity.GetComponent<BasicTextureComponent>();
             Transform2DComponent transform2D = entity.GetComponent<Transform2DComponent>();
 
             if(tex.Texture != null)
@@ -46,12 +46,12 @@ namespace EngineCore.Systems.Rendering
 
         public void Initialize()
         {
-            Group entitiesToLoad = Scene.GetGroup(new Matcher().Of<BasicTexture>());
+            Group entitiesToLoad = Scene.GetGroup(new Matcher().Of<BasicTextureComponent>());
             foreach(Entity e in entitiesToLoad)
             {
-                BasicTexture notLoadedComponent = e.GetComponent<BasicTexture>();
+                BasicTextureComponent notLoadedComponent = e.GetComponent<BasicTextureComponent>();
                 Texture2D tex = _contentManager.Load<Texture2D>(notLoadedComponent.FileName);
-                BasicTexture loadedTexComponent = new BasicTexture(tex);
+                BasicTextureComponent loadedTexComponent = new BasicTextureComponent(tex);
 
                 e.UpdateComponent(loadedTexComponent);
             }

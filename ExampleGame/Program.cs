@@ -1,4 +1,6 @@
 ﻿using System;
+using EngineCore.Systems.Global.EntityBuilderLoader;
+using ECS.Components;
 
 namespace ExampleGame
 {
@@ -13,8 +15,12 @@ namespace ExampleGame
         [STAThread]
         static void Main()
         {
-            using (var game = new TestGame())
-                game.Run();
+            ComponentPool.RegisterAllComponents();
+            var loader = new EntityBuilderLoader(new System.Collections.Generic.Dictionary<string, ECS.Entities.EntityBuilder>());
+            loader.RootDirectory = "Content/EntityBuilders";
+            loader.Initialize();
+           // using (var game = new TestGame())
+            //    game.Run();
         }
     }
 }

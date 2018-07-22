@@ -22,7 +22,7 @@ namespace ExampleGame
         {
             EntityBuilder builder = new EntityBuilder()
                 .With<Transform2DComponent>()
-                .With(() => new BasicTexture("test"));
+                .With(() => new BasicTextureComponent("test"));
             Scene scene1 = new Scene();
             scene1.AddSystemPoolFromBuilder(_systemPoolBuilders["Render"]);
             scene1.AddSystemPoolFromBuilder(_systemPoolBuilders["Update"]);

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace EngineCore.Systems.Global.EntityBuilderLoader
 {
-    class EntityBuilderLoader: IInitializeSystem
+    public class EntityBuilderLoader: IInitializeSystem
     {
 
         private Dictionary<string, EntityBuilder> _entityBuilders;
@@ -32,74 +32,84 @@ namespace EngineCore.Systems.Global.EntityBuilderLoader
             
             var list = JsonConvert.DeserializeObject<List<BuilderConstruct>>(File.ReadAllText("./"+RootDirectory+"/entity.json"));
             Console.WriteLine(list);
-            foreach(var item in list)
+            foreach(var builderConstruct in list)
             {
-                EntityBuilder newBuilder = new EntityBuilder();
-                foreach(var component in item.Components)
+                EntityBuilder newBuilder = _LoadBuilder(builderConstruct);
+                _entityBuilders.Add(builderConstruct.Name, newBuilder);
+            }
+        }
+
+        private EntityBuilder _LoadBuilder(BuilderConstruct builderConstruct)
+        {
+            EntityBuilder builder = _GetBuilder(builderConstruct);
+            if (builderConstruct.Components != null)
+            {
+                foreach (var componentConstruct in builderConstruct.Components)
                 {
-                    Type compType = Type.GetType(component.Type);
-                    try
+                    ICopyableComponent component = _LoadComponent(componentConstruct);
+                    if (component != null)
                     {
-                        IComponent comp = (IComponent)component.Data.ToObject(compType);
-                        if(comp is ICopyableComponent copyable)
-                        {
-                            newBuilder.With(copyable); 
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"Component type {component.Type} must implement" +
-                                " the IComponentCopyable interface to be loaded from a file");
-                        }
-                    }
-                    catch
-                    {
-                        Debug.WriteLine($"Failed to create component from type {component.Type}");
+                        builder.With(component);
                     }
                 }
             }
+            return builder;
         }
 
-        private static Func<T> GetActivator<T>(ConstructorInfo ctor)
+        private EntityBuilder _GetBuilder(BuilderConstruct builderConstruct)
         {
-            Type type = ctor.DeclaringType;
-            ParameterInfo[] paramsInfo = ctor.GetParameters();
-
-            //create a single param of type object[]
-            ParameterExpression param =
-                Expression.Parameter(typeof(object[]), "args");
-
-            Expression[] argsExp =
-                new Expression[paramsInfo.Length];
-
-            //pick each arg from the params array 
-            //and create a typed expression of them
-            for (int i = 0; i < paramsInfo.Length; i++)
+            if(builderConstruct.Extends != null)
             {
-                Expression index = Expression.Constant(i);
-                Type paramType = paramsInfo[i].ParameterType;
-
-                Expression paramAccessorExp =
-                    Expression.ArrayIndex(param, index);
-
-                Expression paramCastExp =
-                    Expression.Convert(paramAccessorExp, paramType);
-
-                argsExp[i] = paramCastExp;
+                if (_entityBuilders.TryGetValue(builderConstruct.Extends, out EntityBuilder existing))
+                {
+                    return _RemoveComponentsFromExistingBuilder(builderConstruct, existing);
+                }
+                else{
+                    Debug.WriteLine($"Attempted to extend entity builder {builderConstruct.Extends}" +
+                        " but no such entity builder was found");
+                }
             }
-
-            //make a NewExpression that calls the
-            //ctor with the args we just created
-            NewExpression newExp = Expression.New(ctor, argsExp);
-
-            //create a lambda with the New
-            //Expression as body and our param object[] as arg
-            LambdaExpression lambda =
-                Expression.Lambda(typeof(Func<T>), newExp, param);
-
-            //compile it
-            Func<T> compiled = (Func<T>)lambda.Compile();
-            return compiled;
+            return new EntityBuilder(); 
         }
+
+        private EntityBuilder _RemoveComponentsFromExistingBuilder(BuilderConstruct builderConstruct, EntityBuilder existing)
+        {
+            EntityBuilder builder = existing.Copy();
+            if(builderConstruct.Removes != null)
+            {
+                foreach(string removeTypeString in builderConstruct.Removes)
+                {
+                    Type removeType = Type.GetType(removeTypeString);
+                    builder.Without(removeType);
+                }
+            }
+            return builder;
+        }
+
+        private ICopyableComponent _LoadComponent(ComponentConstruct componentConstruct)
+        {
+            Type compType = Type.GetType(componentConstruct.Type);
+            try
+            {
+                IComponent comp = (IComponent)componentConstruct.Data.ToObject(compType);
+                if(comp is ICopyableComponent copyable)
+                {
+                    return copyable;
+                }
+                else
+                {
+                    Debug.WriteLine($"Component type {componentConstruct.Type} must implement" +
+                        " the IComponentCopyable interface to be loaded from a file");
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine($"Failed to create component from type {componentConstruct.Type}.");
+                Debug.WriteLine($"Message given: {e.Message}.");
+            }
+            return null;
+        }
+
     }
 
     class BuilderConstruct
