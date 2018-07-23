@@ -1,0 +1,13 @@
+﻿[
+	{
+		"Name": "TestBuilder",
+		"Components":[
+			{
+				"Type":"EngineCore.Components.BasicTexture",
+				"Data":{
+					"FileName":"Test"
+				}
+			}
+		]
+	}
+]
