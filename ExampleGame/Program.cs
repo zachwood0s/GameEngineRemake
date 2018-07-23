@@ -15,12 +15,8 @@ namespace ExampleGame
         [STAThread]
         static void Main()
         {
-            ComponentPool.RegisterAllComponents();
-            var loader = new EntityBuilderLoader(new System.Collections.Generic.Dictionary<string, ECS.Entities.EntityBuilder>());
-            loader.RootDirectory = "Content/EntityBuilders";
-            loader.Initialize();
-           // using (var game = new TestGame())
-            //    game.Run();
+            using (var game = new TestGame())
+                game.Run();
         }
     }
 }

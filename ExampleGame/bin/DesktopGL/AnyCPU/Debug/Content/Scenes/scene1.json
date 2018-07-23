@@ -1,12 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExampleGame.bin.DesktopGL.AnyCPU.Debug.Content.Scenes
-{
-    class scene1
-    {
-    }
+﻿{
+	"Name":"TestScene",
+	"SystemPools":["Render","Update"],
+	"Entities":[
+		{
+			"Extends":"TestBuilder"
+		},
+		{
+			"Extends":"TestBuilder",
+			"Removes":["EngineCore.Components.Transform2DComponent"],
+			"Components":[
+				{
+					"Type":"EngineCore.Components.Transform2DComponent",
+					"Data":{
+						"Position":"100, 100"
+					}
+				}
+			]
+		},
+		{
+			"Extends":"TestBuilder",
+			"Removes":["EngineCore.Components.Transform2DComponent"],
+			"Components":[
+				{
+					"Type":"EngineCore.Components.Transform2DComponent",
+					"Data":{
+						"Position":"200, 100"
+					}
+				}
+			]
+		},
+		{
+			"Extends":"TestBuilder",
+			"Removes":["EngineCore.Components.Transform2DComponent"],
+		},
+	]
 }

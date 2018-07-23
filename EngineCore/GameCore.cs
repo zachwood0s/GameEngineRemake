@@ -6,6 +6,7 @@ using ECS.Systems.SystemPools;
 using EngineCore.Components;
 using EngineCore.Systems;
 using EngineCore.Systems.Global.EntityBuilderLoader;
+using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -70,8 +71,8 @@ namespace ExampleGame
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _globalSystems.Initialize();
             LoadSystemPools();
+            _globalSystems.Initialize();
             // TODO: use this.Content to load your game content here
 
             LoadScenes();
@@ -93,6 +94,11 @@ namespace ExampleGame
             EntityBuilderLoader builderLoader = new EntityBuilderLoader(_entityBuilders);
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
+
+            SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
+            sceneLoader.RootDirectory = "Content/Scenes";
+            _globalSystems.Register(sceneLoader);
+
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)
@@ -104,6 +110,10 @@ namespace ExampleGame
 
         protected virtual void LoadScenes()
         {
+            foreach(Scene scene in _scenes.Values)
+            {
+                scene.Initialize();
+            }
         }
 
         /// <summary>

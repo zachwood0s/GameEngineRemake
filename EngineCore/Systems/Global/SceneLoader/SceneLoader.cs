@@ -36,6 +36,8 @@ namespace EngineCore.Systems.Global.SceneLoader
             SceneConstruct sceneConstruct = JsonConvert.DeserializeObject<SceneConstruct>(File.ReadAllText("./"+RootDirectory+"/scene1.json"));
             Scene newScene = new Scene();
             _LoadSystemPools(sceneConstruct, newScene);
+            _LoadEntities(sceneConstruct, newScene);
+            _scenes.Add(sceneConstruct.Name, newScene);
         }
 
         private void _LoadSystemPools(SceneConstruct sceneConstruct, Scene newScene)

@@ -34,7 +34,6 @@ namespace ExampleGame
             }
 
 
-            scene1.Initialize();
             _scenes.Add("test", scene1);
 
             Scene scene2 = new Scene();
@@ -44,8 +43,9 @@ namespace ExampleGame
             Entity e3 = scene2.CreateEntityFromBuilder(builder);
 
 
-            scene2.Initialize();
             _scenes.Add("test2", scene2);
+
+            base.LoadScenes();
         }
 
         protected override void Update(GameTime gameTime)
@@ -55,7 +55,7 @@ namespace ExampleGame
 
 
             // TODO: Add your update logic here
-            _scenes["test"].Execute();
+            _scenes["TestScene"].Execute();
             //_testScene.Execute();
 
             base.Update(gameTime);
