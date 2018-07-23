@@ -33,7 +33,15 @@ namespace EngineCore.Systems.Global.SceneLoader
         }
         public void Initialize()
         {
-            SceneConstruct sceneConstruct = JsonConvert.DeserializeObject<SceneConstruct>(File.ReadAllText("./"+RootDirectory+"/scene1.json"));
+            foreach (string file in Directory.EnumerateFiles("./" + RootDirectory, "*.json", SearchOption.AllDirectories))
+            {
+                _LoadFile(file);
+            }
+        }
+
+        private void _LoadFile(string file)
+        {
+            SceneConstruct sceneConstruct = JsonConvert.DeserializeObject<SceneConstruct>(File.ReadAllText(file));
             Scene newScene = new Scene();
             _LoadSystemPools(sceneConstruct, newScene);
             _LoadEntities(sceneConstruct, newScene);

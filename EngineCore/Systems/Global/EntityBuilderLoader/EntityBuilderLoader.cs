@@ -29,8 +29,14 @@ namespace EngineCore.Systems.Global.EntityBuilderLoader
         }
         public void Initialize()
         {
-            
-            var list = JsonConvert.DeserializeObject<List<BuilderConstruct>>(File.ReadAllText("./"+RootDirectory+"/entity.json"));
+            foreach (string file in Directory.EnumerateFiles("./" + RootDirectory, "*.json", SearchOption.AllDirectories))
+            {
+                _LoadFile(file);
+            }
+        }
+        private void _LoadFile(string file)
+        {
+            var list = JsonConvert.DeserializeObject<List<BuilderConstruct>>(File.ReadAllText(file));
             Console.WriteLine(list);
             foreach(var builderConstruct in list)
             {
