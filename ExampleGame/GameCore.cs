@@ -18,35 +18,6 @@ namespace ExampleGame
     /// </summary>
     public class TestGame : GameCore
     {
-        protected override void LoadScenes()
-        {
-            EntityBuilder builder = new EntityBuilder()
-                .With<Transform2DComponent>()
-                .With(() => new BasicTextureComponent("test"));
-            Scene scene1 = new Scene();
-            scene1.AddSystemPoolFromBuilder(_systemPoolBuilders["Render"]);
-            scene1.AddSystemPoolFromBuilder(_systemPoolBuilders["Update"]);
-
-            for(int i = 0; i<10; i++)
-            {
-                Entity e2 = scene1.CreateEntityFromBuilder(builder);
-                e2.UpdateComponent((Transform2DComponent comp) => comp.Position = new Vector2((40*i) % 599, (40*i) % 397));
-            }
-
-
-            _scenes.Add("test", scene1);
-
-            Scene scene2 = new Scene();
-            scene2.AddSystemPoolFromBuilder(_systemPoolBuilders["Render"]);
-            scene2.AddSystemPoolFromBuilder(_systemPoolBuilders["Update"]);
-
-            Entity e3 = scene2.CreateEntityFromBuilder(builder);
-
-
-            _scenes.Add("test2", scene2);
-
-            base.LoadScenes();
-        }
 
         protected override void Update(GameTime gameTime)
         {
