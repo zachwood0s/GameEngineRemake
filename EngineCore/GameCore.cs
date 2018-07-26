@@ -7,6 +7,7 @@ using EngineCore.Components;
 using EngineCore.Systems;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.SceneLoader;
+using EngineCore.Systems.Global.SceneManager;
 using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,14 +24,20 @@ namespace ExampleGame
     /// </summary>
     public class GameCore : Game
     {
-        protected GraphicsDeviceManager _graphics;
-        protected SpriteBatch _spriteBatch;
-        protected SystemPool _globalSystems;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private SystemPool _globalSystems;
+        protected SystemPool GlobalSystems => _globalSystems;
+        protected SpriteBatch SpriteBatch => _spriteBatch;
+        protected GraphicsDeviceManager Graphics => _graphics;
 
         //Scene _testScene;
-        protected Dictionary<string, Scene> _scenes;
-        protected Dictionary<string, EntityBuilder> _entityBuilders;
-        protected Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
+        private Dictionary<string, Scene> _scenes;
+        private Dictionary<string, EntityBuilder> _entityBuilders;
+        private Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
+        protected Dictionary<string, Scene> Scenes => _scenes;
+        protected Dictionary<string, EntityBuilder> EntityBuilders => _entityBuilders;
+        protected Dictionary<string, SystemPoolBuilder> SystemPoolBuilders => _systemPoolBuilders;
         
         
         public GameCore()
@@ -98,6 +105,9 @@ namespace ExampleGame
             SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
             sceneLoader.RootDirectory = "Content/Scenes";
             _globalSystems.Register(sceneLoader);
+
+            SceneManager sceneManager = new SceneManager(_scenes);
+            _globalSystems.Register(sceneManager);
 
         }
 

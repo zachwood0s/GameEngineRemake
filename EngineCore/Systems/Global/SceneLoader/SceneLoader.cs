@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace EngineCore.Systems.Global.SceneLoader
 {
-    class SceneLoader: IInitializeSystem
+    public class SceneLoader: IInitializeSystem
     {
         private Dictionary<string, Scene> _scenes;
         private Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
