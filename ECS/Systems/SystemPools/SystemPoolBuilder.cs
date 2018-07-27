@@ -13,6 +13,7 @@ namespace ECS.Systems.SystemPools
         private List<Type> _creationFuncsTypes;
         private int _targetFps;
         private bool _isThreaded;
+        private bool _isUncapped;
         private string _name;
 
         public SystemPoolBuilder(string name)
@@ -91,6 +92,13 @@ namespace ECS.Systems.SystemPools
             return this;
         }
 
+        public SystemPoolBuilder IsUncapped()
+        {
+            _isThreaded = true;
+            _isUncapped = true;
+            return this;
+        }
+
         /// <summary>
         /// Removes the FPS requirement on the current builder
         /// </summary>
@@ -126,7 +134,8 @@ namespace ECS.Systems.SystemPools
         {
 
             SystemPool newPool;
-            if (_isThreaded) newPool = new ThreadedSystemPool(_name + suffix, _targetFps);
+            if (_isThreaded && _isUncapped) newPool = new ThreadedSystemPool(_name + suffix);
+            else if (_isThreaded) newPool = new ThreadedSystemPool(_name + suffix, _targetFps);
             else newPool = new SystemPool(_name + suffix);
 
             foreach(var creationFunc in _creationFuncs)

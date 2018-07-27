@@ -6,6 +6,7 @@ using ECS.Systems.SystemPools;
 using EngineCore.Components;
 using EngineCore.Systems;
 using EngineCore.Systems.Global.EntityBuilderLoader;
+using EngineCore.Systems.Global.InputManager;
 using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Global.SceneManager;
 using EngineCore.Systems.Rendering;
@@ -88,16 +89,6 @@ namespace ExampleGame
 
         protected virtual void LoadSystemPools()
         {
-            CreateSystemPoolBuilder("Render")
-                .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
-                .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
-                .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
-                .With(_ => new SpriteBatchEndSystem(_spriteBatch));
-
-            CreateSystemPoolBuilder("Update")
-                .With(s => new TestMovementSystem(s))
-                .WithFPS(60);
-
             EntityBuilderLoader builderLoader = new EntityBuilderLoader(_entityBuilders);
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
@@ -109,6 +100,18 @@ namespace ExampleGame
             SceneManager sceneManager = new SceneManager(_scenes);
             _globalSystems.Register(sceneManager);
 
+            InputManager inputManager = new InputManager();
+            _globalSystems.Register(inputManager);
+
+            CreateSystemPoolBuilder("Render")
+                .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
+                .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
+                .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
+                .With(_ => new SpriteBatchEndSystem(_spriteBatch));
+
+            CreateSystemPoolBuilder("Update")
+                .With(s => new TestMovementSystem(s, inputManager))
+                .WithFPS(300);
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)

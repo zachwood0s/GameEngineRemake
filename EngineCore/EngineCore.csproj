@@ -56,12 +56,14 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\Global\EntityBuilderLoader\EntityBuilderLoader.cs" />
+    <Compile Include="Systems\Global\InputManager\InputManager.cs" />
     <Compile Include="Systems\Global\LoaderHelper.cs" />
     <Compile Include="Systems\Global\SceneLoader\SceneLoader.cs" />
     <Compile Include="Systems\Global\SceneManager\SceneManager.cs" />
     <Compile Include="Systems\Rendering\BasicRenderingSystem.cs" />
     <Compile Include="Systems\Rendering\ClearScreenSystem.cs" />
     <Compile Include="Systems\Rendering\SpriteBatchStartStopSystems.cs" />
+    <Compile Include="Systems\WeirdTimeSlow.cs" />
     <Compile Include="Systems\TestMovementSystem.cs" />
   </ItemGroup>
   <ItemGroup>
