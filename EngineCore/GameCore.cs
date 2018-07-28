@@ -101,6 +101,7 @@ namespace ExampleGame
             _globalSystems.Register(sceneManager);
 
             InputManager inputManager = new InputManager();
+            inputManager.InputFile = "Content/keybindings.json";
             _globalSystems.Register(inputManager);
 
             CreateSystemPoolBuilder("Render")

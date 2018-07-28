@@ -27,7 +27,7 @@ namespace EngineCore.Systems
                 float yInput = _inputManager.GetAxis("vertical");
                 comp.Position = new Microsoft.Xna.Framework.Vector2(
                     comp.Position.X + comp.Rotation* xInput , 
-                    comp.Position.Y+ comp.Rotation * yInput 
+                    comp.Position.Y + comp.Rotation * yInput 
                     );
             });
 

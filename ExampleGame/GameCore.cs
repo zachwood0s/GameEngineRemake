@@ -38,11 +38,13 @@ namespace ExampleGame
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
             sceneManager.ChangeScene("Scene2");
 
-            InputManager inputManager = GlobalSystems.GetSystem<InputManager>();
+            /*InputManager inputManager = GlobalSystems.GetSystem<InputManager>();
             inputManager.AddAxis("horizontal", new Axis(Keys.Right, Keys.D, Keys.Left, Keys.A));
             inputManager.AddAxis("vertical", new Axis(Keys.Down, Keys.S, Keys.Up, Keys.W));
             inputManager.AddAxis("time", new Axis(Keys.Space, Keys.Space, Keys.J, Keys.J));
+            */
 
+            /*
             var fuckyscene = Scenes["Scene2"];
             var random = new Random();
 
@@ -54,6 +56,7 @@ namespace ExampleGame
                     comp.Rotation = (float) random.NextDouble() * 2 ;
                     });
             }
+            */
 
             base.LoadScenes();
         }

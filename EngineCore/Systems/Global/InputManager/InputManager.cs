@@ -1,24 +1,36 @@
 ﻿using ECS.Systems.Interfaces;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EngineCore.Systems.Global.InputManager
 {
-    public class InputManager : IExecuteSystem
+    public class InputManager : IExecuteSystem, IInitializeSystem
     {
         private Dictionary<string, Axis> _axes;
         private KeyboardState _currentKeyboardState;
         private KeyboardState _previousKeyboardState;
+        
+        public string InputFile { get; set; }
         public InputManager()
         {
             _axes = new Dictionary<string, Axis>();
         }
 
+        public void Initialize()
+        {
+            List<Axis> axes = JsonConvert.DeserializeObject<List<Axis>>(File.ReadAllText("./" + InputFile));
+            foreach(Axis axis in axes)
+            {
+                _axes.Add(axis.Name, axis);
+            }
+        }
         public void Execute()
         {
             _previousKeyboardState = _currentKeyboardState;
@@ -78,7 +90,12 @@ namespace EngineCore.Systems.Global.InputManager
         {
             if(_axes.TryGetValue(axisName, out Axis axis))
             {
-                return axis.GetValue(_currentKeyboardState);
+                int axisVal = 0;
+                if (IsKeyDown(axis.PositiveButton) || IsKeyDown(axis.AltPositiveButton)) axisVal += 1;
+                if (IsKeyDown(axis.NegativeButton) || IsKeyDown(axis.AltNegativeButton)) axisVal -= 1;
+                //if (keyboardState.IsKeyUp(currentAxis.positiveButton) || keyboardState.IsKeyUp(currentAxis.altPositiveButton)) axisVal -= 1;
+                //if (keyboardState.IsKeyUp(currentAxis.negativeButton) || keyboardState.IsKeyUp(currentAxis.altNegativeButton)) axisVal += 1;
+                return Math.Max(-1, Math.Min(axisVal, 1));
             }
             else
             {
@@ -94,28 +111,11 @@ namespace EngineCore.Systems.Global.InputManager
 
     public class Axis
     {
-        private Keys _positiveButton,
-                     _negativeButton,
-                     _altPositiveButton,
-                     _altNegativeButton;
-
-        public Axis(Keys positiveButton, Keys altPositiveButton, Keys negativeButton, Keys altNegativeButton)
-        {
-            _positiveButton = positiveButton;
-            _altPositiveButton = altPositiveButton;
-            _negativeButton = negativeButton;
-            _altNegativeButton = altNegativeButton;
-        }
-
-        public float GetValue(KeyboardState keyboardState)
-        {
-            float value = 0;
-            if (keyboardState.IsKeyDown(_positiveButton) || keyboardState.IsKeyDown(_altPositiveButton)) value += 1;
-            if (keyboardState.IsKeyDown(_negativeButton) || keyboardState.IsKeyDown(_altNegativeButton)) value -= 1;
-
-            value = Math.Max(-1, Math.Min(value, 1));
-            return value;
-        }
+        public string Name { get; set; }
+        public Keys PositiveButton { get; set; }
+        public Keys AltPositiveButton { get; set; }
+        public Keys NegativeButton { get; set; }
+        public Keys AltNegativeButton { get; set; }
     }
 }
 
