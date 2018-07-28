@@ -49,11 +49,11 @@ namespace EngineCore.Systems.Rendering
             Group entitiesToLoad = Scene.GetGroup(new Matcher().Of<BasicTextureComponent>());
             foreach(Entity e in entitiesToLoad)
             {
-                BasicTextureComponent notLoadedComponent = e.GetComponent<BasicTextureComponent>();
-                Texture2D tex = _contentManager.Load<Texture2D>(notLoadedComponent.FileName);
-                BasicTextureComponent loadedTexComponent = new BasicTextureComponent(tex);
-
-                e.UpdateComponent(loadedTexComponent);
+                e.UpdateComponent<BasicTextureComponent>((textureComponent)=>
+                {
+                    Texture2D tex = _contentManager.Load<Texture2D>(textureComponent.FileName);
+                    textureComponent.Texture = tex;
+                });
             }
         }
     }

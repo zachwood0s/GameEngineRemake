@@ -16,20 +16,9 @@ namespace EngineCore.Components
         public string FileName { get; set; }
         public Texture2D Texture { get; set; }
         
-        [JsonConstructor]
-        public BasicTextureComponent(string file)
-        {
-            FileName = file;
-        }
-
-        public BasicTextureComponent(Texture2D tex)
-        {
-            Texture = tex;
-        }
-
         public IComponent Copy()
         {
-            return new BasicTextureComponent(FileName) { Texture = Texture };
+            return new BasicTextureComponent { Texture = Texture, FileName = FileName };
         }
     }
 }

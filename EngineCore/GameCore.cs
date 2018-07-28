@@ -5,6 +5,7 @@ using ECS.Systems;
 using ECS.Systems.SystemPools;
 using EngineCore.Components;
 using EngineCore.Systems;
+using EngineCore.Systems.Character;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
 using EngineCore.Systems.Global.SceneLoader;
@@ -111,7 +112,7 @@ namespace ExampleGame
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
-                .With(s => new TestMovementSystem(s, inputManager))
+                .With(s => new CharacterMovementSystem(s, inputManager))
                 .WithFPS(300);
         }
 
