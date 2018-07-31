@@ -213,7 +213,7 @@ namespace ECS
             }
             finally
             {
-                _readerWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
             
         }
