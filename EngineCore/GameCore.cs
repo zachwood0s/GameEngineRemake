@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,6 +52,10 @@ namespace ExampleGame
             _entityBuilders = new Dictionary<string, EntityBuilder>();
             _systemPoolBuilders = new Dictionary<string, SystemPoolBuilder>();
             _globalSystems = new SystemPool("Global");
+
+            IsFixedTimeStep = false;
+            TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
+            _graphics.SynchronizeWithVerticalRetrace = false;
         }
 
         /// <summary>
@@ -65,9 +70,6 @@ namespace ExampleGame
             ComponentPool.RegisterAllComponents();
             //ComponentPool.RegisterComponent<BasicTexture>();
             //ComponentPool.RegisterComponent<Transform2DComponent>();
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            IsFixedTimeStep = false;
-            TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
             base.Initialize();
         }
 
@@ -113,7 +115,7 @@ namespace ExampleGame
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new CharacterMovementSystem(s, inputManager))
-                .WithFPS(300);
+                .WithFPS(200);
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)
@@ -150,6 +152,11 @@ namespace ExampleGame
         {
             _globalSystems.Execute();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Update").CurrentFps);
+                Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Render").CurrentFps);
+            }
             base.Update(gameTime);
         }
     }

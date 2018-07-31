@@ -28,6 +28,17 @@ namespace EngineCore.Systems.Character
 
         public override void Execute(Entity entity)
         {
+            var transform = entity.GetComponent<Transform2DComponent>();
+            var movement = entity.GetComponent<CharacterMovementComponent>();
+
+            Vector2 moveVector = new Vector2(
+                 movement.CharacterMovementSpeed * _inputManager.GetAxis(movement.HorizontalInputAxis),
+                 movement.CharacterMovementSpeed * _inputManager.GetAxis(movement.VerticalInputAxis)
+                );
+            transform.Position = Vector2.Add(transform.Position, moveVector);
+
+            entity.UpdateComponent(transform);
+            /*
             entity.UpdateComponents<Transform2DComponent, CharacterMovementComponent>(
                 (transform, movement) =>
                 {
@@ -37,6 +48,7 @@ namespace EngineCore.Systems.Character
                         );
                     transform.Position = Vector2.Add(transform.Position, moveVector);
                 });
+                */
                 
         }
 

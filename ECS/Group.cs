@@ -8,6 +8,7 @@ using System.Collections;
 using System.Threading;
 using ECS.Matching;
 using ECS.Entities;
+using System.Collections.Concurrent;
 
 namespace ECS
 {
@@ -153,26 +154,29 @@ namespace ECS
 
         protected void _AddBackIfCached(Entity updatedEntity)
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
-            try
+            if (_cachedEntities.Count > 0)
             {
-                if (_cachedEntities.Contains(updatedEntity))
+                _readerWriterLock.EnterUpgradeableReadLock();
+                try
                 {
-                    _readerWriterLock.EnterWriteLock();
-                    try
+                    if (_cachedEntities.Contains(updatedEntity))
                     {
-                        _cachedEntities.Remove(updatedEntity);
-                        _groupEntities.Add(updatedEntity);
-                    }
-                    finally
-                    {
-                        _readerWriterLock.ExitWriteLock();
+                        _readerWriterLock.EnterWriteLock();
+                        try
+                        {
+                            _cachedEntities.Remove(updatedEntity);
+                            _groupEntities.Add(updatedEntity);
+                        }
+                        finally
+                        {
+                            _readerWriterLock.ExitWriteLock();
+                        }
                     }
                 }
-            }
-            finally
-            {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                finally
+                {
+                    _readerWriterLock.ExitUpgradeableReadLock();
+                }
             }
         }
 

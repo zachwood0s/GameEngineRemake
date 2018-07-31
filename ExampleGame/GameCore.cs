@@ -35,6 +35,21 @@ namespace ExampleGame
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
             sceneManager.ChangeScene("Scene2");
 
+            var scene = Scenes["Scene2"];
+            var random = new Random();
+
+            /*
+            for(int i = 0; i< 10000; i++)
+            {
+                var entity = EntityBuilders["TestBuilder"].Build(scene).With<CharacterMovementComponent>();
+                entity.UpdateComponent<Transform2DComponent>(comp => {
+                    comp.Position = new Vector2(random.Next(6000), random.Next(4000));
+                    comp.Rotation = (float) random.NextDouble() * 2 ;
+                    });
+            }
+            */
+
+
             base.LoadScenes();
         }
     }

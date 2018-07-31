@@ -2,6 +2,7 @@
 using ECS.Matching;
 using ECS.Systems.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace ECS.Systems
         private Group _group;
 
         protected Scene Scene => _scene;
+        protected Group Group => _group;
 
         public GroupExecuteSystem(Scene scene)
         {
@@ -24,12 +26,9 @@ namespace ECS.Systems
         public abstract Matcher GetMatcher();
         public void Execute()
         {
-            foreach(Entity e in _group)
+            for(int i = 0; i<_group.EntityCount; i++)
             {
-                lock (e)
-                {
-                    Execute(e);
-                }
+                Execute(_group[i]);
             }
         }
         public abstract void Execute(Entity entity);

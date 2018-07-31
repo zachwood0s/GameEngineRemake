@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace EngineCore.Components
 {
     [Component]
-    class CharacterMovementComponent : ICopyableComponent, IComponentHasDefault
+    public class CharacterMovementComponent : ICopyableComponent, IComponentHasDefault
     {
         public float CharacterMovementSpeed { get; set; }
         public string HorizontalInputAxis { get; set; }
