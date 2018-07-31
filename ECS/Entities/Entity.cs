@@ -23,6 +23,7 @@ namespace ECS.Entities
         private event EntityChangedEventHandler _OnComponentRemoved;
         private event EntityChangedEventHandler _OnComponentAdded;
 
+        public EntityChangedEventHandler OnComponentUpdated => _OnComponentUpdated;
         internal Entity()
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -154,11 +155,14 @@ namespace ECS.Entities
                 */
 
                 _readerWriterLock.ExitWriteLock();
-
+                _readerWriterLock.ExitUpgradeableReadLock();
                 _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
             }
 
-            _readerWriterLock.ExitUpgradeableReadLock();
+            if(_readerWriterLock.IsUpgradeableReadLockHeld)
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
 
             return this;
         }
@@ -192,7 +196,7 @@ namespace ECS.Entities
 
         private void _Remove(int oldCompIndex)
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.TryEnterUpgradeableReadLock(10);
 
             try
             {
@@ -225,11 +229,15 @@ namespace ECS.Entities
 
                 */
 
+                _readerWriterLock.ExitUpgradeableReadLock();
                 _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                if(_readerWriterLock.IsUpgradeableReadLockHeld)
+                {
+                    _readerWriterLock.ExitUpgradeableReadLock();
+                }
             }
         }
 
@@ -247,8 +255,8 @@ namespace ECS.Entities
             {
                 int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
 
-                if (existingCompIndex < 0)
-                    throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
+                if (existingCompIndex < 0) return;
+                    //throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
 
                 _readerWriterLock.EnterWriteLock();
 
@@ -260,12 +268,15 @@ namespace ECS.Entities
                 {
                     _readerWriterLock.ExitWriteLock();
                 }
-
+                _readerWriterLock.ExitUpgradeableReadLock();
                 _OnComponentUpdated(this, newCompPoolIndex, component);
             }
             finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                if(_readerWriterLock.IsUpgradeableReadLockHeld)
+                {
+                    _readerWriterLock.ExitUpgradeableReadLock();
+                }
             }
            
         }

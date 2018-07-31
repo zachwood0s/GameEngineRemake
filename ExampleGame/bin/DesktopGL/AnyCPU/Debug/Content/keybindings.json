@@ -1,0 +1,22 @@
+﻿[
+	{
+		"Name":"horizontal",
+		"PositiveButton":"D",
+		"NegativeButton":"A",
+	},
+	{
+		"Name":"vertical",
+		"PositiveButton":"S",
+		"NegativeButton":"W",
+	},
+	{
+		"Name":"horizontal2",
+		"PositiveButton":"Right",
+		"NegativeButton":"Left",
+	},
+	{
+		"Name":"vertical2",
+		"PositiveButton":"Down",
+		"NegativeButton":"Up",
+	}
+]

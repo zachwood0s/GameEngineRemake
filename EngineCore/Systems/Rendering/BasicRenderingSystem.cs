@@ -33,15 +33,15 @@ namespace EngineCore.Systems.Rendering
 
         public override void Execute(Entity entity)
         {
-            BasicTextureComponent tex = entity.GetComponent<BasicTextureComponent>();
-            Transform2DComponent transform2D = entity.GetComponent<Transform2DComponent>();
-
-            if(tex.Texture != null)
+            entity.UpdateComponents((BasicTextureComponent tex, Transform2DComponent transform2D) =>
             {
-                //_spriteBatch.Begin();
-                _spriteBatch.Draw(tex.Texture, transform2D.Position, Color.White);
-                //_spriteBatch.End();
-            }
+                if(tex.Texture != null)
+                {
+                    //_spriteBatch.Begin();
+                    _spriteBatch.Draw(tex.Texture, transform2D.Position, Color.White);
+                    //_spriteBatch.End();
+                }
+            });
         }
 
         public void Initialize()

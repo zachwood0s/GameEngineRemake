@@ -26,10 +26,7 @@ namespace ECS.Systems
         public abstract Matcher GetMatcher();
         public void Execute()
         {
-            for(int i = 0; i<_group.EntityCount; i++)
-            {
-                Execute(_group[i]);
-            }
+            _group.ApplyToAllEntities(Execute);
         }
         public abstract void Execute(Entity entity);
     }

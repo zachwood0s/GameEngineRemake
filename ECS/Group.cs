@@ -14,13 +14,13 @@ namespace ECS
 {
     public class Group: IEnumerable<Entity>
     {
-        private List<Entity> _groupEntities;
+        private SynchronizedCollection<Entity> _groupEntities;
         /// <summary>
         /// This is for all the entities that don't meet the filter requirements
         /// but still meet all the component requirements. We need to keep a list
         /// so that they can be added back when their filter passes again.
         /// </summary>
-        private List<Entity> _cachedEntities; 
+        private SynchronizedCollection<Entity> _cachedEntities; 
         protected Matcher _match;
 
         protected ReaderWriterLockSlim _readerWriterLock;
@@ -29,12 +29,15 @@ namespace ECS
         private event EntityChangedEventHandler _OnEntityComponentRemoved;
         private event EntityChangedEventHandler _OnEntityComponentAdded;
 
+        private GroupBatchUpdater _groupBatchUpdater;
+
         public Group(Matcher match)
         {
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _match = match;
-            _groupEntities = new List<Entity>();
-            _cachedEntities = new List<Entity>();
+            _groupEntities = new SynchronizedCollection<Entity>();
+            _cachedEntities = new SynchronizedCollection<Entity>();
+            _groupBatchUpdater = new GroupBatchUpdater(_RemoveAllNotValid, _groupEntities, _HandleEntityComponentUpdatedEvent);
         }
         public void AddEntity(Entity entity)
         {
@@ -187,6 +190,34 @@ namespace ECS
             }
         }
 
+        protected virtual void _RemoveAllNotValid()
+        {
+            _readerWriterLock.EnterUpgradeableReadLock();
+            try
+            {
+                Parallel.ForEach(_groupEntities, updatedEntity =>
+                {
+                    if (!updatedEntity.IsMatchNoFilter(_match))
+                    {
+                        _RemoveAndUnsubscribe(updatedEntity);
+                    }
+                    else if (!updatedEntity.IsMatchJustFilter(_match)) //Adding this component now made it invalid for this group
+                    {
+                        _RemoveOnlyBecauseFilter(updatedEntity);
+                    }
+                    else
+                    {
+                        _AddBackIfCached(updatedEntity);
+                    }
+                });
+            }
+            finally
+            {
+                _readerWriterLock.EnterUpgradeableReadLock();
+            }
+            
+        }
+
         protected virtual bool _RemoveIfNotValid(Entity updatedEntity, bool componentAddedOrRemoved)
         {
             bool isValid = true;
@@ -237,16 +268,40 @@ namespace ECS
         }
         private void _HandleEntityComponentUpdatedEvent(Entity updatedEntity, int componentIndex, IComponent component)
         {
+            if(_match.Filters.Count == 0)
+            {
+                _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
+            }
+            else if(_RemoveIfNotValid(updatedEntity, false))
+            {
+                _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
+            }
+            /*
             if (_RemoveIfNotValid(updatedEntity, false))
             {
                 //This will update any watchers we have 
                 _OnEntityComponentUpdated?.Invoke(updatedEntity, componentIndex, component);
             }
+            */
         }
 
         internal void SceneRemovedEntity(Entity e)
         {
             _RemoveAndUnsubscribe(e);
+        }
+        public void ApplyToAllEntities(Action<Entity> action)
+        {
+            _readerWriterLock.EnterUpgradeableReadLock();
+            foreach(Entity entity in _groupEntities)
+            {
+                action(entity);
+            }
+            _readerWriterLock.ExitUpgradeableReadLock();
+        }
+
+        public void UpdateAllEntitiesInGroup<T>(Action<Entity, T> updateAction) where T: class, IComponent
+        {
+            _groupBatchUpdater.UpdateAllEntities(updateAction);
         }
 
         #endregion
@@ -266,5 +321,43 @@ namespace ECS
         public int CachedEntityCount => _cachedEntities.Count;
 
         #endregion
+
+        private class GroupBatchUpdater
+        {
+            private SynchronizedCollection<Entity> _entities;
+            private ConcurrentDictionary<Entity, EntityChangedEventHandler> _OnComponentUpdatedEvents;
+            private readonly Action _removalAction;
+            private readonly EntityChangedEventHandler _groupUpdateEvent;
+
+            public GroupBatchUpdater(Action removalAction, SynchronizedCollection<Entity> entities, EntityChangedEventHandler groupUpdateEvent)
+            {
+                _removalAction = removalAction;
+                _entities = entities;
+                _groupUpdateEvent = groupUpdateEvent;
+                _OnComponentUpdatedEvents = new ConcurrentDictionary<Entity, EntityChangedEventHandler>();
+            }
+
+            public void UpdateAllEntities<T>(Action<Entity, T> updateAction) where T: class, IComponent
+            {
+                Parallel.ForEach(_entities, entity =>
+                {
+                    T component = entity.GetComponent<T>();
+                    int index = ComponentPool.GetComponentIndex<T>();
+                    updateAction(entity, component);
+                    _CallEntityUpdateEvent(entity, index, component);
+                });
+                _removalAction();
+            }
+
+            private void _CallEntityUpdateEvent(Entity entity, int componentIndex, IComponent component)
+            {
+                if(!_OnComponentUpdatedEvents.TryGetValue(entity, out EntityChangedEventHandler updateEvent))
+                {
+                    EntityChangedEventHandler eventHandler = entity.OnComponentUpdated - _groupUpdateEvent;
+                    _OnComponentUpdatedEvents.GetOrAdd(entity, eventHandler);
+                }
+                updateEvent?.Invoke(entity, componentIndex, component);
+            }
+        }
     }
 }
