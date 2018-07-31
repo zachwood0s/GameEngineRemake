@@ -292,16 +292,18 @@ namespace ECS
         public void ApplyToAllEntities(Action<Entity> action)
         {
             _readerWriterLock.EnterUpgradeableReadLock();
-            foreach(Entity entity in _groupEntities)
+            for(int i = 0; i<_groupEntities.Count; i++)
             {
-                action(entity);
+                action(_groupEntities[i]);
             }
             _readerWriterLock.ExitUpgradeableReadLock();
         }
 
         public void UpdateAllEntitiesInGroup<T>(Action<Entity, T> updateAction) where T: class, IComponent
         {
+            _readerWriterLock.EnterWriteLock();
             _groupBatchUpdater.UpdateAllEntities(updateAction);
+            _readerWriterLock.ExitWriteLock();
         }
 
         #endregion

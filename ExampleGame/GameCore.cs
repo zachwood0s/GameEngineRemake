@@ -38,11 +38,11 @@ namespace ExampleGame
             var scene = Scenes["Scene2"];
             var random = new Random();
 
-            for(int i = 0; i< 5000; i++)
+            for(int i = 0; i< 10000; i++)
             {
                 var entity = EntityBuilders["TestBuilder"].Build(scene).With<CharacterMovementComponent>();
                 entity.UpdateComponent<Transform2DComponent>(comp => {
-                    comp.Position = new Vector2(random.Next(600), random.Next(400));
+                    comp.Position = new Vector2(random.Next(600)+300, random.Next(400));
                     comp.Rotation = (float) random.NextDouble() * 2 ;
                     });
             }
