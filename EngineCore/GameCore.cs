@@ -2,6 +2,7 @@
 using ECS.Components;
 using ECS.Entities;
 using ECS.Systems;
+using ECS.Systems.Interfaces;
 using ECS.Systems.SystemPools;
 using EngineCore.Components;
 using EngineCore.Systems;
@@ -10,6 +11,7 @@ using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
 using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Global.SceneManager;
+using EngineCore.Systems.Global.SettingsLoader;
 using EngineCore.Systems.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,10 +40,15 @@ namespace ExampleGame
         private Dictionary<string, Scene> _scenes;
         private Dictionary<string, EntityBuilder> _entityBuilders;
         private Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
+        private IInitializeSystem _settingsLoader;
         protected Dictionary<string, Scene> Scenes => _scenes;
         protected Dictionary<string, EntityBuilder> EntityBuilders => _entityBuilders;
         protected Dictionary<string, SystemPoolBuilder> SystemPoolBuilders => _systemPoolBuilders;
-        
+        protected IInitializeSystem SettingsLoader
+        {
+            get => _settingsLoader;
+            set => _settingsLoader = value;
+        }
         
         public GameCore()
         {
@@ -56,6 +63,8 @@ namespace ExampleGame
             IsFixedTimeStep = false;
             TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
             _graphics.SynchronizeWithVerticalRetrace = false;
+
+            _settingsLoader = new SettingsLoader();
         }
 
         /// <summary>
@@ -66,10 +75,13 @@ namespace ExampleGame
         /// </summary>
         protected override void Initialize()
         {
+
+            _settingsLoader.Initialize();
             // TODO: Add your initialization logic here
             ComponentPool.RegisterAllComponents();
             //ComponentPool.RegisterComponent<BasicTexture>();
             //ComponentPool.RegisterComponent<Transform2DComponent>();
+            Graphics.ApplyChanges();
             base.Initialize();
         }
 

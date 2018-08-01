@@ -1,4 +1,5 @@
 ﻿using ECS.Systems.Interfaces;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using System;
@@ -16,8 +17,15 @@ namespace EngineCore.Systems.Global.InputManager
         private Dictionary<string, Axis> _axes;
         private KeyboardState _currentKeyboardState;
         private KeyboardState _previousKeyboardState;
+        private MouseState _currentMouseState;
+        private MouseState _previouseMouseState;
         
         public string InputFile { get; set; }
+
+        public Vector2 MousePosition
+        {
+            get => new Vector2(_currentMouseState.X, _currentMouseState.Y);
+        }
         public InputManager()
         {
             _axes = new Dictionary<string, Axis>();
@@ -34,8 +42,10 @@ namespace EngineCore.Systems.Global.InputManager
         public void Execute()
         {
             _previousKeyboardState = _currentKeyboardState;
+            _previouseMouseState = _currentMouseState;
 
             _currentKeyboardState = Keyboard.GetState();
+            _currentMouseState = Mouse.GetState();
         }
 
         public bool WasKeyPressed(Keys key)
@@ -93,8 +103,6 @@ namespace EngineCore.Systems.Global.InputManager
                 int axisVal = 0;
                 if (IsKeyDown(axis.PositiveButton) || IsKeyDown(axis.AltPositiveButton)) axisVal += 1;
                 if (IsKeyDown(axis.NegativeButton) || IsKeyDown(axis.AltNegativeButton)) axisVal -= 1;
-                //if (keyboardState.IsKeyUp(currentAxis.positiveButton) || keyboardState.IsKeyUp(currentAxis.altPositiveButton)) axisVal -= 1;
-                //if (keyboardState.IsKeyUp(currentAxis.negativeButton) || keyboardState.IsKeyUp(currentAxis.altNegativeButton)) axisVal += 1;
                 return Math.Max(-1, Math.Min(axisVal, 1));
             }
             else
@@ -109,13 +117,5 @@ namespace EngineCore.Systems.Global.InputManager
         }
     }
 
-    public class Axis
-    {
-        public string Name { get; set; }
-        public Keys PositiveButton { get; set; }
-        public Keys AltPositiveButton { get; set; }
-        public Keys NegativeButton { get; set; }
-        public Keys AltNegativeButton { get; set; }
-    }
 }
 

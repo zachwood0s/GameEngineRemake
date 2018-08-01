@@ -38,7 +38,7 @@ namespace ExampleGame
             var scene = Scenes["Scene2"];
             var random = new Random();
 
-            for(int i = 0; i< 10000; i++)
+            for(int i = 0; i< 1000; i++)
             {
                 var entity = EntityBuilders["TestBuilder"].Build(scene).With<CharacterMovementComponent>();
                 entity.UpdateComponent<Transform2DComponent>(comp => {

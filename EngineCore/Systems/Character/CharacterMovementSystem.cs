@@ -42,14 +42,6 @@ namespace EngineCore.Systems.Character
                          movement.CharacterMovementSpeed * _inputManager.GetAxis(movement.VerticalInputAxis)
                         );
                     transform.Position = Vector2.Add(transform.Position, moveVector);
-
-                    if(transform.Position.X > 600)
-                    {
-                        if (entity.HasComponent<BasicTextureComponent>())
-                        {
-                            entity.Remove<BasicTextureComponent>();
-                        }
-                    }
                 });
             /*
             _group.ApplyToAllEntities(entity =>
@@ -71,7 +63,6 @@ namespace EngineCore.Systems.Character
                         entity.Remove<BasicTextureComponent>();
                 }
             });
-            */
             /*
             entity.UpdateComponents<Transform2DComponent, CharacterMovementComponent>(
                 (transform, movement) =>

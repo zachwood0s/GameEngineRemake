@@ -138,30 +138,44 @@ namespace ECS.Entities
                 throw new UnregisteredComponentException($"Component of type {newComp.GetType()} has not been registered with the ComponentPool.");
 
             _readerWriterLock.EnterUpgradeableReadLock();
+            bool exitedLock = false;
 
-            if (!_componentTypeIndiciesLookup.Contains(newCompIndex))
+            try
             {
-                _readerWriterLock.EnterWriteLock();
-
-                _components.Add(newComp);
-                _componentTypeIndicies.Add(newCompIndex);
-                _componentTypeIndiciesLookup.Add(newCompIndex);
-
-                /*
-                if (newComp is SettableComponent maybeSettable)
+                if (!_componentTypeIndiciesLookup.Contains(newCompIndex))
                 {
-                    maybeSettable.SubscribeToChanges(SettableComponentUpdated);
+                    _readerWriterLock.EnterWriteLock();
+
+                    try
+                    {
+                        _components.Add(newComp);
+                        _componentTypeIndicies.Add(newCompIndex);
+                        _componentTypeIndiciesLookup.Add(newCompIndex);
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ExitWriteLock();
+                    }
+
+                    /*
+                    if (newComp is SettableComponent maybeSettable)
+                    {
+                        maybeSettable.SubscribeToChanges(SettableComponentUpdated);
+                    }
+                    */
+
+                    _readerWriterLock.ExitUpgradeableReadLock();
+                    exitedLock = true;
+                    _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
                 }
-                */
 
-                _readerWriterLock.ExitWriteLock();
-                _readerWriterLock.ExitUpgradeableReadLock();
-                _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
             }
-
-            if(_readerWriterLock.IsUpgradeableReadLockHeld)
+            finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
+                {
+                    _readerWriterLock.ExitUpgradeableReadLock();
+                }
             }
 
             return this;
@@ -197,7 +211,7 @@ namespace ECS.Entities
         private void _Remove(int oldCompIndex)
         {
             _readerWriterLock.TryEnterUpgradeableReadLock(10);
-
+            bool exitedLock = false;
             try
             {
                 int compIndex = _componentTypeIndicies.IndexOf(oldCompIndex);
@@ -230,11 +244,12 @@ namespace ECS.Entities
                 */
 
                 _readerWriterLock.ExitUpgradeableReadLock();
+                exitedLock = true;
                 _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
-                if(_readerWriterLock.IsUpgradeableReadLockHeld)
+                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
                 {
                     _readerWriterLock.ExitUpgradeableReadLock();
                 }
@@ -248,15 +263,15 @@ namespace ECS.Entities
         public void UpdateComponent<T>(T component) where T:class, IComponent
         {
             int newCompPoolIndex = ComponentPool.GetComponentIndex<T>();
-
+            bool exitedLock = false;
             _readerWriterLock.EnterUpgradeableReadLock();
 
             try
             {
                 int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
 
-                if (existingCompIndex < 0) return;
-                    //throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
+                if (existingCompIndex < 0) 
+                    throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
 
                 _readerWriterLock.EnterWriteLock();
 
@@ -269,11 +284,12 @@ namespace ECS.Entities
                     _readerWriterLock.ExitWriteLock();
                 }
                 _readerWriterLock.ExitUpgradeableReadLock();
+                exitedLock = true;
                 _OnComponentUpdated(this, newCompPoolIndex, component);
             }
             finally
             {
-                if(_readerWriterLock.IsUpgradeableReadLockHeld)
+                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
                 {
                     _readerWriterLock.ExitUpgradeableReadLock();
                 }
@@ -303,35 +319,41 @@ namespace ECS.Entities
         public void UpdateComponents<T1, T2>(Action<T1, T2> updateAction) where T1: class, IComponent 
                                                                           where T2: class, IComponent
         {
+            _readerWriterLock.EnterUpgradeableReadLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>();
             if (c1 != null && c2 != null)
             {
                 updateAction(c1, c2);
                 UpdateComponent(c1); UpdateComponent(c2);
             }
+            _readerWriterLock.ExitUpgradeableReadLock();
         }
         public void UpdateComponents<T1, T2, T3>(Action<T1, T2, T3> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
                                                                                   where T3: class, IComponent
         {
+            _readerWriterLock.EnterUpgradeableReadLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>();
             if (c1 != null && c2 != null && c3 != null)
             {
                 updateAction(c1, c2, c3);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3);
             }
+            _readerWriterLock.ExitUpgradeableReadLock();
         }
         public void UpdateComponents<T1, T2, T3, T4>(Action<T1, T2, T3, T4> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
                                                                                   where T3: class, IComponent
                                                                                   where T4: class, IComponent
         {
+            _readerWriterLock.EnterUpgradeableReadLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
             if (c1 != null && c2 != null && c3 != null && c4 != null)
             {
                 updateAction(c1, c2, c3, c4);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4);
             }
+            _readerWriterLock.ExitUpgradeableReadLock();
         }
         public void UpdateComponents<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
@@ -339,12 +361,14 @@ namespace ECS.Entities
                                                                                   where T4: class, IComponent
                                                                                   where T5: class, IComponent
         {
+            _readerWriterLock.EnterUpgradeableReadLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>(); T5 c5 = GetComponent<T5>();
             if (c1 != null && c2 != null && c3 != null && c4 != null && c5 != null)
             {
                 updateAction(c1, c2, c3, c4, c5);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
             }
+            _readerWriterLock.ExitUpgradeableReadLock();
         }
 
         /*
