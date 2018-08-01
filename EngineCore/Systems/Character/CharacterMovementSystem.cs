@@ -33,7 +33,6 @@ namespace EngineCore.Systems.Character
 
         public void Execute()
         {
-            /*
             _group.UpdateAllEntitiesInGroup(
                 (Entity entity, Transform2DComponent transform) =>
                 {
@@ -52,7 +51,7 @@ namespace EngineCore.Systems.Character
                         }
                     }
                 });
-                */
+            /*
             _group.ApplyToAllEntities(entity =>
             {
                 var transform = entity.GetComponent<Transform2DComponent>();
@@ -67,12 +66,12 @@ namespace EngineCore.Systems.Character
                 entity.UpdateComponent(transform);
                 if (transform.Position.X > 600)
                 {
-                    _scene.RemoveEntity(entity);
-                    //if (entity.HasComponent<BasicTextureComponent>())
-
-                     //   entity.Remove<BasicTextureComponent>();
+                    //_scene.RemoveEntity(entity);
+                    if (entity.HasComponent<BasicTextureComponent>())
+                        entity.Remove<BasicTextureComponent>();
                 }
             });
+            */
             /*
             entity.UpdateComponents<Transform2DComponent, CharacterMovementComponent>(
                 (transform, movement) =>

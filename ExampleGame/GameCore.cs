@@ -42,7 +42,7 @@ namespace ExampleGame
             {
                 var entity = EntityBuilders["TestBuilder"].Build(scene).With<CharacterMovementComponent>();
                 entity.UpdateComponent<Transform2DComponent>(comp => {
-                    comp.Position = new Vector2(random.Next(600)+300, random.Next(400));
+                    comp.Position = new Vector2(random.Next(600), random.Next(400));
                     comp.Rotation = (float) random.NextDouble() * 2 ;
                     });
             }

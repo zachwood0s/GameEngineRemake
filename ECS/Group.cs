@@ -301,9 +301,7 @@ namespace ECS
 
         public void UpdateAllEntitiesInGroup<T>(Action<Entity, T> updateAction) where T: class, IComponent
         {
-            _readerWriterLock.EnterWriteLock();
             _groupBatchUpdater.UpdateAllEntities(updateAction);
-            _readerWriterLock.ExitWriteLock();
         }
 
         #endregion
