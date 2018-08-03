@@ -96,13 +96,22 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
+        public bool IsMousePressed(string mouseButton)
+        {
+            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Pressed;
+            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Pressed;
+            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed;
+            else return false;
+        }
         public float GetAxis(string axisName)
         {
             if(_axes.TryGetValue(axisName, out Axis axis))
             {
                 int axisVal = 0;
-                if (IsKeyDown(axis.PositiveButton) || IsKeyDown(axis.AltPositiveButton)) axisVal += 1;
-                if (IsKeyDown(axis.NegativeButton) || IsKeyDown(axis.AltNegativeButton)) axisVal -= 1;
+                if (IsKeyDown(axis.PositiveKeyButton) || IsKeyDown(axis.AltPositiveKeyButton) ||
+                    IsMousePressed(axis.PositiveMouseButton) || IsMousePressed(axis.AltPositiveMouseButton)) axisVal += 1;
+                if (IsKeyDown(axis.NegativeKeyButton) || IsKeyDown(axis.AltNegativeKeyButton) ||
+                    IsMousePressed(axis.NegativeMouseButton) || IsMousePressed(axis.AltNegativeMouseButton)) axisVal -= 1;
                 return Math.Max(-1, Math.Min(axisVal, 1));
             }
             else

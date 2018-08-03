@@ -10,9 +10,13 @@ namespace EngineCore.Systems.Global.InputManager
     public class Axis
     {
         public string Name { get; set; }
-        public Keys PositiveButton { get; set; }
-        public Keys AltPositiveButton { get; set; }
-        public Keys NegativeButton { get; set; }
-        public Keys AltNegativeButton { get; set; }
+        public Keys PositiveKeyButton { get; set; }
+        public Keys AltPositiveKeyButton { get; set; }
+        public Keys NegativeKeyButton { get; set; }
+        public Keys AltNegativeKeyButton { get; set; }
+        public string PositiveMouseButton { get; set; }
+        public string AltPositiveMouseButton { get; set; }
+        public string NegativeMouseButton { get; set; }
+        public string AltNegativeMouseButton { get; set; }
     }
 }

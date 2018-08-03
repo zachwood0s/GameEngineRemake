@@ -1,22 +1,24 @@
 ﻿[
 	{
 		"Name":"horizontal",
-		"PositiveButton":"D",
-		"NegativeButton":"A",
+		"PositiveKeyButton":"D",
+		"NegativeKeyButton":"A",
 	},
-	{
-		"Name":"vertical",
-		"PositiveButton":"S",
-		"NegativeButton":"W",
-	},
+  {
+    "Name": "vertical",
+    "PositiveKeyButton": "W",
+    "NegativeKeyButton": "S",
+    "PositiveMouseButton": "left mouse",
+    "NegativeMouseButton": "right mouse"
+  },
 	{
 		"Name":"horizontal2",
-		"PositiveButton":"Right",
-		"NegativeButton":"Left",
+		"PositiveKeyButton":"Right",
+		"NegativeKeyButton":"Left",
 	},
 	{
 		"Name":"vertical2",
-		"PositiveButton":"Down",
-		"NegativeButton":"Up",
+		"PositiveKeyButton":"Down",
+		"NegativeKeyButton":"Up",
 	}
 ]
