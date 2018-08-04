@@ -103,6 +103,26 @@ namespace EngineCore.Systems.Global.InputManager
             if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed;
             else return false;
         }
+        public bool WasMousePressed(string mouseButton)
+        {
+            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Pressed &&
+                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Pressed &&
+                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed &&
+                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+            else return false;
+        }
+        public bool WasMouseReleased(string mouseButton)
+        {
+            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Released && 
+                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Released &&
+                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Released &&
+                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+            else return false;
+        }
         public float GetAxis(string axisName)
         {
             if(_axes.TryGetValue(axisName, out Axis axis))
