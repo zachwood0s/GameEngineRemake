@@ -1,9 +1,14 @@
 ﻿[
-	{
-		"Name":"horizontal",
-		"PositiveKeyButton":"D",
-		"NegativeKeyButton":"A",
-	},
+  {
+    "Name": "horizontal",
+    "PlayerIndex": "One",
+    "PositiveKeyButton": "D",
+    "NegativeKeyButton": "A",
+    "PositiveGamePadButton": "A",
+    "NegativeGamePadButton": "B",
+    "AltPositiveGamePadButton": "A",
+    "AltNegativeGamePadButton":  "B"
+  },
   {
     "Name": "vertical",
     "PositiveKeyButton": "W",
