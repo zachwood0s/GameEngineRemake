@@ -40,7 +40,7 @@ namespace ExampleGame
         private Dictionary<string, Scene> _scenes;
         private Dictionary<string, EntityBuilder> _entityBuilders;
         private Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
-        private IInitializeSystem _settingsLoader;
+        private IInitializeSystem _settingsLoader; 
         protected Dictionary<string, Scene> Scenes => _scenes;
         protected Dictionary<string, EntityBuilder> EntityBuilders => _entityBuilders;
         protected Dictionary<string, SystemPoolBuilder> SystemPoolBuilders => _systemPoolBuilders;
@@ -60,11 +60,11 @@ namespace ExampleGame
             _systemPoolBuilders = new Dictionary<string, SystemPoolBuilder>();
             _globalSystems = new SystemPool("Global");
 
-            IsFixedTimeStep = false;
-            TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
-            _graphics.SynchronizeWithVerticalRetrace = false;
-
-            _settingsLoader = new SettingsLoader();
+            //IsFixedTimeStep = false;
+            //TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
+            //_graphics.SynchronizeWithVerticalRetrace = false;
+            _settingsLoader = new SettingsLoader(this, _graphics, Content);
+            ((SettingsLoader) _settingsLoader).RootDirectory = "Content";
         }
 
         /// <summary>
