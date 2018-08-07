@@ -18,9 +18,9 @@ namespace EngineCore.Systems.Global.InputManager
         private KeyboardState _currentKeyboardState;
         private KeyboardState _previousKeyboardState;
         private MouseState _currentMouseState;
-        private MouseState _previouseMouseState;
-        private Dictionary<PlayerIndex, GamePadState> _currentGamePadStates;
-        private Dictionary<PlayerIndex, GamePadState> _previousGamePadStates;
+        private MouseState _previousMouseState;
+        private GamePadState[] _currentGamePadStates;
+        private GamePadState[] _previousGamePadStates;
 
         public string InputFile { get; set; }
 
@@ -31,8 +31,8 @@ namespace EngineCore.Systems.Global.InputManager
         public InputManager()
         {
             _axes = new Dictionary<string, Axis>();
-            _currentGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
-            _previousGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
+            _currentGamePadStates = new GamePadState[4];
+            _previousGamePadStates = new GamePadState[4];
         }
 
         public void Initialize()
@@ -41,31 +41,25 @@ namespace EngineCore.Systems.Global.InputManager
             foreach(Axis axis in axes)
             {
                 _axes.Add(axis.Name, axis);
-                if (!_currentGamePadStates.ContainsKey(axis.PlayerIndex))   // Initialize game pad states
-                {
-                    _currentGamePadStates.Add(axis.PlayerIndex, GamePad.GetState(axis.PlayerIndex));
-                    _previousGamePadStates.Add(axis.PlayerIndex, GamePad.GetState(axis.PlayerIndex));
-                }
             }
         }
         public void Execute()
         {
             // Set previous states
             _previousKeyboardState = _currentKeyboardState;
-            _previouseMouseState = _currentMouseState;
-            foreach(PlayerIndex key in _currentGamePadStates.Keys)
+            _previousMouseState = _currentMouseState;
+            for(int i = 0; i < _previousGamePadStates.Length; i++)
             {
-                _previousGamePadStates[key] = _currentGamePadStates[key];
+                _previousGamePadStates[i] = _currentGamePadStates[i];
             }
 
             // Set current states
             _currentKeyboardState = Keyboard.GetState();
             _currentMouseState = Mouse.GetState();
-            List<PlayerIndex> gamepadkeys = new List<PlayerIndex>();
-            foreach (PlayerIndex key in _currentGamePadStates.Keys) gamepadkeys.Add(key);
-            foreach (PlayerIndex index in gamepadkeys) {
-                GamePadCapabilities capabilities = GamePad.GetCapabilities(index);
-                if (capabilities.IsConnected) _currentGamePadStates[index] = GamePad.GetState(index);
+            for(int i = 0; i < _currentGamePadStates.Length; i++)
+            {
+                GamePadCapabilities capabilities = GamePad.GetCapabilities(i);
+                if (capabilities.IsConnected) _currentGamePadStates[i] = GamePad.GetState(i);
             }
 
             // Temperary Testing
@@ -74,6 +68,13 @@ namespace EngineCore.Systems.Global.InputManager
             if (WasGamePadReleased("A")) Console.WriteLine("A Was Released");
             if (IsGamePadButtonPressed("A")) Console.WriteLine("A Is Pressed");
             if (GetGamePadThumbStick("Left X", out x)) Console.WriteLine("Left Thumbstick X: " + x);
+
+            if (WasMousePressed("left mouse")) Console.WriteLine("Mouse Left Pressed");
+            if (WasMouseReleased("left mouse")) Console.WriteLine("Mouse Left Released");
+            if (WasMousePressed("right mouse")) Console.WriteLine("Mouse Right Pressed");
+            if (WasMouseReleased("right mouse")) Console.WriteLine("Mouse Right Released");
+            if (WasMousePressed("middle mouse")) Console.WriteLine("Mouse Middle Pressed");
+            if (WasMouseReleased("middle mouse")) Console.WriteLine("Mouse Middle Released");
         }
 
         # region Key Events
@@ -134,11 +135,11 @@ namespace EngineCore.Systems.Global.InputManager
         public bool WasMousePressed(string mouseButton)
         {
             if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Pressed &&
-                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+                                                    _previousMouseState.LeftButton == ButtonState.Released;
             if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Pressed &&
-                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+                                                    _previousMouseState.RightButton == ButtonState.Released;
             if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed &&
-                                                    _previouseMouseState.LeftButton == ButtonState.Released;
+                                                    _previousMouseState.MiddleButton == ButtonState.Released;
             else
             {
                 Debug.WriteLine($"Mouse '{mouseButton}' does not exist");
@@ -148,11 +149,11 @@ namespace EngineCore.Systems.Global.InputManager
         public bool WasMouseReleased(string mouseButton)
         {
             if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Released && 
-                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+                                                    _previousMouseState.LeftButton == ButtonState.Pressed;
             if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Released &&
-                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+                                                    _previousMouseState.RightButton == ButtonState.Pressed;
             if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Released &&
-                                                    _previouseMouseState.LeftButton == ButtonState.Pressed;
+                                                    _previousMouseState.MiddleButton == ButtonState.Pressed;
             else
             {
                 Debug.WriteLine($"Mouse '{mouseButton}' does not exist");
@@ -170,9 +171,9 @@ namespace EngineCore.Systems.Global.InputManager
         #endregion
 
         #region GamePad Events
-        public bool WasGamePadPressed(Buttons button, PlayerIndex index = PlayerIndex.One)
+        public bool WasGamePadPressed(Buttons button, PlayerIndex playernum = PlayerIndex.One)
         {
-            if (button != 0) return _currentGamePadStates[index].IsButtonDown(button) && _previousGamePadStates[index].IsButtonUp(button);
+            if (button != 0) return _currentGamePadStates[(int)playernum].IsButtonDown(button) && _previousGamePadStates[(int)playernum].IsButtonUp(button);
             else return false;
         }
         public bool WasGamePadPressed(string button, int playernum = 0)
@@ -187,16 +188,16 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool WasGamePadReleased(Buttons button, PlayerIndex index = PlayerIndex.One)
+        public bool WasGamePadReleased(Buttons button, PlayerIndex playernum = PlayerIndex.One)
         {
-            if (button != 0) return _previousGamePadStates[index].IsButtonDown(button) && _currentGamePadStates[index].IsButtonUp(button);
+            if (button != 0) return _previousGamePadStates[(int)playernum].IsButtonDown(button) && _currentGamePadStates[(int)playernum].IsButtonUp(button);
             else return false;
         }
         public bool WasGamePadReleased(string button, int playernum = 0)
         {
             try
             {
-                return WasGamePadReleased((Buttons)Enum.Parse(typeof(Buttons), button), (PlayerIndex) playernum);
+                return WasGamePadReleased((Buttons)Enum.Parse(typeof(Buttons), button), (PlayerIndex)playernum);
             }
             catch
             {
@@ -204,9 +205,9 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool IsGamePadButtonPressed(Buttons button, PlayerIndex index = PlayerIndex.One)
+        public bool IsGamePadButtonPressed(Buttons button, PlayerIndex playernum = PlayerIndex.One)
         {
-            if (button != 0) return _currentGamePadStates[index].IsButtonDown(button);
+            if (button != 0) return _currentGamePadStates[(int)playernum].IsButtonDown(button);
             else return false;
         }
         public bool IsGamePadButtonPressed(string button, int playernum = 0)
@@ -223,10 +224,10 @@ namespace EngineCore.Systems.Global.InputManager
         }
         public bool GetGamePadThumbStick(string axis, out float stickPos, int playernum = 0)
         {
-            if (axis == "Left X") return _checkThumbstickValue(_currentGamePadStates[(PlayerIndex)playernum].ThumbSticks.Left.X, out stickPos);
-            else if (axis == "Left Y") return _checkThumbstickValue(_currentGamePadStates[(PlayerIndex)playernum].ThumbSticks.Left.Y, out stickPos);
-            else if (axis == "Right X") return _checkThumbstickValue(_currentGamePadStates[(PlayerIndex)playernum].ThumbSticks.Right.X, out stickPos);
-            else if (axis == "Right Y") return _checkThumbstickValue(_currentGamePadStates[(PlayerIndex)playernum].ThumbSticks.Right.Y, out stickPos);
+            if (axis == "Left X") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Left.X, out stickPos);
+            else if (axis == "Left Y") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Left.Y, out stickPos);
+            else if (axis == "Right X") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Right.X, out stickPos);
+            else if (axis == "Right Y") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Right.Y, out stickPos);
             else
             {
                 Debug.WriteLine($"Game Pad Thumb Stick '{axis}' was not found");
