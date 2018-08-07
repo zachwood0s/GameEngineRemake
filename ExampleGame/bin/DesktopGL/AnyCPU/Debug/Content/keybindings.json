@@ -1,20 +1,19 @@
 ﻿[
   {
     "Name": "horizontal",
-    "PlayerIndex": "One",
+    "PlayerIndex": [ "one" ],
     "PositiveKeyButton": "D",
     "NegativeKeyButton": "A",
-    "PositiveGamePadButton": "A",
-    "NegativeGamePadButton": "B",
-    "AltPositiveGamePadButton": "A",
-    "AltNegativeGamePadButton":  "B"
+    "JoystickAxis": "Left X",
+    "AltJoystickAxis": "Right X"
   },
   {
     "Name": "vertical",
+    "PlayerIndex": [ "one" ],
     "PositiveKeyButton": "W",
     "NegativeKeyButton": "S",
-    "PositiveMouseButton": "left mouse",
-    "NegativeMouseButton": "right mouse"
+    "JoystickAxis": "Left Y",
+    "AltJoystickAxis": "Right Y"
   },
 	{
 		"Name":"horizontal2",

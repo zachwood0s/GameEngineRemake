@@ -67,7 +67,7 @@ namespace EngineCore.Systems.Global.InputManager
             if (WasGamePadPressed("A")) Console.WriteLine("A Was Pressed");
             if (WasGamePadReleased("A")) Console.WriteLine("A Was Released");
             if (IsGamePadButtonPressed("A")) Console.WriteLine("A Is Pressed");
-            if (GetGamePadThumbStick("Left X", out x)) Console.WriteLine("Left Thumbstick X: " + x);
+            //Console.WriteLine("Left Thumbstick X: " + GetJoyStickAxis("Left X", raw: true));
 
             if (WasMousePressed("left mouse")) Console.WriteLine("Mouse Left Pressed");
             if (WasMouseReleased("left mouse")) Console.WriteLine("Mouse Left Released");
@@ -75,6 +75,8 @@ namespace EngineCore.Systems.Global.InputManager
             if (WasMouseReleased("right mouse")) Console.WriteLine("Mouse Right Released");
             if (WasMousePressed("middle mouse")) Console.WriteLine("Mouse Middle Pressed");
             if (WasMouseReleased("middle mouse")) Console.WriteLine("Mouse Middle Released");
+
+            //Console.WriteLine("Axis: " + GetAxis("horizontal", raw: true));
         }
 
         # region Key Events
@@ -171,16 +173,24 @@ namespace EngineCore.Systems.Global.InputManager
         #endregion
 
         #region GamePad Events
-        public bool WasGamePadPressed(Buttons button, PlayerIndex playernum = PlayerIndex.One)
+        public bool WasGamePadPressed(Buttons button, PlayerIndex[] playernums = null)
         {
-            if (button != 0) return _currentGamePadStates[(int)playernum].IsButtonDown(button) && _previousGamePadStates[(int)playernum].IsButtonUp(button);
-            else return false;
+            if (playernums == null) playernums = new PlayerIndex[1] { 0 };
+            if (button != 0)
+            {
+                foreach (PlayerIndex playernum in playernums)
+                {
+                    if (_previousGamePadStates[(int)playernum].IsButtonUp(button) && _currentGamePadStates[(int)playernum].IsButtonDown(button)) return true;
+                }
+            }
+            return false;
         }
-        public bool WasGamePadPressed(string button, int playernum = 0)
+        public bool WasGamePadPressed(string button, int[] playernums = null)
         {
             try
             {
-                return WasGamePadPressed((Buttons)Enum.Parse(typeof(Buttons), button), (PlayerIndex)playernum);
+                if (playernums == null) playernums = new int[1] { 0 };
+                return WasGamePadPressed((Buttons)Enum.Parse(typeof(Buttons), button), Array.ConvertAll(playernums, item => (PlayerIndex)item));
             }
             catch
             {
@@ -188,16 +198,24 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool WasGamePadReleased(Buttons button, PlayerIndex playernum = PlayerIndex.One)
+        public bool WasGamePadReleased(Buttons button, PlayerIndex[] playernums = null)
         {
-            if (button != 0) return _previousGamePadStates[(int)playernum].IsButtonDown(button) && _currentGamePadStates[(int)playernum].IsButtonUp(button);
-            else return false;
+            if (playernums == null) playernums = new PlayerIndex[1] { 0 };
+            if (button != 0)
+            {
+                foreach (PlayerIndex playernum in playernums)
+                {
+                    if (_previousGamePadStates[(int)playernum].IsButtonDown(button) && _currentGamePadStates[(int)playernum].IsButtonUp(button)) return true;
+                }
+            }
+            return false;
         }
-        public bool WasGamePadReleased(string button, int playernum = 0)
+        public bool WasGamePadReleased(string button, int[] playernums = null)
         {
             try
             {
-                return WasGamePadReleased((Buttons)Enum.Parse(typeof(Buttons), button), (PlayerIndex)playernum);
+                if (playernums == null) playernums = new int[1] { 0 };
+                return WasGamePadReleased((Buttons)Enum.Parse(typeof(Buttons), button), Array.ConvertAll(playernums, item => (PlayerIndex)item));
             }
             catch
             {
@@ -205,16 +223,24 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool IsGamePadButtonPressed(Buttons button, PlayerIndex playernum = PlayerIndex.One)
+        public bool IsGamePadButtonPressed(Buttons button, PlayerIndex[] playernums = null)
         {
-            if (button != 0) return _currentGamePadStates[(int)playernum].IsButtonDown(button);
-            else return false;
+            if (playernums == null) playernums = new PlayerIndex[1] { 0 };
+            if (button != 0)
+            {
+                foreach (PlayerIndex playernum in playernums)
+                {
+                    if (_currentGamePadStates[(int)playernum].IsButtonDown(button)) return true;
+                }
+            }
+            return false;
         }
-        public bool IsGamePadButtonPressed(string button, int playernum = 0)
+        public bool IsGamePadButtonPressed(string button, int[] playernums = null)
         {
             try
             {
-                return IsGamePadButtonPressed((Buttons)Enum.Parse(typeof(Buttons), button), (PlayerIndex)playernum);
+                if (playernums == null) playernums = new int[1] { 0 };
+                return IsGamePadButtonPressed((Buttons)Enum.Parse(typeof(Buttons), button), Array.ConvertAll(playernums, item => (PlayerIndex)item));
             }
             catch
             {
@@ -222,42 +248,67 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool GetGamePadThumbStick(string axis, out float stickPos, int playernum = 0)
+        public float GetJoyStickAxis(string axis, int playernum = 0, bool raw = false)
         {
-            if (axis == "Left X") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Left.X, out stickPos);
-            else if (axis == "Left Y") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Left.Y, out stickPos);
-            else if (axis == "Right X") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Right.X, out stickPos);
-            else if (axis == "Right Y") return _checkThumbstickValue(_currentGamePadStates[playernum].ThumbSticks.Right.Y, out stickPos);
+            float stickPos = 0;
+            if (axis == "Left X") stickPos = _currentGamePadStates[playernum].ThumbSticks.Left.X;
+            else if (axis == "Left Y") stickPos = _currentGamePadStates[playernum].ThumbSticks.Left.Y;
+            else if (axis == "Right X") stickPos = _currentGamePadStates[playernum].ThumbSticks.Right.X;
+            else if (axis == "Right Y") stickPos = _currentGamePadStates[playernum].ThumbSticks.Right.Y;
             else
             {
                 Debug.WriteLine($"Game Pad Thumb Stick '{axis}' was not found");
                 stickPos = 0;
-                return false;
+                
             }
-        }
-        private bool _checkThumbstickValue(float val, out float stickPos)
-        {
-            stickPos = val;
-            if (Math.Abs(val) > .25) return true;
-            return false;
+            if (raw)
+            {
+                if (stickPos > .25) stickPos = 1;
+                else if (stickPos < -.25) stickPos = -1;
+                else stickPos = 0;
+            }
+            return stickPos;
         }
 
         #endregion
 
-        public float GetAxis(string axisName)
+        public float GetAxis(string axisName, bool raw = false)
         {
             if(_axes.TryGetValue(axisName, out Axis axis))
             {
-                int axisVal = 0;
+                float speed = 1;
+                if (raw) axis.CurrentValue = 0;
+                else speed = axis.axisSpeed;
+
+                // Positive buttons
                 if (IsKeyDown(axis.PositiveKeyButton) || IsKeyDown(axis.AltPositiveKeyButton) ||
                     IsMousePressed(axis.PositiveMouseButton) || IsMousePressed(axis.AltPositiveMouseButton) ||
-                    IsGamePadButtonPressed(axis.PositiveGamePadButton, axis.PlayerIndex) || 
-                    IsGamePadButtonPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) axisVal += 1;
+                    IsGamePadButtonPressed(axis.PositiveGamePadButton, axis.PlayerIndex) ||
+                    IsGamePadButtonPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) axis.CurrentValue += speed;
+                else if (axis.CurrentValue > 0 && !raw)
+                {
+                    axis.CurrentValue -= speed * 5;
+                    if (axis.CurrentValue < 0) axis.CurrentValue = 0;
+                }
+
+                // Negative buttons
                 if (IsKeyDown(axis.NegativeKeyButton) || IsKeyDown(axis.AltNegativeKeyButton) ||
                     IsMousePressed(axis.NegativeMouseButton) || IsMousePressed(axis.AltNegativeMouseButton) ||
                     IsGamePadButtonPressed(axis.NegativeGamePadButton, axis.PlayerIndex) ||
-                    IsGamePadButtonPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) axisVal -= 1;
-                return Math.Max(-1, Math.Min(axisVal, 1));
+                    IsGamePadButtonPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) axis.CurrentValue -= speed;
+                else if (axis.CurrentValue < 0 && !raw)
+                {
+                    axis.CurrentValue += speed * 5;
+                    if (axis.CurrentValue > 0) axis.CurrentValue = 0;
+                }
+
+                // Joystick Axes
+                float joyAxisVal = GetJoyStickAxis(axis.JoystickAxis);
+                float altJoyAxisVal = GetJoyStickAxis(axis.AltJoystickAxis);
+                if (joyAxisVal != 0) axis.CurrentValue = joyAxisVal;
+                if (altJoyAxisVal != 0) axis.CurrentValue = altJoyAxisVal;
+
+                return Math.Max(-1, Math.Min(axis.CurrentValue, 1));
             }
             else
             {
