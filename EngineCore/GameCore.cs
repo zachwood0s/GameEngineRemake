@@ -13,6 +13,7 @@ using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Global.SceneManager;
 using EngineCore.Systems.Global.SettingsLoader;
 using EngineCore.Systems.Rendering;
+using EngineCore.Systems.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -123,6 +124,7 @@ namespace ExampleGame
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
+                .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")

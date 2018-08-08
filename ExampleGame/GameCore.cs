@@ -35,6 +35,7 @@ namespace ExampleGame
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
             sceneManager.ChangeScene("TestScene");
 
+
             var scene = Scenes["TestScene"];
             var random = new Random();
 

@@ -48,7 +48,7 @@ namespace EngineCore.Systems.Global.SettingsLoader
         protected void _LoadSettings(SettingsConstruct construct)
         {
             _gameCore.IsFixedTimeStep = construct.LockedRenderFps;
-            _gameCore.TargetElapsedTime = construct.TargetElapsedTime;
+            _gameCore.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / construct.TargetRenderFps);
             _gameCore.IsMouseVisible = construct.IsMouseVisible;
 
             _content.RootDirectory = construct.ContentDirectory;
@@ -66,7 +66,7 @@ namespace EngineCore.Systems.Global.SettingsLoader
     {
         public string ContentDirectory { get; set; } = "Content";
         public bool LockedRenderFps { get; set; } = true;
-        public TimeSpan TargetElapsedTime { get; set; } = TimeSpan.FromSeconds(1.0f / 60.0f);
+        public int TargetRenderFps { get; set; } = 60;
         public bool VSync { get; set; } = true;
         public bool IsMouseVisible { get; set; } = true;
         public int WindowWidth { get; set; } = 600;

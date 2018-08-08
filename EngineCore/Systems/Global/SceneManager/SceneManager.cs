@@ -12,6 +12,7 @@ namespace EngineCore.Systems.Global.SceneManager
     {
         private Dictionary<string, Scene> _scenes;
         private Scene _currentScene;
+
         public SceneManager(Dictionary<string, Scene> scenes)
         {
             _scenes = scenes;
