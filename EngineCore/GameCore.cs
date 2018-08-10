@@ -5,6 +5,7 @@ using ECS.Systems;
 using ECS.Systems.Interfaces;
 using ECS.Systems.SystemPools;
 using EngineCore.Components;
+using EngineCore.Scripting;
 using EngineCore.Systems;
 using EngineCore.Systems.Character;
 using EngineCore.Systems.Global.EntityBuilderLoader;
@@ -13,6 +14,7 @@ using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Global.SceneManager;
 using EngineCore.Systems.Global.SettingsLoader;
 using EngineCore.Systems.Rendering;
+using EngineCore.Systems.Scripting;
 using EngineCore.Systems.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,6 +35,7 @@ namespace ExampleGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SystemPool _globalSystems;
+        private ScriptGlobals _defaultScriptGlobals;
         protected SystemPool GlobalSystems => _globalSystems;
         protected SpriteBatch SpriteBatch => _spriteBatch;
         protected GraphicsDeviceManager Graphics => _graphics;
@@ -66,6 +69,7 @@ namespace ExampleGame
             //_graphics.SynchronizeWithVerticalRetrace = false;
             _settingsLoader = new SettingsLoader(this, _graphics, Content);
             ((SettingsLoader) _settingsLoader).RootDirectory = "Content";
+
         }
 
         /// <summary>
@@ -105,6 +109,7 @@ namespace ExampleGame
 
         protected virtual void LoadSystemPools()
         {
+            #region Global Systems
             EntityBuilderLoader builderLoader = new EntityBuilderLoader(_entityBuilders);
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
@@ -120,6 +125,18 @@ namespace ExampleGame
             inputManager.InputFile = "Content/keybindings.json";
             _globalSystems.Register(inputManager);
 
+            _defaultScriptGlobals = new ScriptGlobals()
+            {
+                InputManager = inputManager,
+                SceneManager = sceneManager
+            };
+
+            UpdateScriptSystem.RootDirectory = "Content/Scripts";
+            UpdateScriptSystem.DefaultUpdateFunctionName = "Update";
+            #endregion
+
+            #region System Pools
+
             CreateSystemPoolBuilder("Render")
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
@@ -129,7 +146,10 @@ namespace ExampleGame
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new CharacterMovementSystem(s, inputManager))
+                .With(s => new UpdateScriptSystem(s, _defaultScriptGlobals))
                 .WithFPS(200);
+
+            #endregion
         }
 
         protected SystemPoolBuilder CreateSystemPoolBuilder(string name)

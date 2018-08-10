@@ -33,12 +33,13 @@ namespace ExampleGame
         protected override void LoadScenes()
         {
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
-            sceneManager.ChangeScene("TestScene");
+            sceneManager.ChangeScene("Scene2");
 
 
-            var scene = Scenes["TestScene"];
+            var scene = Scenes["Scene2"];
             var random = new Random();
 
+            /*
             for(int i = 0; i< 1000; i++)
             {
                 var entity = EntityBuilders["TestBuilder"].Build(scene).With<CharacterMovementComponent>();
@@ -47,6 +48,7 @@ namespace ExampleGame
                     comp.Rotation = (float) random.NextDouble() * 2 ;
                     });
             }
+            */
 
 
             base.LoadScenes();
