@@ -8,20 +8,14 @@ using System.Threading.Tasks;
 
 namespace EngineCore.Systems.Global.InputManager
 {
+    public enum MouseButtons { Left, Right, Middle, None }
+    public enum Joystick { LeftX, RightX, LeftY, RightY, None }
     public class Axis
     {
-
-        #region Non Read in Attributes
-
-        public float CurrentValue { get; set; } = 0;
-
-        #endregion
-
         #region Global Attributes
 
         public string Name { get; set; }
-
-        public float axisSpeed { get; set; } = .0000096f;    // Maybe a better name
+        public bool Invert { get; set; } = false;
 
         #endregion
 
@@ -36,10 +30,10 @@ namespace EngineCore.Systems.Global.InputManager
 
         #region Mouse Attributes
 
-        public string PositiveMouseButton { get; set; }
-        public string AltPositiveMouseButton { get; set; }
-        public string NegativeMouseButton { get; set; }
-        public string AltNegativeMouseButton { get; set; }
+        public MouseButtons PositiveMouseButton { get; set; } = MouseButtons.None;
+        public MouseButtons AltPositiveMouseButton { get; set; } = MouseButtons.None;
+        public MouseButtons NegativeMouseButton { get; set; } = MouseButtons.None;
+        public MouseButtons AltNegativeMouseButton { get; set; } = MouseButtons.None;
 
         #endregion
 
@@ -50,8 +44,8 @@ namespace EngineCore.Systems.Global.InputManager
         public Buttons AltPositiveGamePadButton { get; set; }
         public Buttons NegativeGamePadButton { get; set; }
         public Buttons AltNegativeGamePadButton { get; set; }
-        public string JoystickAxis { get; set; }
-        public string AltJoystickAxis { get; set; }
+        public Joystick JoystickAxis { get; set; } = Joystick.None;
+        public Joystick AltJoystickAxis { get; set; } = Joystick.None;
 
         #endregion
     }

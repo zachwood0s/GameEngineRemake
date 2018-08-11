@@ -4,25 +4,32 @@
     "PlayerIndex": [ "one" ],
     "PositiveKeyButton": "D",
     "NegativeKeyButton": "A",
-    "JoystickAxis": "Left X",
-    "AltJoystickAxis": "Right X"
+    "JoystickAxis": "LeftX",
+    "AltJoystickAxis": "RightX"
   },
   {
     "Name": "vertical",
     "PlayerIndex": [ "one" ],
+    "Invert": "True",
     "PositiveKeyButton": "W",
     "NegativeKeyButton": "S",
-    "JoystickAxis": "Left Y",
-    "AltJoystickAxis": "Right Y"
+    "JoystickAxis": "LeftY",
+    "AltJoystickAxis": "RightY"
   },
-	{
-		"Name":"horizontal2",
-		"PositiveKeyButton":"Right",
-		"NegativeKeyButton":"Left",
-	},
-	{
-		"Name":"vertical2",
-		"PositiveKeyButton":"Down",
-		"NegativeKeyButton":"Up",
-	}
+  {
+    "Name": "horizontal2",
+    "PlayerIndex": [ "two" ],
+    "PositiveKeyButton": "Right",
+    "NegativeKeyButton": "Left",
+    "JoystickAxis": "LeftX",
+    "AltJoystickAxis": "RightX"
+  },
+  {
+    "Name": "vertical2",
+    "PlayerIndex": [ "two" ],
+    "PositiveKeyButton": "Down",
+    "NegativeKeyButton": "Up",
+    "JoystickAxis": "LeftY",
+    "AltJoystickAxis": "RightY"
+  }
 ]

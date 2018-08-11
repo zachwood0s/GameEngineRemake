@@ -63,18 +63,17 @@ namespace EngineCore.Systems.Global.InputManager
             }
 
             // Temperary Testing
-            float x = 0;
             if (WasGamePadPressed("A")) Console.WriteLine("A Was Pressed");
             if (WasGamePadReleased("A")) Console.WriteLine("A Was Released");
             if (IsGamePadButtonPressed("A")) Console.WriteLine("A Is Pressed");
             //Console.WriteLine("Left Thumbstick X: " + GetJoyStickAxis("Left X", raw: true));
 
-            if (WasMousePressed("left mouse")) Console.WriteLine("Mouse Left Pressed");
-            if (WasMouseReleased("left mouse")) Console.WriteLine("Mouse Left Released");
-            if (WasMousePressed("right mouse")) Console.WriteLine("Mouse Right Pressed");
-            if (WasMouseReleased("right mouse")) Console.WriteLine("Mouse Right Released");
-            if (WasMousePressed("middle mouse")) Console.WriteLine("Mouse Middle Pressed");
-            if (WasMouseReleased("middle mouse")) Console.WriteLine("Mouse Middle Released");
+            if (WasMousePressed(MouseButtons.Left)) Console.WriteLine("Mouse Left Pressed");
+            if (WasMouseReleased(MouseButtons.Left)) Console.WriteLine("Mouse Left Released");
+            if (WasMousePressed(MouseButtons.Right)) Console.WriteLine("Mouse Right Pressed");
+            if (WasMouseReleased(MouseButtons.Right)) Console.WriteLine("Mouse Right Released");
+            if (WasMousePressed(MouseButtons.Middle)) Console.WriteLine("Mouse Middle Pressed");
+            if (WasMouseReleased(MouseButtons.Middle)) Console.WriteLine("Mouse Middle Released");
 
             //Console.WriteLine("Axis: " + GetAxis("horizontal", raw: true));
         }
@@ -113,15 +112,15 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool IsKeyDown(Keys key)
+        public bool IsKeyPressed(Keys key)
         {
             return _currentKeyboardState.IsKeyDown(key);
         }
-        public bool IsKeyDown(string keyName)
+        public bool IsKeyPressed(string keyName)
         {
             try
             {
-                return IsKeyDown((Keys)Enum.Parse(typeof(Keys), keyName));
+                return IsKeyPressed((Keys)Enum.Parse(typeof(Keys), keyName));
             }
             catch
             {
@@ -134,13 +133,13 @@ namespace EngineCore.Systems.Global.InputManager
 
         # region Mouse Events
 
-        public bool WasMousePressed(string mouseButton)
+        public bool WasMousePressed(MouseButtons mouseButton)
         {
-            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Pressed &&
+            if (mouseButton == MouseButtons.Left) return _currentMouseState.LeftButton == ButtonState.Pressed &&
                                                     _previousMouseState.LeftButton == ButtonState.Released;
-            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Pressed &&
+            if (mouseButton == MouseButtons.Right) return _currentMouseState.RightButton == ButtonState.Pressed &&
                                                     _previousMouseState.RightButton == ButtonState.Released;
-            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed &&
+            if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Pressed &&
                                                     _previousMouseState.MiddleButton == ButtonState.Released;
             else
             {
@@ -148,13 +147,13 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool WasMouseReleased(string mouseButton)
+        public bool WasMouseReleased(MouseButtons mouseButton)
         {
-            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Released && 
+            if (mouseButton == MouseButtons.Left) return _currentMouseState.LeftButton == ButtonState.Released && 
                                                     _previousMouseState.LeftButton == ButtonState.Pressed;
-            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Released &&
+            if (mouseButton == MouseButtons.Right) return _currentMouseState.RightButton == ButtonState.Released &&
                                                     _previousMouseState.RightButton == ButtonState.Pressed;
-            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Released &&
+            if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Released &&
                                                     _previousMouseState.MiddleButton == ButtonState.Pressed;
             else
             {
@@ -162,17 +161,18 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public bool IsMousePressed(string mouseButton)
+        public bool IsMousePressed(MouseButtons mouseButton)
         {
-            if (mouseButton == "left mouse") return _currentMouseState.LeftButton == ButtonState.Pressed;
-            if (mouseButton == "right mouse") return _currentMouseState.RightButton == ButtonState.Pressed;
-            if (mouseButton == "middle mouse") return _currentMouseState.MiddleButton == ButtonState.Pressed;
+            if (mouseButton == MouseButtons.Left) return _currentMouseState.LeftButton == ButtonState.Pressed;
+            if (mouseButton == MouseButtons.Right) return _currentMouseState.RightButton == ButtonState.Pressed;
+            if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Pressed;
             else return false;
         }
 
         #endregion
 
         #region GamePad Events
+        
         public bool WasGamePadPressed(Buttons button, PlayerIndex[] playernums = null)
         {
             if (playernums == null) playernums = new PlayerIndex[1] { 0 };
@@ -248,18 +248,17 @@ namespace EngineCore.Systems.Global.InputManager
                 return false;
             }
         }
-        public float GetJoyStickAxis(string axis, int playernum = 0, bool raw = false)
+        public float GetJoyStickAxis(Joystick axis, PlayerIndex playernum = PlayerIndex.One, bool raw = false)
         {
             float stickPos = 0;
-            if (axis == "Left X") stickPos = _currentGamePadStates[playernum].ThumbSticks.Left.X;
-            else if (axis == "Left Y") stickPos = _currentGamePadStates[playernum].ThumbSticks.Left.Y;
-            else if (axis == "Right X") stickPos = _currentGamePadStates[playernum].ThumbSticks.Right.X;
-            else if (axis == "Right Y") stickPos = _currentGamePadStates[playernum].ThumbSticks.Right.Y;
-            else
+            if (axis == Joystick.LeftX) stickPos = _currentGamePadStates[(int)playernum].ThumbSticks.Left.X;
+            else if (axis == Joystick.LeftY) stickPos = _currentGamePadStates[(int)playernum].ThumbSticks.Left.Y;
+            else if (axis == Joystick.RightX) stickPos = _currentGamePadStates[(int)playernum].ThumbSticks.Right.X;
+            else if (axis == Joystick.RightY) stickPos = _currentGamePadStates[(int)playernum].ThumbSticks.Right.Y;
+            else if (axis != Joystick.None)
             {
                 Debug.WriteLine($"Game Pad Thumb Stick '{axis}' was not found");
-                stickPos = 0;
-                
+                return 0;
             }
             if (raw)
             {
@@ -272,43 +271,41 @@ namespace EngineCore.Systems.Global.InputManager
 
         #endregion
 
-        public float GetAxis(string axisName, bool raw = false)
+        #region Axis Events
+
+        public float GetAxis(string axisName)
         {
             if(_axes.TryGetValue(axisName, out Axis axis))
             {
-                float speed = 1;
-                if (raw) axis.CurrentValue = 0;
-                else speed = axis.axisSpeed;
+                float speed = 0;
+                float invertVal = 1;
+                if (axis.Invert) invertVal = -1;
 
                 // Positive buttons
-                if (IsKeyDown(axis.PositiveKeyButton) || IsKeyDown(axis.AltPositiveKeyButton) ||
+                if (IsKeyPressed(axis.PositiveKeyButton) || IsKeyPressed(axis.AltPositiveKeyButton) ||
                     IsMousePressed(axis.PositiveMouseButton) || IsMousePressed(axis.AltPositiveMouseButton) ||
                     IsGamePadButtonPressed(axis.PositiveGamePadButton, axis.PlayerIndex) ||
-                    IsGamePadButtonPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) axis.CurrentValue += speed;
-                else if (axis.CurrentValue > 0 && !raw)
-                {
-                    axis.CurrentValue -= speed * 5;
-                    if (axis.CurrentValue < 0) axis.CurrentValue = 0;
-                }
+                    IsGamePadButtonPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) speed += 1;
 
                 // Negative buttons
-                if (IsKeyDown(axis.NegativeKeyButton) || IsKeyDown(axis.AltNegativeKeyButton) ||
+                if (IsKeyPressed(axis.NegativeKeyButton) || IsKeyPressed(axis.AltNegativeKeyButton) ||
                     IsMousePressed(axis.NegativeMouseButton) || IsMousePressed(axis.AltNegativeMouseButton) ||
                     IsGamePadButtonPressed(axis.NegativeGamePadButton, axis.PlayerIndex) ||
-                    IsGamePadButtonPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) axis.CurrentValue -= speed;
-                else if (axis.CurrentValue < 0 && !raw)
-                {
-                    axis.CurrentValue += speed * 5;
-                    if (axis.CurrentValue > 0) axis.CurrentValue = 0;
-                }
+                    IsGamePadButtonPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) speed -= 1;
 
                 // Joystick Axes
-                float joyAxisVal = GetJoyStickAxis(axis.JoystickAxis);
-                float altJoyAxisVal = GetJoyStickAxis(axis.AltJoystickAxis);
-                if (joyAxisVal != 0) axis.CurrentValue = joyAxisVal;
-                if (altJoyAxisVal != 0) axis.CurrentValue = altJoyAxisVal;
+                float joyMax = 0;
+                foreach(PlayerIndex playerIndex in axis.PlayerIndex)
+                {
+                    float joyAxisVal = GetJoyStickAxis(axis.JoystickAxis, playerIndex);
+                    float altJoyAxisVal = GetJoyStickAxis(axis.AltJoystickAxis, playerIndex);
+                    if (Math.Abs(joyMax) < Math.Abs(joyAxisVal)) joyMax = joyAxisVal;
+                    if (Math.Abs(joyMax) < Math.Abs(altJoyAxisVal)) joyMax = joyAxisVal;
+                }
+                if (joyMax != 0) speed = joyMax;             
+       
+                return Math.Max(-1, Math.Min(speed*invertVal, 1));
 
-                return Math.Max(-1, Math.Min(axis.CurrentValue, 1));
             }
             else
             {
@@ -316,6 +313,61 @@ namespace EngineCore.Systems.Global.InputManager
                 return 0;
             }
         }
+        public Vector2 GetAxesAsVector(string axis1, string axis2)
+        {
+            return new Vector2(GetAxis(axis1), GetAxis(axis2));
+        }
+        public bool GetAxisDown(string axisName)
+        {
+            if (_axes.TryGetValue(axisName, out Axis axis))
+            {
+                // Positive buttons
+                if (WasKeyPressed(axis.PositiveKeyButton) || WasKeyPressed(axis.AltPositiveKeyButton) ||
+                    WasMousePressed(axis.PositiveMouseButton) || WasMousePressed(axis.AltPositiveMouseButton) ||
+                    WasGamePadPressed(axis.PositiveGamePadButton, axis.PlayerIndex) ||
+                    WasGamePadPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) return true;
+
+                // Negative buttons
+                if (WasKeyPressed(axis.NegativeKeyButton) || WasKeyPressed(axis.AltNegativeKeyButton) ||
+                    WasMousePressed(axis.NegativeMouseButton) || WasMousePressed(axis.AltNegativeMouseButton) ||
+                    WasGamePadPressed(axis.NegativeGamePadButton, axis.PlayerIndex) ||
+                    WasGamePadPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) return true;               
+            }
+            else
+            {
+                Debug.WriteLine($"Axis '{axisName}' does not exist");
+            }
+            return false;
+        }
+        public bool GetAxisReleased(string axisName)
+        {
+            if (_axes.TryGetValue(axisName, out Axis axis))
+            {
+                // Positive buttons
+                if (WasKeyReleased(axis.PositiveKeyButton) || WasKeyReleased(axis.AltPositiveKeyButton) ||
+                    WasMouseReleased(axis.PositiveMouseButton) || WasMouseReleased(axis.AltPositiveMouseButton) ||
+                    WasGamePadReleased(axis.PositiveGamePadButton, axis.PlayerIndex) ||
+                    WasGamePadReleased(axis.AltPositiveGamePadButton, axis.PlayerIndex)) return true;
+
+                // Negative buttons
+                if (WasKeyReleased(axis.NegativeKeyButton) || WasKeyReleased(axis.AltNegativeKeyButton) ||
+                    WasMouseReleased(axis.NegativeMouseButton) || WasMouseReleased(axis.AltNegativeMouseButton) ||
+                    WasGamePadReleased(axis.NegativeGamePadButton, axis.PlayerIndex) ||
+                    WasGamePadReleased(axis.AltNegativeGamePadButton, axis.PlayerIndex)) return true;
+            }
+            else
+            {
+                Debug.WriteLine($"Axis '{axisName}' does not exist");
+            }
+            return false;
+        }
+        public bool GetAxisPressed(string axisName)
+        {
+            return Convert.ToBoolean(GetAxis(axisName));
+        }
+
+        #endregion
+
         public void AddAxis(string axisName, Axis axis)
         {
             _axes.Add(axisName, axis);
