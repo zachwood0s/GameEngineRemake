@@ -141,6 +141,7 @@
     <Compile Include="Systems\Global\LoaderHelper.cs" />
     <Compile Include="Systems\Global\SceneLoader\SceneLoader.cs" />
     <Compile Include="Systems\Global\SceneManager\SceneManager.cs" />
+    <Compile Include="Systems\Global\ScriptManager\ScriptManager.cs" />
     <Compile Include="Systems\Global\SettingsLoader\SettingsLoader.cs" />
     <Compile Include="Systems\Rendering\BasicRenderingSystem.cs" />
     <Compile Include="Systems\Rendering\ClearScreenSystem.cs" />

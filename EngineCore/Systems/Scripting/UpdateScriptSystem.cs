@@ -5,6 +5,7 @@ using ECS.Systems;
 using ECS.Systems.Interfaces;
 using EngineCore.Components.Scripting;
 using EngineCore.Scripting;
+using EngineCore.Systems.Global.ScriptManager;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
@@ -19,18 +20,14 @@ namespace EngineCore.Systems.Scripting
 {
     public class UpdateScriptSystem : GroupExecuteSystem, IInitializeSystem
     {
-        public static string RootDirectory { get; set; }
-        public static string DefaultUpdateFunctionName { get; set; }
+        public static string DefaultUpdateFunctionName { get; set; } = "Update";
 
         private ScriptGlobals _scriptGlobals;
-        private Dictionary<string, ScriptState> _loadedScripts;
+        private ScriptManager _scriptManager;
 
-        public UpdateScriptSystem(Scene scene, ScriptGlobals defaultScriptGlobals) : base(scene)
+        public UpdateScriptSystem(Scene scene, ScriptManager scriptManager) : base(scene)
         {
-            _scriptGlobals = defaultScriptGlobals.Copy();
-            _scriptGlobals.Scene = scene;
-
-            _loadedScripts = new Dictionary<string, ScriptState>();
+            _scriptManager = scriptManager;
         }
 
         public override Matcher GetMatcher()
@@ -47,61 +44,36 @@ namespace EngineCore.Systems.Scripting
 
         public void Initialize()
         {
-            foreach (string file in Directory.EnumerateFiles("./" + RootDirectory, "*.csx", SearchOption.AllDirectories))
-            {
-                _LoadScriptFromFile(file);
-            }
             foreach(Entity e in Group)
             {
                 _LoadScriptIntoEntity(e);
             }
         }
     
-        private async void _LoadScriptFromFile(string file)
-        {
-            ScriptState loadedScript = await CSharpScript.Create(
-                File.ReadAllText(file),
-                globalsType: typeof(ScriptGlobals),
-                options: ScriptOptions.Default
-                .WithReferences(
-                    typeof(Entity).Assembly,
-                    typeof(Microsoft.Xna.Framework.Vector2).Assembly,
-                    typeof(UpdateScriptComponent).Assembly
-                    )
-                .WithImports(
-                    "ECS",
-                    "ECS.Entities", 
-                    "ECS.Components",
-                    "EngineCore.Components",
-                    "Microsoft.Xna.Framework"
-                    )
-                ).RunAsync(_scriptGlobals);
-            _loadedScripts.Add(Path.GetFileNameWithoutExtension(file), loadedScript);
-        }
-
         private void _LoadScriptIntoEntity(Entity entity)
         {
             entity.UpdateComponent<UpdateScriptComponent>(updateScriptComponent =>
             {
-                if (_loadedScripts.TryGetValue(updateScriptComponent.ScriptFile, out ScriptState scriptState))
+                if(updateScriptComponent.FunctionName != null)
                 {
-                    if(updateScriptComponent.FunctionName != null)
-                    {
-                        updateScriptComponent.UpdateFunction = (Action<Entity>) scriptState.GetVariable(updateScriptComponent.FunctionName).Value;
-                    }
-                    else if(DefaultUpdateFunctionName != null)
-                    {
-                        updateScriptComponent.UpdateFunction = (Action<Entity>) scriptState.GetVariable(DefaultUpdateFunctionName).Value;
-                    }
-                    else
-                    {
-                        Debug.WriteLine("UpdateScriptSystem: No default update function name set! No update scripts will be loaded!");
-                        return;
-                    }
+                    updateScriptComponent.UpdateFunction = _scriptManager.LoadScript<Action<Entity>>(
+                        updateScriptComponent.ScriptFile,
+                        updateScriptComponent.FunctionName,
+                        Scene
+                        );
+                }
+                else if(DefaultUpdateFunctionName != null)
+                {
+                    updateScriptComponent.UpdateFunction = _scriptManager.LoadScript<Action<Entity>>(
+                        updateScriptComponent.ScriptFile, 
+                        DefaultUpdateFunctionName,
+                        Scene
+                        );
                 }
                 else
                 {
-                    Debug.WriteLine($"Failed to load script for entity! Script file {updateScriptComponent.ScriptFile}.csx could not be found");
+                    Debug.WriteLine("UpdateScriptSystem: No default update function name set! No update scripts will be loaded!");
+                    return;
                 }
             });
         }
