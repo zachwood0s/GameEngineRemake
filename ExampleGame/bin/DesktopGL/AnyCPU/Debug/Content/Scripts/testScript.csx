@@ -9,7 +9,7 @@ var Update = new Action<Entity>(e =>
 {
     e.UpdateComponents<Transform2DComponent, BasicTextureComponent>((comp, tex) =>
     {
-        comp.Position = Vector2.Add(comp.Position, InputManager.GetAxesAsVector("horizontal", "vertical"));
+        comp.Position = Vector2.Add(comp.Position, -InputManager.GetAxesAsVector("horizontal", "vertical"));
         //comp.Position = new Vector2(comp.Position.X + InputManager.GetAxis("horizontal"), comp.Position.Y);
     });
 });

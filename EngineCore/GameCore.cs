@@ -12,6 +12,7 @@ using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
 using EngineCore.Systems.Global.SceneLoader;
 using EngineCore.Systems.Global.SceneManager;
+using EngineCore.Systems.Global.ScriptManager;
 using EngineCore.Systems.Global.SettingsLoader;
 using EngineCore.Systems.Rendering;
 using EngineCore.Systems.Scripting;
@@ -131,8 +132,10 @@ namespace ExampleGame
                 SceneManager = sceneManager
             };
 
-            UpdateScriptSystem.RootDirectory = "Content/Scripts";
-            UpdateScriptSystem.DefaultUpdateFunctionName = "Update";
+            ScriptManager scriptManager = new ScriptManager(_defaultScriptGlobals);
+            scriptManager.RootDirectory = "Content/Scripts";
+            _globalSystems.Register(scriptManager);
+
             #endregion
 
             #region System Pools
@@ -146,7 +149,7 @@ namespace ExampleGame
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new CharacterMovementSystem(s, inputManager))
-                .With(s => new UpdateScriptSystem(s, _defaultScriptGlobals))
+                .With(s => new UpdateScriptSystem(s, scriptManager))
                 .WithFPS(200);
 
             #endregion

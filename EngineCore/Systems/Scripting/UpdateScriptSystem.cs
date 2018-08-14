@@ -22,7 +22,6 @@ namespace EngineCore.Systems.Scripting
     {
         public static string DefaultUpdateFunctionName { get; set; } = "Update";
 
-        private ScriptGlobals _scriptGlobals;
         private ScriptManager _scriptManager;
 
         public UpdateScriptSystem(Scene scene, ScriptManager scriptManager) : base(scene)
@@ -74,7 +73,7 @@ namespace EngineCore.Systems.Scripting
                 {
                     Debug.WriteLine("UpdateScriptSystem: No default update function name set! No update scripts will be loaded!");
                     return;
-                }
+                }          
             });
         }
     }
