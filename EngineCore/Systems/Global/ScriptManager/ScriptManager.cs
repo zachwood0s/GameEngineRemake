@@ -3,6 +3,8 @@ using ECS.Entities;
 using ECS.Systems.Interfaces;
 using EngineCore.Components.Scripting;
 using EngineCore.Scripting;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -69,14 +71,16 @@ namespace EngineCore.Systems.Global.ScriptManager
             return newGlobals;
         }
 
-        public ScriptState LoadScript(string scriptFile, string functionName, Scene scene)
+        public object LoadScript(string scriptFile, string functionName, Scene scene)
         {
             if(_loadedScripts.TryGetValue(scriptFile, out Script script))
             {
                 if(!_compiledScripts.TryGetValue(new KeyValuePair<string, Scene>(scriptFile, scene), out ScriptState scriptState))
                 {
-                    scriptState = script.RunAsync(GetGlobals(scene));
-                    _compiledScripts.Add(new KeyValuePair<string, Scene>(scriptFile, scene), newState);
+                    Task<ScriptState> taskScriptState = script.RunAsync(GetGlobals(scene));
+                    taskScriptState.Wait();
+                    scriptState = taskScriptState.Result;
+                    _compiledScripts.Add(new KeyValuePair<string, Scene>(scriptFile, scene), scriptState);
                 }
                 return scriptState.GetVariable(functionName).Value;
             }
@@ -89,8 +93,8 @@ namespace EngineCore.Systems.Global.ScriptManager
 
         public T LoadScript<T>(string scriptFile, string functionName, Scene scene) where T: class
         {
-            ScriptState script = LoadScript(scriptFile, functionName, scene);
-            if (script != null) return (T)script;
+            var script = LoadScript(scriptFile, functionName, scene);
+            if (script != null) return (T) script;
             return null;
         }
     }
