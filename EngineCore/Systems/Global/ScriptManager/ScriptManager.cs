@@ -61,7 +61,11 @@ namespace EngineCore.Systems.Global.ScriptManager
                     "Microsoft.Xna.Framework"
                     )
                 );
-            _loadedScripts.Add(Path.GetFileNameWithoutExtension(file), loadedScript);
+            string rootDirectory = Path.GetFullPath(RootDirectory);
+            string fileName = Path.GetFullPath(file).Substring(rootDirectory.Length+1);
+            fileName = fileName.Substring(0,fileName.IndexOf("."));
+
+            _loadedScripts.Add(fileName, loadedScript);
         }
 
         public ScriptGlobals GetGlobals(Scene scene)
@@ -73,6 +77,7 @@ namespace EngineCore.Systems.Global.ScriptManager
 
         public object LoadScript(string scriptFile, string functionName, Scene scene)
         {
+            scriptFile = scriptFile.Replace('/','\\');
             if(_loadedScripts.TryGetValue(scriptFile, out Script script))
             {
                 if(!_compiledScripts.TryGetValue(new KeyValuePair<string, Scene>(scriptFile, scene), out ScriptState scriptState))
