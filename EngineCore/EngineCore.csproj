@@ -125,6 +125,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Animation\AnimationComponent.cs" />
+    <Compile Include="Components\Animation\AnimationObject.cs" />
     <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\CharacterMovementComponent.cs" />
     <Compile Include="Scripting\ScriptGlobals.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="Systems\Global\SceneManager\SceneManager.cs" />
     <Compile Include="Systems\Global\ScriptManager\ScriptManager.cs" />
     <Compile Include="Systems\Global\SettingsLoader\SettingsLoader.cs" />
+    <Compile Include="Systems\Rendering\AnimationSystem.cs" />
     <Compile Include="Systems\Rendering\BasicRenderingSystem.cs" />
     <Compile Include="Systems\Rendering\ClearScreenSystem.cs" />
     <Compile Include="Systems\Rendering\SpriteBatchStartStopSystems.cs" />

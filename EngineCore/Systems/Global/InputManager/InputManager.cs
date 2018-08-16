@@ -28,6 +28,7 @@ namespace EngineCore.Systems.Global.InputManager
         {
             get => new Vector2(_currentMouseState.X, _currentMouseState.Y);
         }
+
         public InputManager()
         {
             _axes = new Dictionary<string, Axis>();
@@ -61,21 +62,6 @@ namespace EngineCore.Systems.Global.InputManager
                 GamePadCapabilities capabilities = GamePad.GetCapabilities(i);
                 if (capabilities.IsConnected) _currentGamePadStates[i] = GamePad.GetState(i);
             }
-
-            // Temperary Testing
-            if (WasGamePadPressed("A")) Console.WriteLine("A Was Pressed");
-            if (WasGamePadReleased("A")) Console.WriteLine("A Was Released");
-            if (IsGamePadButtonPressed("A")) Console.WriteLine("A Is Pressed");
-            //Console.WriteLine("Left Thumbstick X: " + GetJoyStickAxis("Left X", raw: true));
-
-            if (WasMousePressed(MouseButtons.Left)) Console.WriteLine("Mouse Left Pressed");
-            if (WasMouseReleased(MouseButtons.Left)) Console.WriteLine("Mouse Left Released");
-            if (WasMousePressed(MouseButtons.Right)) Console.WriteLine("Mouse Right Pressed");
-            if (WasMouseReleased(MouseButtons.Right)) Console.WriteLine("Mouse Right Released");
-            if (WasMousePressed(MouseButtons.Middle)) Console.WriteLine("Mouse Middle Pressed");
-            if (WasMouseReleased(MouseButtons.Middle)) Console.WriteLine("Mouse Middle Released");
-
-            //Console.WriteLine("Axis: " + GetAxis("horizontal", raw: true));
         }
 
         # region Key Events
@@ -365,13 +351,13 @@ namespace EngineCore.Systems.Global.InputManager
         {
             return Convert.ToBoolean(GetAxis(axisName));
         }
-
-        #endregion
-
         public void AddAxis(string axisName, Axis axis)
         {
             _axes.Add(axisName, axis);
         }
+
+        #endregion
+
     }
 
 }

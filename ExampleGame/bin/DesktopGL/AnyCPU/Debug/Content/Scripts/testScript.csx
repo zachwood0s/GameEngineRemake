@@ -1,5 +1,5 @@
-#r "../../ECS.dll"
-#r "../../EngineCore.dll"
+//#r "../../ECS.dll"
+//#r "../../EngineCore.dll"
 
 using System;
 using ECS.Entities;
