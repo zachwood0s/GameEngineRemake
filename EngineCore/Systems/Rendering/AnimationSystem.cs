@@ -22,13 +22,11 @@ namespace EngineCore.Systems.Rendering
     {
         private SpriteBatch _spriteBatch;
         private ContentManager _contentManager;
-        private Stopwatch _stopWatch;
 
         public AnimationSystem(Scene s, SpriteBatch spriteBatch, ContentManager contentManager) : base(s)
         {
             _spriteBatch = spriteBatch;
             _contentManager = contentManager;
-            _stopWatch = new Stopwatch();
         }
 
         public override Matcher GetMatcher()
@@ -43,23 +41,31 @@ namespace EngineCore.Systems.Rendering
                 foreach (AnimationObject animation in animationComponent.Animations)
                 {
                     if (animationComponent.FileType == "SpriteSheet")
-                    {
-
+                    {                   
                         Rectangle source = new Rectangle((animation.SpriteSize[0] * animation.CurrentFrame) + 
                                                           animation.SpriteStartSite[0], animation.SpriteStartSite[1], 
                                                           animation.SpriteSize[0], animation.SpriteSize[1]);
                         _spriteBatch.Draw(animationComponent.Textures[0], transform2D.Position, source, Color.White);
+                        
                     }
                     else if (animationComponent.FileType == "TextureFolder" || animationComponent.FileType == "FileList")
                     {
                         // Handle Texture List
                     }
-                    if (_stopWatch.Elapsed.Seconds >= animation.Speed/animation.FrameCount)
+
+                    // Update the animation frame
+                    TimeSpan timeDiff = DateTime.Now - animation.startTime;
+                    float frameTime = (animation.AnimationTime / animation.FrameCount) * 1000;         
+                    if (timeDiff.Milliseconds >= frameTime)
                     {
                         animation.CurrentFrame++;
-                        _stopWatch.Reset();
+                        animation.startTime = DateTime.Now;
+                        if (animation.CurrentFrame >= animation.FrameCount)
+                        {
+                            animation.CurrentFrame = 0;
+                        }
                     }
-                }
+                }            
             });
         }
 
@@ -87,7 +93,6 @@ namespace EngineCore.Systems.Rendering
                         Debug.WriteLine($"'{animationComponent.FileType}' is not a valid file type");
                     }
                 });
-                _stopWatch.Start()
             }
         }
 

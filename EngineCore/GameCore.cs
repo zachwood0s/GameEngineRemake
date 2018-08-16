@@ -145,11 +145,13 @@ namespace ExampleGame
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
+                .With(s => new AnimationSystem(s, _spriteBatch, Content))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new CharacterMovementSystem(s, inputManager))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
+                
                 .WithFPS(200);
 
             #endregion

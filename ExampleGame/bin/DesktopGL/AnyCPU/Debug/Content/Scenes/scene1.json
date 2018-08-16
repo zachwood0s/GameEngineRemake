@@ -6,29 +6,15 @@
 			"Extends":"TestBuilder"
 		},
 		{
-			"Extends":"TestBuilder",
-      "Removes": [ "EngineCore.Components.Transform2DComponent", "EngineCore.Components.BasicTextureComponent" ],
+		  "Extends":"TestBuilder",
+      "Removes": [ "EngineCore.Components.Transform2DComponent"],
       "Components": [
-          {
+        {
           "Type": "EngineCore.Components.Transform2DComponent",
           "Data": {
             "Position": "100, 100"
           }
-        },
-        {
-          "Type": "EngineCore.Components.Animation.AnimationComponent",
-          "Data": {
-            "FileLocation": "test",
-            "FileType": "SpriteSheet",
-            "Animations": [
-              {
-                "Name": "test",
-                "SpriteSize": [ 0, 0 ],
-                "FrameCount": 2
-              }
-            ]
-          }
-        }
+        }   
       ]
 		},
 		{

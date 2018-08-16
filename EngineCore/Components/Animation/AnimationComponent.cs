@@ -15,7 +15,7 @@ namespace EngineCore.Components.Animation
         public AnimationObject[] Animations { get; set; }
         public string FileType { get; set; }
         public string FileLocation { get; set; }
-        public List<Texture2D> Textures { get; set; } 
+        public List<Texture2D> Textures { get; set; } = new List<Texture2D>(); 
 
         public IComponent Copy()
         {

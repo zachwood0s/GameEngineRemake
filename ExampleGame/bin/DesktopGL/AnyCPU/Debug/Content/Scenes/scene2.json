@@ -15,24 +15,40 @@
 		},
 		{
 			"Extends":"TestBuilder",
-			"Removes":["EngineCore.Components.Transform2DComponent"],
-			"Components":[
-				{
-					"Type":"EngineCore.Components.Transform2DComponent",
-					"Data":{
-						"Position":"100, 100",
-						"Rotation":"2"
-					}
-				},
-				{
-					"Type":"EngineCore.Components.CharacterMovementComponent",
-					"Data":{
-						"CharacterMovementSpeed":"2",
-						"HorizontalInputAxis":"horizontal",
-						"VerticalInputAxis":"vertical",
-					}
-				}
-			]
+			"Removes":["EngineCore.Components.Transform2DComponent", "EngineCore.Components.BasicTextureComponent"],
+      "Components": [
+        {
+          "Type": "EngineCore.Components.Transform2DComponent",
+          "Data": {
+            "Position": "100, 100",
+            "Rotation": "2"
+          }
+        },
+        {
+          "Type": "EngineCore.Components.CharacterMovementComponent",
+          "Data": {
+            "CharacterMovementSpeed": "2",
+            "HorizontalInputAxis": "horizontal",
+            "VerticalInputAxis": "vertical"
+          }
+        },
+        {
+          "Type": "EngineCore.Components.Animation.AnimationComponent",
+          "Data": {
+            "FileLocation": "YeOldyKnifeGuy2",
+            "FileType": "SpriteSheet",
+            "Animations": [
+              {
+                "Name": "test",
+                "SpriteSize": [ 20, 18 ],
+                "SpriteStartSite": [ 23, 18 ],
+                "FrameCount": 5,
+                "AnimationTime": "1"
+              }
+            ]
+          }
+        }
+      ]
 		},
 		{
 			"Extends":"TestBuilder",
