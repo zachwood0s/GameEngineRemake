@@ -8,7 +8,7 @@
 				{
 					"Type":"EngineCore.Components.Scripting.UpdateScriptComponent",
 					"Data":{
-						"ScriptFile":"testScript"
+						"ScriptFile":"Character/testScript"
 					}
 				}
 			]
