@@ -13,6 +13,8 @@ namespace EngineCore.Components.Animation
         public string Name { get; set; }
         public float AnimationTime { get; set; } = 1;
         public float FrameCount { get; set; }
+        public string EventAxis { get; set; }
+        public string AxisType { get; set; } = "positive";
 
         // Sprite Sheet Variables
         public int[] SpriteSize { get; set; }
@@ -21,7 +23,27 @@ namespace EngineCore.Components.Animation
         // File Folder / File List Variables
         public int FileStartNumber { get; set; } = 0;
 
-        public int CurrentFrame { get; set; }
+        // Non read in variables
+        public int CurrentFrame { get; set; } = 0;
         public DateTime startTime { get; set; } = new DateTime();
+        public bool Run { get; set; } = false;
+        public bool ResetFrame { get; set; } = true;
+
+        public void Play()
+        {
+            Run = true;
+            ResetFrame = true;
+        }
+        public void Stop()
+        {
+            Run = false;
+            CurrentFrame = 0;
+            ResetFrame = true;
+        }
+        public void Pause()
+        {
+            Run = false;
+            ResetFrame = false;
+        }
     }
 }

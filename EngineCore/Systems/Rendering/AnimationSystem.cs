@@ -2,6 +2,7 @@
 using ECS.Systems;
 using ECS.Systems.Interfaces;
 using EngineCore.Components;
+using EngineCore.Systems.Global.InputManager;
 using EngineCore.Components.Animation;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,11 +23,13 @@ namespace EngineCore.Systems.Rendering
     {
         private SpriteBatch _spriteBatch;
         private ContentManager _contentManager;
+        private InputManager _inputManager;
 
-        public AnimationSystem(Scene s, SpriteBatch spriteBatch, ContentManager contentManager) : base(s)
+        public AnimationSystem(Scene s, SpriteBatch spriteBatch, ContentManager contentManager, InputManager inputManager) : base(s)
         {
             _spriteBatch = spriteBatch;
             _contentManager = contentManager;
+            _inputManager = inputManager;
         }
 
         public override Matcher GetMatcher()
@@ -40,13 +43,14 @@ namespace EngineCore.Systems.Rendering
             {
                 foreach (AnimationObject animation in animationComponent.Animations)
                 {
+                    // Render Texture
                     if (animationComponent.FileType == "SpriteSheet")
-                    {                   
-                        Rectangle source = new Rectangle((animation.SpriteSize[0] * animation.CurrentFrame) + 
-                                                          animation.SpriteStartSite[0], animation.SpriteStartSite[1], 
-                                                          animation.SpriteSize[0], animation.SpriteSize[1]);
+                    {
+                        Rectangle source = new Rectangle((animation.SpriteSize[0] * animation.CurrentFrame) +
+                                                            animation.SpriteStartSite[0], animation.SpriteStartSite[1],
+                                                            animation.SpriteSize[0], animation.SpriteSize[1]);
                         _spriteBatch.Draw(animationComponent.Textures[0], transform2D.Position, source, Color.White);
-                        
+
                     }
                     else if (animationComponent.FileType == "TextureFolder" || animationComponent.FileType == "FileList")
                     {
@@ -54,16 +58,33 @@ namespace EngineCore.Systems.Rendering
                     }
 
                     // Update the animation frame
-                    TimeSpan timeDiff = DateTime.Now - animation.startTime;
-                    float frameTime = (animation.AnimationTime / animation.FrameCount) * 1000;         
-                    if (timeDiff.Milliseconds >= frameTime)
-                    {
-                        animation.CurrentFrame++;
-                        animation.startTime = DateTime.Now;
-                        if (animation.CurrentFrame >= animation.FrameCount)
+                    if (animation.Run)
+                    {                      
+                        TimeSpan timeDiff = DateTime.Now - animation.startTime;
+                        float frameTime = (animation.AnimationTime / animation.FrameCount) * 1000;
+                        if (timeDiff.Milliseconds >= frameTime)
                         {
-                            animation.CurrentFrame = 0;
+                            animation.CurrentFrame++;
+                            animation.startTime = DateTime.Now;
+                            if (animation.CurrentFrame >= animation.FrameCount)
+                            {
+                                animation.CurrentFrame = 0;
+                            }
                         }
+                    }
+                    else if(animation.ResetFrame)
+                    {
+                        animation.CurrentFrame = 0;
+                    }
+
+                    // Predefine animation events handeled
+                    if (animation.AxisType == "positive" )
+                    {
+                        animation.Run = _inputManager.GetPositiveAxisPressed(animation.EventAxis);
+                    }
+                    else
+                    {
+                        animation.Run = _inputManager.GetPositiveAxisPressed(animation.EventAxis);
                     }
                 }            
             });

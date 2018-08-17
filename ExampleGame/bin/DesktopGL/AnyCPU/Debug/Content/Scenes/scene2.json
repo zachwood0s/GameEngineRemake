@@ -40,6 +40,8 @@
             "Animations": [
               {
                 "Name": "test",
+                "EventAxis": "horizontal",
+                "AxisType":  "positive",
                 "SpriteSize": [ 20, 18 ],
                 "SpriteStartSite": [ 23, 18 ],
                 "FrameCount": 5,

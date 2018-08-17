@@ -351,6 +351,16 @@ namespace EngineCore.Systems.Global.InputManager
         {
             return Convert.ToBoolean(GetAxis(axisName));
         }
+        public bool GetPositiveAxisPressed(string axisName)
+        {
+            if (GetAxis(axisName) > 0) return true;
+            return false;
+        }
+        public bool GetNegativeAxisPressed(string axisName)
+        {
+            if (GetAxis(axisName) < 0) return true;
+            return false;
+        }
         public void AddAxis(string axisName, Axis axis)
         {
             _axes.Add(axisName, axis);
