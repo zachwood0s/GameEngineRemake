@@ -39,7 +39,7 @@ namespace EngineCore.Systems.Global.InputManager
 
         #region GamePad Attributes
 
-        public PlayerIndex[] PlayerIndex { get; set; }
+        public PlayerIndex[] PlayerIndex { get; set; } = new PlayerIndex[0];
         public Buttons PositiveGamePadButton { get; set; }
         public Buttons AltPositiveGamePadButton { get; set; }
         public Buttons NegativeGamePadButton { get; set; }

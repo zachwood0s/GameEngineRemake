@@ -15,7 +15,7 @@
 		},
 		{
 			"Extends":"TestBuilder",
-			"Removes":["EngineCore.Components.Transform2DComponent", "EngineCore.Components.BasicTextureComponent"],
+			"Removes":["EngineCore.Components.Transform2DComponent"],
       "Components": [
         {
           "Type": "EngineCore.Components.Transform2DComponent",
@@ -35,17 +35,24 @@
         {
           "Type": "EngineCore.Components.Animation.AnimationComponent",
           "Data": {
-            "FileLocation": "YeOldyKnifeGuy2",
-            "FileType": "SpriteSheet",
             "Animations": [
               {
-                "Name": "test",
+                "Name": "walk",
                 "EventAxis": "horizontal",
-                "AxisType":  "positive",
-                "SpriteSize": [ 20, 18 ],
-                "SpriteStartSite": [ 23, 18 ],
-                "FrameCount": 5,
+                "AxisType": "positive",
                 "AnimationTime": "1"
+              },
+              {
+                "Name": "walk",
+                "EventAxis": "horizontal",
+                "AxisType": "negative",
+                "AnimationTime": "1"
+              },
+              {
+                "Name": "taunt",
+                "EventAxis": "taunt",
+                "Priority": "1",
+                "Override": "false"
               }
             ]
           }

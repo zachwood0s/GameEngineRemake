@@ -31,5 +31,9 @@
     "NegativeKeyButton": "Up",
     "JoystickAxis": "LeftY",
     "AltJoystickAxis": "RightY"
+  },
+  {
+    "Name": "taunt",
+    "PositiveKeyButton": "t"
   }
 ]

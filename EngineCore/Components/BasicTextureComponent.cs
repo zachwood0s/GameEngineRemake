@@ -15,10 +15,11 @@ namespace EngineCore.Components
     {
         public string FileName { get; set; }
         public Texture2D Texture { get; set; }
+        public bool Render { get; set; } = true;
         
         public IComponent Copy()
         {
-            return new BasicTextureComponent { Texture = Texture, FileName = FileName };
+            return new BasicTextureComponent { Texture = Texture, FileName = FileName, Render = Render };
         }
     }
 }

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using EngineCore.Systems.Global.Animation;
 
 namespace EngineCore.Systems.Rendering
 {
@@ -24,12 +25,15 @@ namespace EngineCore.Systems.Rendering
         private SpriteBatch _spriteBatch;
         private ContentManager _contentManager;
         private InputManager _inputManager;
+        private GlobalAnimationSystem _globalAnimationSystem;
 
-        public AnimationSystem(Scene s, SpriteBatch spriteBatch, ContentManager contentManager, InputManager inputManager) : base(s)
+        public AnimationSystem(Scene s, SpriteBatch spriteBatch, ContentManager contentManager, InputManager inputManager, 
+                                GlobalAnimationSystem globalAnimationSystem) : base(s)
         {
             _spriteBatch = spriteBatch;
             _contentManager = contentManager;
             _inputManager = inputManager;
+            _globalAnimationSystem = globalAnimationSystem;
         }
 
         public override Matcher GetMatcher()
@@ -41,39 +45,24 @@ namespace EngineCore.Systems.Rendering
         {
             e.UpdateComponents((AnimationComponent animationComponent, Transform2DComponent transform2D) =>
             {
+                // All animations loop
                 foreach (AnimationObject animation in animationComponent.Animations)
-                {
-                    // Render Texture
-                    if (animationComponent.FileType == "SpriteSheet")
-                    {
-                        Rectangle source = new Rectangle((animation.SpriteSize[0] * animation.CurrentFrame) +
-                                                            animation.SpriteStartSite[0], animation.SpriteStartSite[1],
-                                                            animation.SpriteSize[0], animation.SpriteSize[1]);
-                        _spriteBatch.Draw(animationComponent.Textures[0], transform2D.Position, source, Color.White);
-
-                    }
-                    else if (animationComponent.FileType == "TextureFolder" || animationComponent.FileType == "FileList")
-                    {
-                        // Handle Texture List
-                    }
-
-                    // Update the animation frame
+                {         
+                    // Add animations to list of current animations
                     if (animation.Run)
-                    {                      
-                        TimeSpan timeDiff = DateTime.Now - animation.startTime;
-                        float frameTime = (animation.AnimationTime / animation.FrameCount) * 1000;
-                        if (timeDiff.Milliseconds >= frameTime)
+                    {
+                        if (!animationComponent.CurrentAnimations.Any(item => item == animation))
                         {
-                            animation.CurrentFrame++;
-                            animation.startTime = DateTime.Now;
-                            if (animation.CurrentFrame >= animation.FrameCount)
-                            {
-                                animation.CurrentFrame = 0;
-                            }
+                            if (animation.Override) animationComponent.CurrentAnimations.Clear();
+                            animationComponent.CurrentAnimations.Add(animation);
                         }
                     }
                     else if(animation.ResetFrame)
                     {
+                        if (animationComponent.CurrentAnimations.Any(item => item == animation))
+                        {
+                            animationComponent.CurrentAnimations.Remove(animation);
+                        }
                         animation.CurrentFrame = 0;
                     }
 
@@ -84,9 +73,39 @@ namespace EngineCore.Systems.Rendering
                     }
                     else
                     {
-                        animation.Run = _inputManager.GetPositiveAxisPressed(animation.EventAxis);
+                        animation.Run = _inputManager.GetNegativeAxisPressed(animation.EventAxis);
+                    }           
+                }
+
+                // Current animations loop
+                BasicTextureComponent basicTexture = e.GetComponent<BasicTextureComponent>();
+                if (basicTexture != null) basicTexture.Render = true;
+                foreach (AnimationObject animation in animationComponent.CurrentAnimations)
+                {
+                    // Render Texture
+                    if (animation.FileType == "SpriteSheet")
+                    {
+                        _spriteBatch.Draw(animation.Textures[0], transform2D.Position, animation.Rectangles[animation.CurrentFrame], Color.White);
                     }
-                }            
+                    else if (animation.FileType == "TextureFolder" || animation.FileType == "FileList")
+                    {
+                        // Handle Texture List
+                    }
+                    if (basicTexture != null) basicTexture.Render = false;
+
+                    // Update the animation frame
+                    TimeSpan timeDiff = DateTime.Now - animation.startTime;
+                    float frameTime = (animation.AnimationTime / animation.FrameCount) * 1000;
+                    if (timeDiff.Milliseconds >= frameTime)
+                    {
+                        animation.CurrentFrame++;
+                        animation.startTime = DateTime.Now;
+                        if (animation.CurrentFrame >= animation.FrameCount)
+                        {
+                            animation.CurrentFrame = 0;
+                        }
+                    }
+                }
             });
         }
 
@@ -97,27 +116,43 @@ namespace EngineCore.Systems.Rendering
             {
                 e.UpdateComponent<AnimationComponent>((animationComponent) =>
                 {
-                    if (animationComponent.FileType == "TextureFolder")
+                    foreach (AnimationObject animation in animationComponent.Animations)
                     {
-                        animationComponent.Textures = _getTextures(animationComponent);
-                    }
-                    else if (animationComponent.FileType == "SpriteSheet")
-                    {
-                        animationComponent.Textures.Add(_contentManager.Load<Texture2D>(animationComponent.FileLocation));
-                    }
-                    else if (animationComponent.FileType == "FileList")
-                    {
-                        // Handle File List
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"'{animationComponent.FileType}' is not a valid file type");
+                        _setAnimationVars(animation);
+                        if (animation.FileType == "TextureFolder")
+                        {
+                            animation.Textures = _loadTextures(animation);
+                        }
+                        else if (animation.FileType == "SpriteSheet")
+                        {
+                            animation.Textures.Add(_contentManager.Load<Texture2D>(animation.FileLocation));
+                            _loadSprites(animation);
+                        }
+                        else if (animation.FileType == "FileList")
+                        {
+                            // Handle File List
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"'{animation.FileType}' is not a valid file type");
+                        }
                     }
                 });
             }
         }
 
-        private List<Texture2D> _getTextures(AnimationComponent animation)
+        #region Private Helper Methods
+
+        private void _loadSprites(AnimationObject animation)
+        {
+            animation.Rectangles = new Rectangle[Convert.ToInt32(animation.FrameCount)];
+            for (int i = 0; i < animation.FrameCount; i++)
+            {
+                animation.Rectangles[i] = new Rectangle((animation.SpriteSize[0] * i) + animation.SpriteStartSite[0],
+                                            animation.SpriteStartSite[1], animation.SpriteSize[0], animation.SpriteSize[1]);
+            }
+        }
+        private List<Texture2D> _loadTextures(AnimationObject animation)
         {
             List<Texture2D> textures = new List<Texture2D>();
             if (Directory.Exists(animation.FileLocation))
@@ -134,5 +169,25 @@ namespace EngineCore.Systems.Rendering
             }
             return textures;
         }
+        private void _setAnimationVars(AnimationObject animation)
+        {
+            foreach(AnimationContainer animationContainer in _globalAnimationSystem.Animations)
+            {
+                foreach(AnimationData animationData in animationContainer.Animations)
+                {
+                    if(animation.Name == animationData.Name)
+                    {
+                        animation.FileType = animationContainer.FileType;
+                        animation.FileLocation = animationContainer.FileLocation;
+                        animation.FrameCount = animationData.FrameCount;
+                        animation.SpriteSize = animationData.SpriteSize;
+                        animation.SpriteStartSite = animationData.SpriteStartSite;
+                        animation.FileStartNumber = animationData.FileStartNumber;
+                    }
+                }
+            }
+        }
     }
+
+    #endregion
 }

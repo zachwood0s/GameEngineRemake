@@ -35,7 +35,7 @@ namespace EngineCore.Systems.Rendering
         {
             entity.UpdateComponents((BasicTextureComponent tex, Transform2DComponent transform2D) =>
             {
-                if(tex.Texture != null)
+                if(tex.Texture != null && tex.Render)
                 {
                     //_spriteBatch.Begin();
                     _spriteBatch.Draw(tex.Texture, transform2D.Position, Color.White);

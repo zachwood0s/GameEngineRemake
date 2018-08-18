@@ -8,6 +8,7 @@ using EngineCore.Components;
 using EngineCore.Scripting;
 using EngineCore.Systems;
 using EngineCore.Systems.Character;
+using EngineCore.Systems.Global.Animation;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
 using EngineCore.Systems.Global.SceneLoader;
@@ -126,6 +127,10 @@ namespace ExampleGame
             inputManager.InputFile = "Content/keybindings.json";
             _globalSystems.Register(inputManager);
 
+            GlobalAnimationSystem globalAnimationSystem = new GlobalAnimationSystem();
+            globalAnimationSystem.InputFile = "Content/animations.json";
+            _globalSystems.Register(globalAnimationSystem);
+
             _defaultScriptGlobals = new ScriptGlobals()
             {
                 InputManager = inputManager,
@@ -145,7 +150,7 @@ namespace ExampleGame
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
-                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager))
+                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
