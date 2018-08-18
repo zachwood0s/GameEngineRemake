@@ -50,9 +50,7 @@
               },
               {
                 "Name": "taunt",
-                "EventAxis": "taunt",
-                "Priority": "1",
-                "Override": "false"
+                "EventAxis": "taunt"
               }
             ]
           }

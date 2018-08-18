@@ -47,34 +47,27 @@ namespace EngineCore.Systems.Rendering
             {
                 // All animations loop
                 foreach (AnimationObject animation in animationComponent.Animations)
-                {         
-                    // Add animations to list of current animations
-                    if (animation.Run)
+                {             
+                    animation.Add = _inputManager.GetAxisDown(animation.EventAxis, animation.AxisType);
+                    animation.Remove = _inputManager.GetAxisReleased(animation.EventAxis, animation.AxisType);               
+                    if (animation.Add)  // Add animations to list of current animations
                     {
                         if (!animationComponent.CurrentAnimations.Any(item => item == animation))
                         {
                             if (animation.Override) animationComponent.CurrentAnimations.Clear();
                             animationComponent.CurrentAnimations.Add(animation);
                         }
+                        animation.Add = false;
                     }
-                    else if(animation.ResetFrame)
+                    else if(animation.Remove)   // Remove animations from list of current animations
                     {
                         if (animationComponent.CurrentAnimations.Any(item => item == animation))
                         {
                             animationComponent.CurrentAnimations.Remove(animation);
                         }
                         animation.CurrentFrame = 0;
-                    }
-
-                    // Predefine animation events handeled
-                    if (animation.AxisType == "positive" )
-                    {
-                        animation.Run = _inputManager.GetPositiveAxisPressed(animation.EventAxis);
-                    }
-                    else
-                    {
-                        animation.Run = _inputManager.GetNegativeAxisPressed(animation.EventAxis);
-                    }           
+                        animation.Remove = false;
+                    }       
                 }
 
                 // Current animations loop

@@ -303,21 +303,21 @@ namespace EngineCore.Systems.Global.InputManager
         {
             return new Vector2(GetAxis(axis1), GetAxis(axis2));
         }
-        public bool GetAxisDown(string axisName)
+        public bool GetAxisDown(string axisName, string type = "both")
         {
             if (_axes.TryGetValue(axisName, out Axis axis))
             {
                 // Positive buttons
-                if (WasKeyPressed(axis.PositiveKeyButton) || WasKeyPressed(axis.AltPositiveKeyButton) ||
+                if ((WasKeyPressed(axis.PositiveKeyButton) || WasKeyPressed(axis.AltPositiveKeyButton) ||
                     WasMousePressed(axis.PositiveMouseButton) || WasMousePressed(axis.AltPositiveMouseButton) ||
                     WasGamePadPressed(axis.PositiveGamePadButton, axis.PlayerIndex) ||
-                    WasGamePadPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) return true;
+                    WasGamePadPressed(axis.AltPositiveGamePadButton, axis.PlayerIndex)) && (type == "positive" || type == "both")) return true;
 
                 // Negative buttons
-                if (WasKeyPressed(axis.NegativeKeyButton) || WasKeyPressed(axis.AltNegativeKeyButton) ||
+                if ((WasKeyPressed(axis.NegativeKeyButton) || WasKeyPressed(axis.AltNegativeKeyButton) ||
                     WasMousePressed(axis.NegativeMouseButton) || WasMousePressed(axis.AltNegativeMouseButton) ||
                     WasGamePadPressed(axis.NegativeGamePadButton, axis.PlayerIndex) ||
-                    WasGamePadPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) return true;               
+                    WasGamePadPressed(axis.AltNegativeGamePadButton, axis.PlayerIndex)) && (type == "negative" || type == "both")) return true;               
             }
             else
             {
@@ -325,21 +325,21 @@ namespace EngineCore.Systems.Global.InputManager
             }
             return false;
         }
-        public bool GetAxisReleased(string axisName)
+        public bool GetAxisReleased(string axisName, string type = "both")
         {
             if (_axes.TryGetValue(axisName, out Axis axis))
             {
                 // Positive buttons
-                if (WasKeyReleased(axis.PositiveKeyButton) || WasKeyReleased(axis.AltPositiveKeyButton) ||
+                if ((WasKeyReleased(axis.PositiveKeyButton) || WasKeyReleased(axis.AltPositiveKeyButton) ||
                     WasMouseReleased(axis.PositiveMouseButton) || WasMouseReleased(axis.AltPositiveMouseButton) ||
                     WasGamePadReleased(axis.PositiveGamePadButton, axis.PlayerIndex) ||
-                    WasGamePadReleased(axis.AltPositiveGamePadButton, axis.PlayerIndex)) return true;
+                    WasGamePadReleased(axis.AltPositiveGamePadButton, axis.PlayerIndex)) && (type == "positive" || type == "both")) return true;
 
                 // Negative buttons
-                if (WasKeyReleased(axis.NegativeKeyButton) || WasKeyReleased(axis.AltNegativeKeyButton) ||
+                if ((WasKeyReleased(axis.NegativeKeyButton) || WasKeyReleased(axis.AltNegativeKeyButton) ||
                     WasMouseReleased(axis.NegativeMouseButton) || WasMouseReleased(axis.AltNegativeMouseButton) ||
                     WasGamePadReleased(axis.NegativeGamePadButton, axis.PlayerIndex) ||
-                    WasGamePadReleased(axis.AltNegativeGamePadButton, axis.PlayerIndex)) return true;
+                    WasGamePadReleased(axis.AltNegativeGamePadButton, axis.PlayerIndex)) && (type == "negative" || type == "both")) return true;
             }
             else
             {
@@ -347,18 +347,10 @@ namespace EngineCore.Systems.Global.InputManager
             }
             return false;
         }
-        public bool GetAxisPressed(string axisName)
+        public bool GetAxisPressed(string axisName, string type = "positive")
         {
-            return Convert.ToBoolean(GetAxis(axisName));
-        }
-        public bool GetPositiveAxisPressed(string axisName)
-        {
-            if (GetAxis(axisName) > 0) return true;
-            return false;
-        }
-        public bool GetNegativeAxisPressed(string axisName)
-        {
-            if (GetAxis(axisName) < 0) return true;
+            if (type == "positive" && GetAxis(axisName) > 0) return true;
+            else if (type == "negative" && GetAxis(axisName) < 0) return true;
             return false;
         }
         public void AddAxis(string axisName, Axis axis)

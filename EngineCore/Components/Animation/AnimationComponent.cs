@@ -45,26 +45,18 @@ namespace EngineCore.Components.Animation
         // Non read in variables
         public int CurrentFrame { get; set; } = 0;
         public DateTime startTime { get; set; } = new DateTime();
-        public bool Run { get; set; } = false;
-        public bool ResetFrame { get; set; } = true;
+        public bool Add { get; set; } = false;
+        public bool Remove { get; set; } = false;
         public Rectangle[] Rectangles { get; set; }
         public List<Texture2D> Textures { get; set; } = new List<Texture2D>();
 
         public void Play()
         {
-            Run = true;
-            ResetFrame = true;
+            Add = true;
         }
         public void Stop()
         {
-            Run = false;
-            CurrentFrame = 0;
-            ResetFrame = true;
-        }
-        public void Pause()
-        {
-            Run = false;
-            ResetFrame = false;
+            Remove = true;
         }
     }
 }
