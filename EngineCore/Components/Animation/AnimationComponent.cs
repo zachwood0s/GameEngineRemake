@@ -46,7 +46,7 @@ namespace EngineCore.Components.Animation
         public int[] SpriteStartSite { get; set; } = { 0, 0 };
 
         // File Folder / File List Variables
-        public int FileStartNumber { get; set; } = 0;
+        public int FileStartNumber { get; set; } = 1;
 
         #endregion
 

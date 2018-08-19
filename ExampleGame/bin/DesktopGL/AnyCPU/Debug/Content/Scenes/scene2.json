@@ -46,7 +46,8 @@
                 "Name": "walk",
                 "EventAxis": "horizontal",
                 "AxisType": "negative",
-                "AnimationTime": "1"
+                "AnimationTime": "1",
+                "Loop": false
               },
               {
                 "Name": "taunt",

@@ -30,6 +30,7 @@ namespace EngineCore.Systems.Global.Animation
 
         // File Folder / File List Variables
         public int FileStartNumber { get; set; } = 0;
+        public int FileEndNumber { get; set; } = -1;
     }
     public class AnimationContainer
     {

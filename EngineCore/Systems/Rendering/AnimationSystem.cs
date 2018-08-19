@@ -79,11 +79,11 @@ namespace EngineCore.Systems.Rendering
                 foreach (AnimationObject animation in animationComponent.CurrentAnimations)
                 {
                     // Render Texture
-                    if (animation.FileType == "SpriteSheet")
+                    if (animation.FileType == "SpriteSheet" && animation.Rectangles.Length > animation.CurrentFrame)
                     {
                         _spriteBatch.Draw(animation.Textures[0], transform2D.Position, animation.Rectangles[animation.CurrentFrame], Color.White);
                     }
-                    else if (animation.FileType == "TextureFolder" || animation.FileType == "FileList")
+                    else if ((animation.FileType == "TextureFolder" || animation.FileType == "FileList") && animation.Textures.Count > animation.CurrentFrame)
                     {
                         _spriteBatch.Draw(animation.Textures[animation.CurrentFrame], transform2D.Position, Color.White);
                     }
@@ -152,12 +152,19 @@ namespace EngineCore.Systems.Rendering
         private List<Texture2D> _loadTextures(AnimationObject animation)
         {
             List<Texture2D> textures = new List<Texture2D>();
-            if (Directory.Exists(animation.FileLocation))
-            {
-                string[] fileEntries = Directory.GetFiles(animation.FileLocation);
-                foreach (string file in fileEntries)
+            DirectoryInfo dir = new DirectoryInfo(_contentManager.RootDirectory + "/" + animation.FileLocation);
+            if(dir.Exists) { 
+                FileInfo[] fileEntries = dir.GetFiles("*.*");
+                if (animation.FrameCount + animation.FileStartNumber - 1 <= fileEntries.Length)
                 {
-                    textures.Add(_contentManager.Load<Texture2D>(animation.FileLocation + "/" + file));
+                    for (int i = animation.FileStartNumber - 1; i < animation.FrameCount; i++)
+                    {
+                        textures.Add(_contentManager.Load<Texture2D>(animation.FileLocation + "/" + Path.GetFileNameWithoutExtension(fileEntries[i].Name)));
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"There are too many frames for files in the directory");
                 }
             }
             else
