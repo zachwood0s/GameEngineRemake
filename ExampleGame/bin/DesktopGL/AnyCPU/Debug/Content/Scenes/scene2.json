@@ -50,7 +50,8 @@
               },
               {
                 "Name": "taunt",
-                "EventAxis": "taunt"
+                "EventAxis": "taunt",
+                "Loop":  false
               }
             ]
           }

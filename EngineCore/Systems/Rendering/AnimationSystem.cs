@@ -47,9 +47,12 @@ namespace EngineCore.Systems.Rendering
             {
                 // All animations loop
                 foreach (AnimationObject animation in animationComponent.Animations)
-                {             
-                    animation.Add = _inputManager.GetAxisDown(animation.EventAxis, animation.AxisType);
-                    animation.Remove = _inputManager.GetAxisReleased(animation.EventAxis, animation.AxisType);               
+                {
+                    if (animation.EventAxis != "")  // Animation axis events
+                    {
+                        if (!animation.Add) animation.Add = _inputManager.GetAxisDown(animation.EventAxis, animation.AxisType);
+                        if (!animation.Remove) animation.Remove = _inputManager.GetAxisReleased(animation.EventAxis, animation.AxisType);
+                    }
                     if (animation.Add)  // Add animations to list of current animations
                     {
                         if (!animationComponent.CurrentAnimations.Any(item => item == animation))
@@ -65,7 +68,7 @@ namespace EngineCore.Systems.Rendering
                         {
                             animationComponent.CurrentAnimations.Remove(animation);
                         }
-                        animation.CurrentFrame = 0;
+                        if (animation.ResetCurrentFrame) animation.CurrentFrame = 0;
                         animation.Remove = false;
                     }       
                 }
@@ -82,7 +85,7 @@ namespace EngineCore.Systems.Rendering
                     }
                     else if (animation.FileType == "TextureFolder" || animation.FileType == "FileList")
                     {
-                        // Handle Texture List
+                        _spriteBatch.Draw(animation.Textures[animation.CurrentFrame], transform2D.Position, Color.White);
                     }
                     if (basicTexture != null) basicTexture.Render = false;
 
@@ -96,6 +99,7 @@ namespace EngineCore.Systems.Rendering
                         if (animation.CurrentFrame >= animation.FrameCount)
                         {
                             animation.CurrentFrame = 0;
+                            if (!animation.Loop) animation.Remove = true;
                         }
                     }
                 }

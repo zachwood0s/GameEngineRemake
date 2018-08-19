@@ -23,14 +23,19 @@ namespace EngineCore.Components.Animation
     }
     public class AnimationObject
     {
-        // Read in from the component
+        #region Component Attributes
+
         public string Name { get; set; }
         public float AnimationTime { get; set; } = 1;
-        public string EventAxis { get; set; }
+        public string EventAxis { get; set; } = "";
         public string AxisType { get; set; } = "positive";
         public bool Override { get; set; } = true;
+        public bool Loop { get; set; } = true;
 
-        // Read in globally
+        #endregion
+
+        #region Globally Defined Attributes
+
         public string FileType { get; set; }
         public string FileLocation { get; set; }       
         public float FrameCount { get; set; }
@@ -42,21 +47,37 @@ namespace EngineCore.Components.Animation
         // File Folder / File List Variables
         public int FileStartNumber { get; set; } = 0;
 
-        // Non read in variables
+        #endregion
+
+        #region Non Readin Attributes
+
         public int CurrentFrame { get; set; } = 0;
         public DateTime startTime { get; set; } = new DateTime();
         public bool Add { get; set; } = false;
         public bool Remove { get; set; } = false;
+        public bool ResetCurrentFrame { get; set; } = true;
         public Rectangle[] Rectangles { get; set; }
         public List<Texture2D> Textures { get; set; } = new List<Texture2D>();
+
+        #endregion
+
+        #region Scripting Methods
 
         public void Play()
         {
             Add = true;
+            ResetCurrentFrame = true;
         }
         public void Stop()
         {
             Remove = true;
+            ResetCurrentFrame = true;
         }
+        public void Pause()
+        {
+            ResetCurrentFrame = false;
+        }
+
+        #endregion
     }
 }

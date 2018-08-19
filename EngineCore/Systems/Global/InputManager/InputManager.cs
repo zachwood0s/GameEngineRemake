@@ -127,11 +127,11 @@ namespace EngineCore.Systems.Global.InputManager
                                                     _previousMouseState.RightButton == ButtonState.Released;
             if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Pressed &&
                                                     _previousMouseState.MiddleButton == ButtonState.Released;
-            else
+            else if (mouseButton != MouseButtons.None)
             {
-                Debug.WriteLine($"Mouse '{mouseButton}' does not exist");
-                return false;
+                Debug.WriteLine($"Mouse '{mouseButton}' does not exist");            
             }
+            return false;
         }
         public bool WasMouseReleased(MouseButtons mouseButton)
         {
@@ -141,18 +141,22 @@ namespace EngineCore.Systems.Global.InputManager
                                                     _previousMouseState.RightButton == ButtonState.Pressed;
             if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Released &&
                                                     _previousMouseState.MiddleButton == ButtonState.Pressed;
-            else
+            else if(mouseButton != MouseButtons.None)
             {
-                Debug.WriteLine($"Mouse '{mouseButton}' does not exist");
-                return false;
+                Debug.WriteLine($"Mouse '{mouseButton}' does not exist");        
             }
+            return false;
         }
         public bool IsMousePressed(MouseButtons mouseButton)
         {
             if (mouseButton == MouseButtons.Left) return _currentMouseState.LeftButton == ButtonState.Pressed;
             if (mouseButton == MouseButtons.Right) return _currentMouseState.RightButton == ButtonState.Pressed;
             if (mouseButton == MouseButtons.Middle) return _currentMouseState.MiddleButton == ButtonState.Pressed;
-            else return false;
+            else if (mouseButton != MouseButtons.None)
+            {
+                Debug.WriteLine($"Mouse '{mouseButton}' does not exist");
+            }
+            return false;
         }
 
         #endregion
