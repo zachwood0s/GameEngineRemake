@@ -51,6 +51,7 @@
               {
                 "Name": "taunt",
                 "EventAxis": "taunt",
+                "CompleteAnimation": true,
                 "Loop":  false
               }
             ]

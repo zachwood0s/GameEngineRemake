@@ -62,8 +62,8 @@ namespace EngineCore.Systems.Rendering
                         }
                         animation.Add = false;
                     }
-                    else if(animation.Remove)   // Remove animations from list of current animations
-                    {
+                    else if(animation.Remove && (!animation.CompleteAnimation || animation.CurrentFrame == 0))
+                    {    // Remove animations from list of current animations
                         if (animationComponent.CurrentAnimations.Any(item => item == animation))
                         {
                             animationComponent.CurrentAnimations.Remove(animation);

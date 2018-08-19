@@ -31,6 +31,7 @@ namespace EngineCore.Components.Animation
         public string AxisType { get; set; } = "positive";
         public bool Override { get; set; } = true;
         public bool Loop { get; set; } = true;
+        public bool CompleteAnimation { get; set; } = true;
 
         #endregion
 
