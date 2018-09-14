@@ -1,17 +1,18 @@
 ﻿using ECS.Attributes;
 using ECS.Components;
 using ECS.Entities;
-using EngineCore.Scripting;
+using EngineCore.Components.Scripting;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EngineCore.Components.Scripting
+namespace EngineCore.Components.UI
 {
     [Component]
-    public class UpdateScriptComponent : ScriptBaseComponent<Action<Entity>>
+    public class UIOnClickComponent: ScriptBaseComponent<Action<Entity>>
     {
     }
 }

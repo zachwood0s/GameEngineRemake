@@ -1,6 +1,5 @@
 ﻿using ECS.Attributes;
 using ECS.Components;
-using ECS.Entities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,17 +10,15 @@ using System.Threading.Tasks;
 namespace EngineCore.Components.UI
 {
     [Component]
-    public class UIButtonComponent: ICopyableComponent
+    public class UIEventBoundsComponent: ICopyableComponent
     {
-        public Action<Entity> ButtonAction { get; set; }
-        public Rectangle ButtonBounds { get; set; }
+        public Rectangle Bounds { get; set; }
 
         public IComponent Copy()
         {
-            return new UIButtonComponent()
+            return new UIEventBoundsComponent
             {
-                ButtonAction = ButtonAction,
-                ButtonBounds = ButtonBounds
+                Bounds = Bounds
             };
         }
     }

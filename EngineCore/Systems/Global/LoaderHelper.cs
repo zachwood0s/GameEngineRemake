@@ -41,6 +41,8 @@ namespace EngineCore.Systems.Global
             }
             return null;
         }
+
+        //public static ICopyableComponent 
     }
 
 

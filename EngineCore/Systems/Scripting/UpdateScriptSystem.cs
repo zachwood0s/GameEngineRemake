@@ -37,7 +37,7 @@ namespace EngineCore.Systems.Scripting
         {
             entity.UpdateComponent<UpdateScriptComponent>(scriptComponent =>
             {
-                scriptComponent.UpdateFunction?.Invoke(entity);
+                scriptComponent.ScriptAction?.Invoke(entity);
             });
         }
 
@@ -55,7 +55,7 @@ namespace EngineCore.Systems.Scripting
             {
                 if(updateScriptComponent.FunctionName != null)
                 {
-                    updateScriptComponent.UpdateFunction = _scriptManager.LoadScript<Action<Entity>>(
+                    updateScriptComponent.ScriptAction = _scriptManager.LoadScript<Action<Entity>>(
                         updateScriptComponent.ScriptFile,
                         updateScriptComponent.FunctionName,
                         Scene
@@ -63,7 +63,7 @@ namespace EngineCore.Systems.Scripting
                 }
                 else if(DefaultUpdateFunctionName != null)
                 {
-                    updateScriptComponent.UpdateFunction = _scriptManager.LoadScript<Action<Entity>>(
+                    updateScriptComponent.ScriptAction = _scriptManager.LoadScript<Action<Entity>>(
                         updateScriptComponent.ScriptFile, 
                         DefaultUpdateFunctionName,
                         Scene
