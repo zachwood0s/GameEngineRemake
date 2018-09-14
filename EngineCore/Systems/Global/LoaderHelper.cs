@@ -1,4 +1,6 @@
-﻿using ECS.Components;
+﻿using ECS;
+using ECS.Components;
+using EngineCore.Components.Scripting;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -42,7 +44,26 @@ namespace EngineCore.Systems.Global
             return null;
         }
 
-        //public static ICopyableComponent 
+        public static T GetScriptActionFromComponent<T>(
+            ScriptBaseComponent<T> scriptComponent, 
+            Scene scene, 
+            string defaultFunctionName, 
+            ScriptManager.ScriptManager scriptManager
+            ) where T: class
+        {
+            if(scriptComponent.FunctionName != null)
+            {
+                return scriptManager.LoadScript<T>(scriptComponent.ScriptFile, scriptComponent.FunctionName, scene);
+            } 
+            else if(defaultFunctionName != null)
+            {
+                return scriptManager.LoadScript<T>(scriptComponent.ScriptFile, defaultFunctionName, scene);
+            }
+            else
+            {
+                throw new ArgumentNullException($"No default update function name set! Script from {scriptComponent.ScriptFile} will be loaded");
+            }
+        }
     }
 
 

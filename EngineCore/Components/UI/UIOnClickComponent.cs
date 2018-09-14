@@ -12,7 +12,11 @@ using System.Threading.Tasks;
 namespace EngineCore.Components.UI
 {
     [Component]
-    public class UIOnClickComponent: ScriptBaseComponent<Action<Entity>>
+    public class UIOnClickComponent : ScriptBaseComponent<Action<Entity>>
     {
+        protected override ScriptBaseComponent<Action<Entity>> CopyInstantiator()
+        {
+            return new UIOnClickComponent();
+        }
     }
 }

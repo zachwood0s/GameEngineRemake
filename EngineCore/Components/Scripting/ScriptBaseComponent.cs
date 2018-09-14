@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EngineCore.Components.Scripting
 {
-    public class ScriptBaseComponent<T>: ICopyableComponent
+    public abstract class ScriptBaseComponent<T>: ICopyableComponent
     {
         public string ScriptFile { get; set; }
         public string FunctionName { get; set; }
@@ -15,12 +15,19 @@ namespace EngineCore.Components.Scripting
 
         public IComponent Copy()
         {
-            return new ScriptBaseComponent<T>()
-            {
-                ScriptFile = ScriptFile,
-                FunctionName = FunctionName,
-                ScriptAction = ScriptAction
-            };
+            var copy = CopyInstantiator();
+            copy.ScriptFile = ScriptFile;
+            copy.FunctionName = FunctionName;
+            copy.ScriptAction = ScriptAction;
+            return copy;
         }
+
+        /// <summary>
+        /// We need this function so that when the JSON loader loads and 
+        /// makes a copy of the object or when used in an entity builder
+        /// it creates the correct instance and not a ScriptBaseComponent.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract ScriptBaseComponent<T> CopyInstantiator(); 
     }
 }

@@ -152,6 +152,7 @@
     <Compile Include="Systems\Rendering\BasicRenderingSystem.cs" />
     <Compile Include="Systems\Rendering\ClearScreenSystem.cs" />
     <Compile Include="Systems\Rendering\SpriteBatchStartStopSystems.cs" />
+    <Compile Include="Systems\Scripting\ScriptLoaderSystem.cs" />
     <Compile Include="Systems\Scripting\UpdateScriptSystem.cs" />
     <Compile Include="Systems\UI\UIOnClickHandlerSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />

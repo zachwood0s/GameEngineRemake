@@ -13,6 +13,7 @@ using ECS.Entities;
 using EngineCore.Systems.Global.InputManager;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
+using EngineCore.Systems.Global;
 
 namespace EngineCore.Systems.UI
 {
@@ -62,26 +63,18 @@ namespace EngineCore.Systems.UI
         {
             e.UpdateComponent<UIOnClickComponent>(button =>
             {
-                if(button.FunctionName != null)
+                try
                 {
-                    button.ScriptAction = _scriptManager.LoadScript<Action<Entity>>(
-                        button.ScriptFile,
-                        button.FunctionName,
-                        Scene
-                        );
-                }
-                else if(DefaultButtonFunctionName != null)
-                {
-                    button.ScriptAction = _scriptManager.LoadScript<Action<Entity>>(
-                        button.ScriptFile,
+                    button.ScriptAction = LoaderHelper.GetScriptActionFromComponent(
+                        button,
+                        Scene,
                         DefaultButtonFunctionName,
-                        Scene
+                        _scriptManager
                         );
                 }
-                else
+                catch(ArgumentNullException ex)
                 {
-                    Debug.WriteLine("UpdateScriptSystem: No default update function name set! No update scripts will be loaded!");
-                    return;
+                    Debug.WriteLine("UIOnClickHandlerSystem: {0}", ex.Message);
                 }
             });
         }
