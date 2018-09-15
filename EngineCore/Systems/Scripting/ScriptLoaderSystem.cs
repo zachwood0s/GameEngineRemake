@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace EngineCore.Systems.Scripting
 {
     public abstract class ScriptLoaderSystem<TScript, UAction> : IInitializeSystem where TScript : ScriptBaseComponent<UAction>
+                                                                                   where UAction : class
     {
         public abstract string DefaultFunctionName { get; set; }
         
@@ -37,7 +38,7 @@ namespace EngineCore.Systems.Scripting
 
         private void _LoadScriptIntoEntity(Entity entity)
         {
-            entity.UpdateComponent<UpdateScriptComponent>(updateScriptComponent =>
+            entity.UpdateComponent<TScript>(updateScriptComponent =>
             {
                 try
                 {

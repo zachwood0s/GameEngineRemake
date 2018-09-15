@@ -109,11 +109,12 @@
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\animations.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\Character\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\testScript.csx" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\ZachScripts\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\settings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\keybindings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\EntityBuilders\entity.json" />
-    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\scene2.json" />
-    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\scene1.json" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\RylanScene.json" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\ZachScene.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\test.xnb" />
   </ItemGroup>
   <ItemGroup>

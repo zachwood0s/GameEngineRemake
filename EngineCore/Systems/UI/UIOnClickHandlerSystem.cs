@@ -14,19 +14,21 @@ using EngineCore.Systems.Global.InputManager;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using EngineCore.Systems.Global;
+using EngineCore.Systems.Scripting;
 
 namespace EngineCore.Systems.UI
 {
     public class UIOnClickHandlerSystem: GroupExecuteSystem, IInitializeSystem
     {
-        public static string DefaultButtonFunctionName { get; set; } = "OnClick";
         private ScriptManager _scriptManager;
         private InputManager _inputManager;
+        private UIOnClickLoaderSystem _scriptLoader;
 
         public UIOnClickHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) : base(scene)
         {
             _scriptManager = scriptManager;
             _inputManager = inputManager;
+            _scriptLoader = new UIOnClickLoaderSystem(scene, scriptManager);
         }
 
         public override Matcher GetMatcher()
@@ -39,7 +41,7 @@ namespace EngineCore.Systems.UI
             entity.UpdateComponents<UIOnClickComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
-                if (_inputManager.IsMousePressed(MouseButtons.Left))
+                if (_inputManager.WasMousePressed(MouseButtons.Left))
                 {
                     Rectangle shiftedBounds = bounds.Bounds;
                     shiftedBounds.Offset(transform.Position);
@@ -53,30 +55,7 @@ namespace EngineCore.Systems.UI
 
         public void Initialize()
         {
-            foreach(Entity e in Group)
-            {
-                _LoadScriptIntoEntity(e);
-            }
-        }
-
-        private void _LoadScriptIntoEntity(Entity e)
-        {
-            e.UpdateComponent<UIOnClickComponent>(button =>
-            {
-                try
-                {
-                    button.ScriptAction = LoaderHelper.GetScriptActionFromComponent(
-                        button,
-                        Scene,
-                        DefaultButtonFunctionName,
-                        _scriptManager
-                        );
-                }
-                catch(ArgumentNullException ex)
-                {
-                    Debug.WriteLine("UIOnClickHandlerSystem: {0}", ex.Message);
-                }
-            });
+            _scriptLoader.Initialize();
         }
     }
 }

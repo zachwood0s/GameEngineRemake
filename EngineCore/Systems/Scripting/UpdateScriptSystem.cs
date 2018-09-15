@@ -21,13 +21,13 @@ namespace EngineCore.Systems.Scripting
 {
     public class UpdateScriptSystem : GroupExecuteSystem, IInitializeSystem
     {
-        public static string DefaultUpdateFunctionName { get; set; } = "Update";
-
         private ScriptManager _scriptManager;
+        private UpdateScriptLoaderSystem _scriptLoader;
 
         public UpdateScriptSystem(Scene scene, ScriptManager scriptManager) : base(scene)
         {
             _scriptManager = scriptManager;
+            _scriptLoader = new UpdateScriptLoaderSystem(Scene, _scriptManager);
         }
 
         public override Matcher GetMatcher()
@@ -44,30 +44,7 @@ namespace EngineCore.Systems.Scripting
 
         public void Initialize()
         {
-            foreach(Entity e in Group)
-            {
-                _LoadScriptIntoEntity(e);
-            }
-        }
-    
-        private void _LoadScriptIntoEntity(Entity entity)
-        {
-            entity.UpdateComponent<UpdateScriptComponent>(updateScriptComponent =>
-            {
-                try
-                {
-                    updateScriptComponent.ScriptAction = LoaderHelper.GetScriptActionFromComponent(
-                        updateScriptComponent,
-                        Scene,
-                        DefaultUpdateFunctionName,
-                        _scriptManager
-                        );
-                }
-                catch(ArgumentNullException ex)
-                {
-                    Debug.WriteLine("UpdateScriptSystem: {0}", ex.Message);
-                }
-            });
+            _scriptLoader.Initialize();
         }
     }
 }

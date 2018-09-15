@@ -13,5 +13,9 @@ namespace EngineCore.Components.Scripting
     [Component]
     public class UpdateScriptComponent : ScriptBaseComponent<Action<Entity>>
     {
+        protected override ScriptBaseComponent<Action<Entity>> CopyInstantiator()
+        {
+            return new UpdateScriptComponent();
+        }
     }
 }

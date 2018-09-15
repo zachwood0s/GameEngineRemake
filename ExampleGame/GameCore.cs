@@ -33,28 +33,7 @@ namespace ExampleGame
         protected override void LoadScenes()
         {
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
-            sceneManager.ChangeScene("Scene2");
-
-
-            var scene = Scenes["Scene2"];
-            var random = new Random();
-
-            
-            for(int i = 0; i< 0; i++)
-            {
-                var move = new CharacterMovementComponent();
-                move.SetDefaults();
-                move.CharacterMovementSpeed = random.Next(4)+1;
-                var entity = EntityBuilders["TestBuilder"].Build(scene).With(move);
-                entity.UpdateComponent<Transform2DComponent>(comp => {
-                    comp.Position = new Vector2(random.Next(600), random.Next(400));
-                    comp.Rotation = (float) random.NextDouble() * 2 ;
-                    });
-
-            }
-            
-
-
+            sceneManager.ChangeScene("ZachScene");
             base.LoadScenes();
         }
     }

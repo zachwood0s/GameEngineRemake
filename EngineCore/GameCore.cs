@@ -126,10 +126,11 @@ namespace ExampleGame
             InputManager inputManager = new InputManager();
             inputManager.InputFile = "Content/keybindings.json";
             _globalSystems.Register(inputManager);
-
+            /*
             GlobalAnimationSystem globalAnimationSystem = new GlobalAnimationSystem();
             globalAnimationSystem.InputFile = "Content/animations.json";
             _globalSystems.Register(globalAnimationSystem);
+            */
 
             _defaultScriptGlobals = new ScriptGlobals()
             {
@@ -150,14 +151,17 @@ namespace ExampleGame
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
-                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
+                //.With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new CharacterMovementSystem(s, inputManager))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
-                
                 .WithFPS(200);
+
+            CreateSystemPoolBuilder("UIEvents")
+                .With(s => new UIOnClickHandlerSystem(s, inputManager, scriptManager))
+                .WithFPS(60);
 
             #endregion
         }
@@ -196,12 +200,11 @@ namespace ExampleGame
         {
             _globalSystems.Execute();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Update").CurrentFps);
-                Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Render").CurrentFps);
-            }
-            base.Update(gameTime);
-        }
+            /*            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                        {
+                            Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Update").CurrentFps);
+                            Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Render").CurrentFps);
+                        }*/
+            base.Update(gameTime); }
     }
 }

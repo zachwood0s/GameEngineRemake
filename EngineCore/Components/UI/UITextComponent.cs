@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace EngineCore.Components.UI
 {
     [Component]
-    class UITextComponent: ICopyableComponent
+    public class UITextComponent: ICopyableComponent
     {
         public string Text { get; set; }
         public string FontName { get; set; }
