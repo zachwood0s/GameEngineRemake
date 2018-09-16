@@ -5,6 +5,7 @@ using ECS.Systems.Interfaces;
 using ECS.Systems.SystemPools;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -116,7 +117,7 @@ namespace EngineCore.Systems.Global.SceneLoader
         {
             if(entityConstruct.Components != null)
             {
-                foreach(ComponentConstruct componentConstruct in entityConstruct.Components)
+                foreach(JObject componentConstruct in entityConstruct.Components)
                 {
                     IComponent component = LoaderHelper.LoadComponent(componentConstruct);
                     if (component != null)

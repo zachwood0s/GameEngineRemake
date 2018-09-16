@@ -116,7 +116,7 @@ namespace ExampleGame
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
 
-            SceneLoaderCondenced sceneLoader = new SceneLoaderCondenced(_scenes, _systemPoolBuilders, _entityBuilders);
+            SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
             sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
             _globalSystems.Register(sceneLoader);
 

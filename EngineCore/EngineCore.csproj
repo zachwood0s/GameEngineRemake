@@ -144,7 +144,6 @@
     <Compile Include="Systems\Global\InputManager\Axis.cs" />
     <Compile Include="Systems\Global\InputManager\InputManager.cs" />
     <Compile Include="Systems\Global\LoaderHelper.cs" />
-    <Compile Include="Systems\Global\SceneLoader\SceneLoaderCondenced.cs" />
     <Compile Include="Systems\Global\SceneLoader\SceneLoader.cs" />
     <Compile Include="Systems\Global\SceneManager\SceneManager.cs" />
     <Compile Include="Systems\Global\ScriptManager\ScriptManager.cs" />

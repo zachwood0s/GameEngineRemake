@@ -3,17 +3,13 @@
 		"Name": "TestBuilder",
 		"Components":[
 			{
-				"Type":"EngineCore.Components.BasicTextureComponent",
-				"Data":{
-					"FileName":"test"
-				}
+				"$type":"EngineCore.Components.BasicTextureComponent",
+				"FileName":"test"
 			},
 			{
-				"Type":"EngineCore.Components.Transform2DComponent",
-				"Data":{
-					"Position":"0, 0",
-					"Rotation":"2"
-				}
+				"$type":"EngineCore.Components.Transform2DComponent",
+				"Position":"0, 0",
+				"Rotation":"2"
 			}
 		]
 	}

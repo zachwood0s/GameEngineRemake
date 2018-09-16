@@ -13,6 +13,7 @@ namespace EngineCore.Systems.Global
 {
     public static class LoaderHelper
     {
+        /*
         public static IComponent LoadComponent(ComponentConstruct componentConstruct)
         {
             Type compType = Type.GetType(componentConstruct.Type);
@@ -28,6 +29,7 @@ namespace EngineCore.Systems.Global
             }
             return null;
         }
+        */
         public static IComponent LoadComponent(JObject jObject)
         {
             Type compType = Type.GetType(jObject.Value<string>("$type"));
@@ -44,6 +46,22 @@ namespace EngineCore.Systems.Global
             return null;
         }
 
+        public static ICopyableComponent LoadCopyableComponent(JObject jObject)
+        {
+            IComponent comp = LoadComponent(jObject);
+            if(comp is ICopyableComponent copyable)
+            {
+                return copyable;
+            }
+            else
+            {
+                Debug.WriteLine($"Component type {jObject.Value<string>("$type")} must implement" +
+                    " the IComponentCopyable interface to be loaded from a file");
+                return null;
+            }
+        }
+
+        /*
         public static ICopyableComponent LoadCopyableComponent(ComponentConstruct componentConstruct)
         {
             IComponent comp = LoadComponent(componentConstruct);
@@ -58,6 +76,7 @@ namespace EngineCore.Systems.Global
             }
             return null;
         }
+        */
 
         public static T GetScriptActionFromComponent<T>(
             ScriptBaseComponent<T> scriptComponent, 
@@ -81,6 +100,12 @@ namespace EngineCore.Systems.Global
         }
     }
 
+    public class EntityConstruct
+    {
+        public string Extends { get; set; }
+        public List<string> Removes { get; set; }
+        public List<JObject> Components { get; set; }
+    }
 
     public class SceneConstruct
     {
@@ -88,25 +113,11 @@ namespace EngineCore.Systems.Global
         public List<string> SystemPools { get; set; }
         public List<EntityConstruct> Entities { get; set; }
     }
-
-    public class EntityConstruct
-    {
-        public string Extends { get; set; }
-        public List<string> Removes { get; set; }
-        public List<ComponentConstruct> Components { get; set; }
-    }
-
     public class BuilderConstruct
     {
         public string Name { get; set; }
         public string Extends { get; set; }
-        public List<ComponentConstruct> Components { get; set; }
+        public List<JObject> Components { get; set; }
         public List<string> Removes { get; set; }
-    }
-
-    public class ComponentConstruct
-    {
-        public string Type { get; set; }
-        public JObject Data { get; set; }
     }
 }
