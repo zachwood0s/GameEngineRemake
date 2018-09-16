@@ -28,6 +28,21 @@ namespace EngineCore.Systems.Global
             }
             return null;
         }
+        public static IComponent LoadComponent(JObject jObject)
+        {
+            Type compType = Type.GetType(jObject.Value<string>("$type"));
+            try
+            {
+                IComponent comp = (IComponent)jObject.ToObject(compType);
+                return comp;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Failed to create component from type {compType}.");
+                Debug.WriteLine($"Message given: {e.Message}.");
+            }
+            return null;
+        }
 
         public static ICopyableComponent LoadCopyableComponent(ComponentConstruct componentConstruct)
         {
