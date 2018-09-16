@@ -9,14 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EngineCore.Components.UI
+namespace EngineCore.Components.UI.Events
 {
     [Component]
-    public class UIOnClickComponent : ScriptBaseComponent<Action<Entity>>
+    public class UIOnMouseEnterComponent : ScriptBaseComponent<Action<Entity>>
     {
         protected override ScriptBaseComponent<Action<Entity>> CopyInstantiator()
         {
-            return new UIOnClickComponent();
+            return new UIOnMouseEnterComponent();
         }
     }
 }

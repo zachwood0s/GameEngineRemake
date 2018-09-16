@@ -24,7 +24,7 @@
 					}
 				},
 				{
-					"$type": "EngineCore.Components.UI.UIOnClickComponent",
+					"$type": "EngineCore.Components.UI.Events.UIOnClickComponent",
 					"ScriptFile": "ZachScripts/testScript"
 				}
 			]

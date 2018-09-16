@@ -1,6 +1,7 @@
 ﻿using ECS;
 using ECS.Entities;
 using EngineCore.Components.UI;
+using EngineCore.Components.UI.Events;
 using EngineCore.Systems.Global.ScriptManager;
 using EngineCore.Systems.Scripting;
 using System;
@@ -17,5 +18,12 @@ namespace EngineCore.Systems.UI
         {
         }
         public override string DefaultFunctionName { get; set; } = "OnClick"; 
+    }
+    public class UIOnMouseEnterLoaderSystem : ScriptLoaderSystem<UIOnMouseEnterComponent, Action<Entity>>
+    {
+        public UIOnMouseEnterLoaderSystem(Scene scene, ScriptManager scriptManager) : base(scene, scriptManager)
+        {
+        }
+        public override string DefaultFunctionName { get; set; } = "OnMouseEnter"; 
     }
 }

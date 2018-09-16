@@ -15,8 +15,9 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using EngineCore.Systems.Global;
 using EngineCore.Systems.Scripting;
+using EngineCore.Components.UI.Events;
 
-namespace EngineCore.Systems.UI
+namespace EngineCore.Systems.UI.Events
 {
     public class UIOnClickHandlerSystem: GroupExecuteSystem, IInitializeSystem
     {

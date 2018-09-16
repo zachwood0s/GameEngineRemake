@@ -129,8 +129,9 @@
     <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\CharacterMovementComponent.cs" />
     <Compile Include="Components\Scripting\ScriptBaseComponent.cs" />
+    <Compile Include="Components\UI\Events\UIOnMouseEnterComponent.cs" />
     <Compile Include="Components\UI\UIEventBoundsComponent.cs" />
-    <Compile Include="Components\UI\UIOnClickComponent.cs" />
+    <Compile Include="Components\UI\Events\UIOnClickComponent.cs" />
     <Compile Include="Scripting\ScriptGlobals.cs" />
     <Compile Include="Components\Scripting\UpdateScriptComponent.cs" />
     <Compile Include="Components\Transform2DComponent.cs" />
@@ -155,8 +156,9 @@
     <Compile Include="Systems\Scripting\ScriptLoaderSystem.cs" />
     <Compile Include="Systems\Scripting\UpdateScriptLoaderSystem.cs" />
     <Compile Include="Systems\Scripting\UpdateScriptSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIOnMouseEnterHandlerSystem.cs" />
     <Compile Include="Systems\UI\UIEventLoaderSystems.cs" />
-    <Compile Include="Systems\UI\UIOnClickHandlerSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIOnClickHandlerSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />
     <Compile Include="Systems\WeirdTimeSlow.cs" />
     <Compile Include="Systems\TestMovementSystem.cs" />

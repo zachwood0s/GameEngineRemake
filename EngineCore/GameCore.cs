@@ -18,6 +18,7 @@ using EngineCore.Systems.Global.SettingsLoader;
 using EngineCore.Systems.Rendering;
 using EngineCore.Systems.Scripting;
 using EngineCore.Systems.UI;
+using EngineCore.Systems.UI.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
