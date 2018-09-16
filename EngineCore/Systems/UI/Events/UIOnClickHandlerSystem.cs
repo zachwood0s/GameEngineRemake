@@ -19,34 +19,26 @@ using EngineCore.Components.UI.Events;
 
 namespace EngineCore.Systems.UI.Events
 {
-    public class UIOnClickHandlerSystem: GroupExecuteSystem, IInitializeSystem
+    public class UIOnClickHandlerSystem: UIEventHandlerBaseSystem<UIOnClickComponent, Action<Entity>>
     {
-        private ScriptManager _scriptManager;
-        private InputManager _inputManager;
-        private UIOnClickLoaderSystem _scriptLoader;
 
-        public UIOnClickHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) : base(scene)
+        public UIOnClickHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) 
+            : base(scene, inputManager, scriptManager)
         {
-            _scriptManager = scriptManager;
-            _inputManager = inputManager;
-            _scriptLoader = new UIOnClickLoaderSystem(scene, scriptManager);
         }
-
-        public override Matcher GetMatcher()
-        {
-            return new Matcher().AllOf(typeof(UIOnClickComponent), typeof(UITransformComponent), typeof(UIEventBoundsComponent));
-        }
+        protected override ScriptLoaderSystem<UIOnClickComponent, Action<Entity>> GetLoader() =>
+            new UIOnClickLoaderSystem(Scene, ScriptManager);
 
         public override void Execute(Entity entity)
         {
             entity.UpdateComponents<UIOnClickComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
-                if (_inputManager.WasMousePressed(MouseButtons.Left))
+                if (InputManager.WasMousePressed(MouseButtons.Left))
                 {
                     Rectangle shiftedBounds = bounds.Bounds;
                     shiftedBounds.Offset(transform.Position);
-                    if (shiftedBounds.Contains(_inputManager.MousePosition))
+                    if (shiftedBounds.Contains(InputManager.MousePosition))
                     {
                         button.ScriptAction?.Invoke(entity);
                     }
@@ -54,9 +46,5 @@ namespace EngineCore.Systems.UI.Events
             });
         }
 
-        public void Initialize()
-        {
-            _scriptLoader.Initialize();
-        }
     }
 }

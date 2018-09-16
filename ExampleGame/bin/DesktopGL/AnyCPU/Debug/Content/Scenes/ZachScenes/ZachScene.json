@@ -6,25 +6,33 @@
 			"Components" : [
 				{
 					"$type": "EngineCore.Components.UI.UITransformComponent",
-					"Position":"100, 100"
+					"Position":"400, 100"
 				},
 				{
 					"$type": "EngineCore.Components.UI.UITextComponent",
-					"Text": "Button",
+					"Text": "ButtonBitch",
 					"FontName": "TestFont",
 					"TextColor": {
-						"R": 0, "G": 0, "B": 0, "A": 255
+						"R": 0, "G": 100, "B": 0, "A": 255
 					}
 				},
 				{
 					"$type": "EngineCore.Components.UI.UIEventBoundsComponent",
 					"Bounds": {
 						"X": 0, "Y": 0,
-						"Width": 100, "Height": 100
+						"Width": 1000, "Height": 100
 					}
 				},
 				{
 					"$type": "EngineCore.Components.UI.Events.UIOnClickComponent",
+					"ScriptFile": "ZachScripts/testScript"
+				},
+				{
+					"$type": "EngineCore.Components.UI.Events.UIOnMouseEnterComponent",
+					"ScriptFile": "ZachScripts/testScript"
+				},
+				{
+					"$type": "EngineCore.Components.UI.Events.UIOnMouseExitComponent",
 					"ScriptFile": "ZachScripts/testScript"
 				}
 			]

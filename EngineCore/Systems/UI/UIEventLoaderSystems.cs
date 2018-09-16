@@ -26,4 +26,11 @@ namespace EngineCore.Systems.UI
         }
         public override string DefaultFunctionName { get; set; } = "OnMouseEnter"; 
     }
+    public class UIOnMouseExitLoaderSystem : ScriptLoaderSystem<UIOnMouseExitComponent, Action<Entity>>
+    {
+        public UIOnMouseExitLoaderSystem(Scene scene, ScriptManager scriptManager) : base(scene, scriptManager)
+        {
+        }
+        public override string DefaultFunctionName { get; set; } = "OnMouseExit"; 
+    }
 }

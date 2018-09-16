@@ -13,7 +13,7 @@ namespace EngineCore.Components.Scripting
         public string FunctionName { get; set; }
         public T ScriptAction { get; set; }
 
-        public IComponent Copy()
+        public virtual IComponent Copy()
         {
             var copy = CopyInstantiator();
             copy.ScriptFile = ScriptFile;

@@ -12,17 +12,17 @@ using System.Threading.Tasks;
 namespace EngineCore.Components.UI.Events
 {
     [Component]
-    public class UIOnMouseEnterComponent : ScriptBaseComponent<Action<Entity>>
+    public class UIOnMouseExitComponent : ScriptBaseComponent<Action<Entity>>
     {
-        public bool WasTriggered { get; set; }
+        public bool HasAlreadyEntered { get; set; }
         protected override ScriptBaseComponent<Action<Entity>> CopyInstantiator()
         {
-            return new UIOnMouseEnterComponent();
+            return new UIOnMouseExitComponent();
         }
         public override IComponent Copy()
         {
-            var clone = base.Copy() as UIOnMouseEnterComponent;
-            clone.WasTriggered = WasTriggered;
+            var clone = base.Copy() as UIOnMouseExitComponent;
+            clone.HasAlreadyEntered = HasAlreadyEntered;
             return clone;
         }
     }
