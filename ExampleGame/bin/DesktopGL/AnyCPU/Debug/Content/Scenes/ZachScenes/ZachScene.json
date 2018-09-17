@@ -6,7 +6,7 @@
 			"Components" : [
 				{
 					"$type": "EngineCore.Components.UI.UITransformComponent",
-					"Position":"400, 100"
+					"Position":"100, 100"
 				},
 				{
 					"$type": "EngineCore.Components.UI.UITextComponent",
@@ -20,7 +20,7 @@
 					"$type": "EngineCore.Components.UI.UIEventBoundsComponent",
 					"Bounds": {
 						"X": 0, "Y": 0,
-						"Width": 1000, "Height": 100
+						"Width": 100, "Height": 100
 					}
 				},
 				{
@@ -33,6 +33,14 @@
 				},
 				{
 					"$type": "EngineCore.Components.UI.Events.UIOnMouseExitComponent",
+					"ScriptFile": "ZachScripts/testScript"
+				},
+				{
+					"$type": "EngineCore.Components.UI.Events.UIOnMouseUpComponent",
+					"ScriptFile": "ZachScripts/testScript"
+				},
+				{
+					"$type": "EngineCore.Components.UI.Events.UIOnMouseDownComponent",
 					"ScriptFile": "ZachScripts/testScript"
 				}
 			]

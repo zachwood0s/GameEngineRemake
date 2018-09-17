@@ -165,6 +165,8 @@ namespace ExampleGame
                 .With(s => new UIOnClickHandlerSystem(s, inputManager, scriptManager))
                 .With(s => new UIOnMouseEnterHandlerSystem(s, inputManager, scriptManager))
                 .With(s => new UIOnMouseExitHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseUpHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseDownHandlerSystem(s, inputManager, scriptManager))
                 .WithFPS(60);
 
             #endregion

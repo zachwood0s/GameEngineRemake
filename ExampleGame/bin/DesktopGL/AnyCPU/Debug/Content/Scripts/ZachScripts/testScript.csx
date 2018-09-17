@@ -21,12 +21,7 @@ var OnClick = new Action<Entity>(e =>
 {
     e.UpdateComponent<UITextComponent>(text =>
     {
-        text.Text += ";";
-    });
-
-    e.UpdateComponent<UITransformComponent>(transform =>
-    {
-        transform.Position += new Vector2(100, 100);
+        text.Text += "C";
     });
 });
 
@@ -34,13 +29,27 @@ var OnMouseEnter = new Action<Entity>(e =>
 {
     e.UpdateComponent<UITextComponent>(text =>
     {
-        text.Text += "A";
+        text.Text += "E";
     });
 });
 var OnMouseExit = new Action<Entity>(e =>
 {
     e.UpdateComponent<UITextComponent>(text =>
     {
-        text.Text += "Z";
+        text.Text += "e";
+    });
+});
+var OnMouseDown = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
+    {
+        text.Text += "D";
+    });
+});
+var OnMouseUp = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
+    {
+        text.Text += "U";
     });
 });
