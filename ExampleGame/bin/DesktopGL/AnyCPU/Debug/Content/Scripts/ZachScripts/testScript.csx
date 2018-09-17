@@ -3,6 +3,7 @@
 
 using System;
 using ECS.Entities;
+using EngineCore.Utils;
 using EngineCore.Components;
 using EngineCore.Components.UI;
 using Microsoft.Xna.Framework;
@@ -23,6 +24,19 @@ var OnClick = new Action<Entity>(e =>
     {
         text.Text += "C";
     });
+    if (!e.HasComponent<EaseComponent>())
+    {
+        var text = e.GetComponent<UITextComponent>();
+        EaseComponent ease = new EaseComponent()
+        {
+            EasingFunction = Easings.Functions.Linear,
+            StartValue = 0,
+            EndValue = 10,
+            EaseLength = 400,
+            SetFunction = (double val) => text.Offset += new Vector2((float) val, 0)
+        };
+        e.With(ease);
+    }
 });
 
 var OnMouseEnter = new Action<Entity>(e =>

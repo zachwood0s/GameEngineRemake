@@ -242,7 +242,6 @@ namespace ECS.Entities
                 }
 
                 */
-
                 _readerWriterLock.ExitUpgradeableReadLock();
                 exitedLock = true;
                 _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
@@ -270,8 +269,9 @@ namespace ECS.Entities
             {
                 int existingCompIndex = _componentTypeIndicies.IndexOf(newCompPoolIndex);
 
-                if (existingCompIndex < 0) 
-                    throw new UnregisteredComponentException($"Component of type {typeof(T).GetType()} has not been added to entity and is trying to be replaced.");
+                if (existingCompIndex < 0)
+                    return;
+                    //throw new UnregisteredComponentException($"Component of type {typeof(T).Name} has not been added to entity and is trying to be replaced.");
 
                 _readerWriterLock.EnterWriteLock();
 
@@ -308,12 +308,14 @@ namespace ECS.Entities
          */
         public void UpdateComponent<T>(Action<T> updateAction) where T: class, IComponent
         {
+            _readerWriterLock.EnterUpgradeableReadLock();
             T comp = GetComponent<T>();
             if (comp != null)
             {
                 updateAction(comp);
                 UpdateComponent(comp);
             }
+            _readerWriterLock.ExitUpgradeableReadLock();
         }
         //Only 5 cuz I don't feel like going farther. If there's a need I will
         public void UpdateComponents<T1, T2>(Action<T1, T2> updateAction) where T1: class, IComponent 

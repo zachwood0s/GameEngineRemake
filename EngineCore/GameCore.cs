@@ -165,6 +165,7 @@ namespace ExampleGame
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new DebugModeToggleSystem(inputManager, Keys.F12, ToggleDebugMode))
+                .With(s => new EasingSystem(s))
                 .With(s => new CharacterMovementSystem(s, inputManager))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
                 .WithFPS(200);
