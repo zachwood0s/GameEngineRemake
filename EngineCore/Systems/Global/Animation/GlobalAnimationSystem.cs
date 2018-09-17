@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,14 @@ namespace EngineCore.Systems.Global.Animation
 
         public void Initialize()
         {
-            Animations = JsonConvert.DeserializeObject<List<AnimationContainer>>(File.ReadAllText("./" + InputFile));
+            try
+            {
+                Animations = JsonConvert.DeserializeObject<List<AnimationContainer>>(File.ReadAllText("./" + InputFile));
+            }
+            catch
+            {
+                Debug.WriteLine($"Animation file '{InputFile}' was not found");
+            }
         }
     }
     public class AnimationData
@@ -30,7 +38,6 @@ namespace EngineCore.Systems.Global.Animation
 
         // File Folder / File List Variables
         public int FileStartNumber { get; set; } = 0;
-        public int FileEndNumber { get; set; } = -1;
     }
     public class AnimationContainer
     {

@@ -1,87 +1,27 @@
 ﻿{
-	"Name":"RylanScene",
-	"SystemPools":["Render","Update"],
-	"Entities":[
-		{
-			"Extends":"TestBuilder",
-			"Components":[
-				{
-					"Type":"EngineCore.Components.Scripting.UpdateScriptComponent",
-					"Data":{
-						"ScriptFile":"Character/testScript"
-					}
-				}
-			]
-		},
-		{
-			"Extends":"TestBuilder",
-			"Removes":["EngineCore.Components.Transform2DComponent"],
+  "Name": "RylanScene",
+  "SystemPools": [ "Render", "Update", "UIEvents" ],
+  "Entities": [
+    {
       "Components": [
         {
-          "Type": "EngineCore.Components.Transform2DComponent",
-          "Data": {
-            "Position": "100, 100",
-            "Rotation": "2"
-          }
+          "$type": "EngineCore.Components.BasicTextureComponent",
+          "FileName": "test"
         },
         {
-          "Type": "EngineCore.Components.CharacterMovementComponent",
-          "Data": {
-            "CharacterMovementSpeed": "2",
-            "HorizontalInputAxis": "horizontal",
-            "VerticalInputAxis": "vertical"
-          }
+          "$type": "EngineCore.Components.Transform2DComponent",
+          "Position": "0, 0"
         },
-		/*
         {
-          "Type": "EngineCore.Components.Animation.AnimationComponent",
-          "Data": {
-            "Animations": [
-              {
-                "Name": "walk",
-                "EventAxis": "horizontal",
-                "AxisType": "positive",
-                "AnimationTime": "1"
-              },
-              {
-                "Name": "walk",
-                "EventAxis": "horizontal",
-                "AxisType": "negative",
-                "AnimationTime": "1",
-                "Loop": false
-              },
-              {
-                "Name": "taunt",
-                "EventAxis": "taunt",
-                "CompleteAnimation": true,
-                "Loop":  false
-              }
-            ]
-          }
+          "$type": "EngineCore.Components.Animation.AnimationComponent",
+          "Animations": [
+            {
+              "Name": "walk",
+              "EventAxis": "horizontal"
+            }
+          ]
         }
-		  */
       ]
-		},
-		{
-			"Extends":"TestBuilder",
-			"Removes":["EngineCore.Components.Transform2DComponent"],
-			"Components":[
-				{
-					"Type":"EngineCore.Components.Transform2DComponent",
-					"Data":{
-						"Position":"500, 100",
-						"Rotation":"2"
-					}
-				},
-				{
-					"Type":"EngineCore.Components.CharacterMovementComponent",
-					"Data":{
-						"CharacterMovementSpeed":"1",
-						"HorizontalInputAxis":"horizontal2",
-						"VerticalInputAxis":"vertical2",
-					}
-				}
-			]
-		},
-	]
+    }
+  ]
 }

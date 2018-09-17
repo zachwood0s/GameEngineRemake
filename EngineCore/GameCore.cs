@@ -113,12 +113,13 @@ namespace ExampleGame
         protected virtual void LoadSystemPools()
         {
             #region Global Systems
+
             EntityBuilderLoader builderLoader = new EntityBuilderLoader(_entityBuilders);
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
 
             SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
-            sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
+            sceneLoader.RootDirectory = "Content/Scenes/RylanScenes";
             _globalSystems.Register(sceneLoader);
 
             SceneManager sceneManager = new SceneManager(_scenes);
@@ -127,11 +128,11 @@ namespace ExampleGame
             InputManager inputManager = new InputManager();
             inputManager.InputFile = "Content/keybindings.json";
             _globalSystems.Register(inputManager);
-            /*
+            
             GlobalAnimationSystem globalAnimationSystem = new GlobalAnimationSystem();
             globalAnimationSystem.InputFile = "Content/animations.json";
             _globalSystems.Register(globalAnimationSystem);
-            */
+            
 
             _defaultScriptGlobals = new ScriptGlobals()
             {
@@ -152,7 +153,7 @@ namespace ExampleGame
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
-                //.With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
+                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
