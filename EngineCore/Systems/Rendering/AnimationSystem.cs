@@ -77,14 +77,14 @@ namespace EngineCore.Systems.Rendering
                 BasicTextureComponent basicTexture = e.GetComponent<BasicTextureComponent>();
                 if (basicTexture != null) basicTexture.Render = true;
                 foreach (AnimationObject animation in animationComponent.CurrentAnimations)
-                {
+                {                    
                     // Render Texture
                     if (animation.FileType == "SpriteSheet" && animation.Rectangles.Length > animation.CurrentFrame)
-                    {
+                    {                      
                         _spriteBatch.Draw(animation.Textures[0], transform2D.Position, animation.Rectangles[animation.CurrentFrame], Color.White);
                     }
-                    else if ((animation.FileType == "TextureFolder" || animation.FileType == "FileList") && animation.Textures.Count > animation.CurrentFrame)
-                    {
+                    else if ((animation.FileType == "TextureFolder") && animation.Textures.Count > animation.CurrentFrame)
+                    {                      
                         _spriteBatch.Draw(animation.Textures[animation.CurrentFrame], transform2D.Position, Color.White);
                     }
                     if (basicTexture != null) basicTexture.Render = false;
@@ -124,10 +124,6 @@ namespace EngineCore.Systems.Rendering
                         {
                             animation.Textures.Add(_contentManager.Load<Texture2D>(animation.FileLocation));
                             _loadSprites(animation);
-                        }
-                        else if (animation.FileType == "FileList")
-                        {
-                            // Handle File List
                         }
                         else
                         {

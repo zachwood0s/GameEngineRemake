@@ -1,0 +1,31 @@
+[
+  {
+    "FileLocation": "YeOldyKnifeGuy2",
+    "FileType": "SpriteSheet",
+    "Animations": [
+      {
+        "Name": "prepare_stab",
+        "SpriteSize": [ 20, 18 ],
+        "SpriteStartSite": [ 23, 18 ],
+        "FrameCount": 5
+      },
+      {
+        "Name": "walk",
+        "SpriteSize": [ 20, 18 ],
+        "SpriteStartSite": [ 23, 36 ],
+        "FrameCount": 6
+      }
+    ]
+  },
+  {
+    "FileLocation": "TestAnimation",
+    "FileType": "TextureFolder",
+    "Animations": [
+      {
+        "Name": "taunt",
+        "FileStartNumber": 1,
+        "FrameCount": 5
+      }
+    ]
+  }
+]

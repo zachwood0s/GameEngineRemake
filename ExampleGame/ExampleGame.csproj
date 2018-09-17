@@ -113,7 +113,7 @@
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\settings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\keybindings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\EntityBuilders\entity.json" />
-    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\RylanScene.json" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\RylanScenes\RylanScene.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\ZachScenes\ZachScene.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\test.xnb" />
   </ItemGroup>
