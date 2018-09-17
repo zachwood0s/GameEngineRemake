@@ -157,6 +157,7 @@ namespace ExampleGame
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
+                .With(s => new UISolidBackgroundSystem(s, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
                 //.With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(s => new DebugDrawUIEventBoundsSystem(s, _spriteBatch, () => DebugOn))

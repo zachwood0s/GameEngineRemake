@@ -135,6 +135,7 @@
     <Compile Include="Components\UI\Events\UIOnMouseEnterComponent.cs" />
     <Compile Include="Components\UI\UIEventBoundsComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnClickComponent.cs" />
+    <Compile Include="Components\UI\UISolidBackgroundComponent.cs" />
     <Compile Include="Scripting\ScriptGlobals.cs" />
     <Compile Include="Components\Scripting\UpdateScriptComponent.cs" />
     <Compile Include="Components\Transform2DComponent.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Systems\UI\Events\UIOnMouseEnterHandlerSystem.cs" />
     <Compile Include="Systems\UI\UIEventLoaderSystems.cs" />
     <Compile Include="Systems\UI\Events\UIOnClickHandlerSystem.cs" />
+    <Compile Include="Systems\UI\UISolidBackgroundSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />
     <Compile Include="Utils\Primitives2D.cs" />
   </ItemGroup>
