@@ -167,8 +167,6 @@
     <Compile Include="Systems\UI\UIEventLoaderSystems.cs" />
     <Compile Include="Systems\UI\Events\UIOnClickHandlerSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />
-    <Compile Include="Systems\WeirdTimeSlow.cs" />
-    <Compile Include="Systems\TestMovementSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
