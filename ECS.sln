@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineCore", "EngineCore\En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleGame", "ExampleGame\ExampleGame.csproj", "{4BF0C037-808E-4FAE-B99E-E1DC3B0CB5FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSCodeExtension", "VSCodeExtension\VSCodeExtension.csproj", "{5802452A-14F8-466B-A7E3-23BE466EB895}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4BF0C037-808E-4FAE-B99E-E1DC3B0CB5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BF0C037-808E-4FAE-B99E-E1DC3B0CB5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BF0C037-808E-4FAE-B99E-E1DC3B0CB5FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5802452A-14F8-466B-A7E3-23BE466EB895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5802452A-14F8-466B-A7E3-23BE466EB895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5802452A-14F8-466B-A7E3-23BE466EB895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5802452A-14F8-466B-A7E3-23BE466EB895}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
