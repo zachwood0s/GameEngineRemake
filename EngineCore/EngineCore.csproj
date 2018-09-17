@@ -129,9 +129,13 @@
     <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\CharacterMovementComponent.cs" />
     <Compile Include="Components\Scripting\ScriptBaseComponent.cs" />
+    <Compile Include="Components\UI\Events\UIOnMouseDownComponent.cs" />
+    <Compile Include="Components\UI\Events\UIOnMouseUpComponent.cs" />
+    <Compile Include="Components\UI\Events\UIOnMouseExitComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnMouseEnterComponent.cs" />
     <Compile Include="Components\UI\UIEventBoundsComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnClickComponent.cs" />
+    <Compile Include="Components\UI\UISolidBackgroundComponent.cs" />
     <Compile Include="Scripting\ScriptGlobals.cs" />
     <Compile Include="Components\Scripting\UpdateScriptComponent.cs" />
     <Compile Include="Components\Transform2DComponent.cs" />
@@ -140,6 +144,8 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\Character\CharacterMovementSystem.cs" />
+    <Compile Include="Systems\DebugSystems\DebugDrawUIEventBoundsSystem.cs" />
+    <Compile Include="Systems\DebugSystems\DebugModeToggleSystem.cs" />
     <Compile Include="Systems\Global\Animation\GlobalAnimationSystem.cs" />
     <Compile Include="Systems\Global\EntityBuilderLoader\EntityBuilderLoader.cs" />
     <Compile Include="Systems\Global\InputManager\Axis.cs" />
@@ -156,12 +162,16 @@
     <Compile Include="Systems\Scripting\ScriptLoaderSystem.cs" />
     <Compile Include="Systems\Scripting\UpdateScriptLoaderSystem.cs" />
     <Compile Include="Systems\Scripting\UpdateScriptSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIEventHandlerBaseSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIOnMouseDownHandlerSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIOnMouseUpHandlerSystem.cs" />
+    <Compile Include="Systems\UI\Events\UIOnMouseExitHandlerSystem.cs" />
     <Compile Include="Systems\UI\Events\UIOnMouseEnterHandlerSystem.cs" />
     <Compile Include="Systems\UI\UIEventLoaderSystems.cs" />
     <Compile Include="Systems\UI\Events\UIOnClickHandlerSystem.cs" />
+    <Compile Include="Systems\UI\UISolidBackgroundSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />
-    <Compile Include="Systems\WeirdTimeSlow.cs" />
-    <Compile Include="Systems\TestMovementSystem.cs" />
+    <Compile Include="Utils\Primitives2D.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -173,9 +183,7 @@
       <Name>ECS</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />

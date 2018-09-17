@@ -20,33 +20,28 @@ using EngineCore.Systems.UI.Events;
 
 namespace EngineCore.Systems.UI
 {
-    public class UIOnMouseEnterHandlerSystem: UIEventHandlerBaseSystem<UIOnMouseEnterComponent, Action<Entity>>
+    public class UIOnMouseUpHandlerSystem: UIEventHandlerBaseSystem<UIOnMouseUpComponent, Action<Entity>>
     {
-        public UIOnMouseEnterHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) 
+        public UIOnMouseUpHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) 
             : base(scene, inputManager, scriptManager)
         {
         }
-        protected override ScriptLoaderSystem<UIOnMouseEnterComponent, Action<Entity>> GetLoader() => 
-            new UIOnMouseEnterLoaderSystem(Scene, ScriptManager); 
+        protected override ScriptLoaderSystem<UIOnMouseUpComponent, Action<Entity>> GetLoader() => 
+            new UIOnMouseUpLoaderSystem(Scene, ScriptManager); 
 
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents<UIOnMouseEnterComponent, UITransformComponent, UIEventBoundsComponent>(
+            entity.UpdateComponents<UIOnMouseUpComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
-                Rectangle shiftedBounds = bounds.Bounds;
-                shiftedBounds.Offset(transform.Position);
-                if (shiftedBounds.Contains(InputManager.MousePosition))
+                if (InputManager.WasMouseReleased(MouseButtons.Left))
                 {
-                    if (!button.WasTriggered)
+                    Rectangle shiftedBounds = bounds.Bounds;
+                    shiftedBounds.Offset(transform.Position);
+                    if (shiftedBounds.Contains(InputManager.MousePosition))
                     {
                         button.ScriptAction?.Invoke(entity);
-                        button.WasTriggered = true;
                     }
-                }
-                else
-                {
-                    button.WasTriggered = false;
                 }
             });
         }

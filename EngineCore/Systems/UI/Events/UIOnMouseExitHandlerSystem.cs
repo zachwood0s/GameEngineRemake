@@ -20,33 +20,30 @@ using EngineCore.Systems.UI.Events;
 
 namespace EngineCore.Systems.UI
 {
-    public class UIOnMouseEnterHandlerSystem: UIEventHandlerBaseSystem<UIOnMouseEnterComponent, Action<Entity>>
+    public class UIOnMouseExitHandlerSystem: UIEventHandlerBaseSystem<UIOnMouseExitComponent, Action<Entity>>
     {
-        public UIOnMouseEnterHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) 
+        public UIOnMouseExitHandlerSystem(Scene scene, InputManager inputManager, ScriptManager scriptManager) 
             : base(scene, inputManager, scriptManager)
         {
         }
-        protected override ScriptLoaderSystem<UIOnMouseEnterComponent, Action<Entity>> GetLoader() => 
-            new UIOnMouseEnterLoaderSystem(Scene, ScriptManager); 
+        protected override ScriptLoaderSystem<UIOnMouseExitComponent, Action<Entity>> GetLoader() => 
+            new UIOnMouseExitLoaderSystem(Scene, ScriptManager); 
 
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents<UIOnMouseEnterComponent, UITransformComponent, UIEventBoundsComponent>(
+            entity.UpdateComponents<UIOnMouseExitComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
                 Rectangle shiftedBounds = bounds.Bounds;
                 shiftedBounds.Offset(transform.Position);
                 if (shiftedBounds.Contains(InputManager.MousePosition))
                 {
-                    if (!button.WasTriggered)
-                    {
-                        button.ScriptAction?.Invoke(entity);
-                        button.WasTriggered = true;
-                    }
+                    button.HasAlreadyEntered = true;
                 }
-                else
+                else if (button.HasAlreadyEntered)
                 {
-                    button.WasTriggered = false;
+                    button.ScriptAction?.Invoke(entity);
+                    button.HasAlreadyEntered = false;
                 }
             });
         }

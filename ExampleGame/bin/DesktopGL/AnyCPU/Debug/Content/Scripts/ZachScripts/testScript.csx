@@ -21,18 +21,35 @@ var OnClick = new Action<Entity>(e =>
 {
     e.UpdateComponent<UITextComponent>(text =>
     {
-        if(text.TextColor == Color.Red)
-        {
-            text.TextColor = Color.Black;
-        }
-        else if(text.TextColor == Color.Black)
-        {
-            text.TextColor = Color.Red;
-        }
+        text.Text += "C";
     });
+});
 
-    e.UpdateComponent<UITransformComponent>(transform =>
+var OnMouseEnter = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
     {
-        transform.Position += new Vector2(100, 0);
+        text.Text += "E";
+    });
+});
+var OnMouseExit = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
+    {
+        text.Text += "e";
+    });
+});
+var OnMouseDown = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
+    {
+        text.Text += "D";
+    });
+});
+var OnMouseUp = new Action<Entity>(e =>
+{
+    e.UpdateComponent<UITextComponent>(text =>
+    {
+        text.Text += "U";
     });
 });

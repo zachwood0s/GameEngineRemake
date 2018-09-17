@@ -12,18 +12,17 @@ using System.Threading.Tasks;
 namespace EngineCore.Components.UI.Events
 {
     [Component]
-    public class UIOnClickComponent : ScriptBaseComponent<Action<Entity>>
+    public class UIOnMouseUpComponent : ScriptBaseComponent<Action<Entity>>
     {
-        public bool WasPressed { get; set; }
+        public bool WasTriggered { get; set; }
         protected override ScriptBaseComponent<Action<Entity>> CopyInstantiator()
         {
-            return new UIOnClickComponent();
+            return new UIOnMouseUpComponent();
         }
-
         public override IComponent Copy()
         {
-            var clone = base.Copy() as UIOnClickComponent;
-            clone.WasPressed = WasPressed;
+            var clone = base.Copy() as UIOnMouseUpComponent;
+            clone.WasTriggered = WasTriggered;
             return clone;
         }
     }
