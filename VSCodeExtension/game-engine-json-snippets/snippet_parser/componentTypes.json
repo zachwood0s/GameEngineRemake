@@ -1,0 +1,281 @@
+{
+  "BasicTextureComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.BasicTextureComponent\",",
+      "  \"FileName\": ${1:\"\"},",
+      "  \"Texture\": null,",
+      "  \"Render\": ${2:true}",
+      "}"
+    ]
+  },
+  "CharacterMovementComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.CharacterMovementComponent\",",
+      "  \"CharacterMovementSpeed\": ${1:0.0},",
+      "  \"HorizontalInputAxis\": ${2:\"\"},",
+      "  \"VerticalInputAxis\": ${3:\"\"}",
+      "}"
+    ]
+  },
+  "EaseComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.EaseComponent\",",
+      "  \"SetFunction\": null,",
+      "  \"EasingFunction\": ${1:0},",
+      "  \"StartValue\": ${2:0.0},",
+      "  \"EndValue\": ${3:0.0},",
+      "  \"EaseLength\": ${4:0.0},",
+      "  \"CurrentStep\": ${5:0.0},",
+      "  \"EaseStep\": ${6:0.0},",
+      "  \"HasStarted\": ${7:false}",
+      "}"
+    ]
+  },
+  "Transform2DComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.Transform2DComponent\",",
+      "  \"Position\": {",
+      "    \"X\": 0.0,",
+      "    \"Y\": 0.0",
+      "  },",
+      "  \"Rotation\": ${1:0.0}",
+      "}"
+    ]
+  },
+  "UIEventBoundsComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.UIEventBoundsComponent\",",
+      "  \"Bounds\": {",
+      "    \"X\": 0,",
+      "    \"Y\": 0,",
+      "    \"Width\": 0,",
+      "    \"Height\": 0",
+      "  }",
+      "}"
+    ]
+  },
+  "UISolidBackgroundComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.UISolidBackgroundComponent\",",
+      "  \"Bounds\": {",
+      "    \"X\": 0,",
+      "    \"Y\": 0,",
+      "    \"Width\": 0,",
+      "    \"Height\": 0",
+      "  },",
+      "  \"Color\": {",
+      "    \"B\": 0,",
+      "    \"G\": 0,",
+      "    \"R\": 0,",
+      "    \"A\": 0",
+      "  }",
+      "}"
+    ]
+  },
+  "UITextComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.UITextComponent\",",
+      "  \"Text\": ${1:\"\"},",
+      "  \"FontName\": ${2:\"\"},",
+      "  \"LoadedFont\": null,",
+      "  \"TextColor\": {",
+      "    \"B\": 0,",
+      "    \"G\": 0,",
+      "    \"R\": 0,",
+      "    \"A\": 0",
+      "  },",
+      "  \"Offset\": {",
+      "    \"X\": 0.0,",
+      "    \"Y\": 0.0",
+      "  }",
+      "}"
+    ]
+  },
+  "UITransformComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.UITransformComponent\",",
+      "  \"Position\": {",
+      "    \"X\": 0.0,",
+      "    \"Y\": 0.0",
+      "  }",
+      "}"
+    ]
+  },
+  "UIOnMouseDownComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.Events.UIOnMouseDownComponent\",",
+      "  \"WasTriggered\": ${1:false},",
+      "  \"ScriptFile\": ${2:\"\"},",
+      "  \"FunctionName\": ${3:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "UIOnMouseUpComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.Events.UIOnMouseUpComponent\",",
+      "  \"WasTriggered\": ${1:false},",
+      "  \"ScriptFile\": ${2:\"\"},",
+      "  \"FunctionName\": ${3:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "UIOnMouseExitComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.Events.UIOnMouseExitComponent\",",
+      "  \"HasAlreadyEntered\": ${1:false},",
+      "  \"ScriptFile\": ${2:\"\"},",
+      "  \"FunctionName\": ${3:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "UIOnMouseEnterComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.Events.UIOnMouseEnterComponent\",",
+      "  \"WasTriggered\": ${1:false},",
+      "  \"ScriptFile\": ${2:\"\"},",
+      "  \"FunctionName\": ${3:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "UIOnClickComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.UI.Events.UIOnClickComponent\",",
+      "  \"WasPressed\": ${1:false},",
+      "  \"ScriptFile\": ${2:\"\"},",
+      "  \"FunctionName\": ${3:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "UpdateScriptComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.Scripting.UpdateScriptComponent\",",
+      "  \"ScriptFile\": ${1:\"\"},",
+      "  \"FunctionName\": ${2:\"\"},",
+      "  \"ScriptAction\": null",
+      "}"
+    ]
+  },
+  "AnimationComponent": {
+    "prefix": "Component",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"$$type\": \"EngineCore.Components.Animation.AnimationComponent\",",
+      "  \"Animations\": [",
+      "    {",
+      "      \"Name\": null,",
+      "      \"AnimationTime\": 1.0,",
+      "      \"EventAxis\": \"\",",
+      "      \"AxisType\": \"positive\",",
+      "      \"Override\": true,",
+      "      \"Loop\": true,",
+      "      \"CompleteAnimation\": true,",
+      "      \"FileType\": null,",
+      "      \"FileLocation\": null,",
+      "      \"FrameCount\": 0.0,",
+      "      \"SpriteSize\": null,",
+      "      \"SpriteStartSite\": [",
+      "        0,",
+      "        0",
+      "      ],",
+      "      \"FileStartNumber\": 1,",
+      "      \"CurrentFrame\": 0,",
+      "      \"startTime\": \"0001-01-01T00:00:00\",",
+      "      \"Add\": false,",
+      "      \"Remove\": false,",
+      "      \"ResetCurrentFrame\": true,",
+      "      \"Rectangles\": null,",
+      "      \"Textures\": []",
+      "    }",
+      "  ],",
+      "  \"CurrentAnimations\": [",
+      "    {",
+      "      \"Name\": null,",
+      "      \"AnimationTime\": 1.0,",
+      "      \"EventAxis\": \"\",",
+      "      \"AxisType\": \"positive\",",
+      "      \"Override\": true,",
+      "      \"Loop\": true,",
+      "      \"CompleteAnimation\": true,",
+      "      \"FileType\": null,",
+      "      \"FileLocation\": null,",
+      "      \"FrameCount\": 0.0,",
+      "      \"SpriteSize\": null,",
+      "      \"SpriteStartSite\": [",
+      "        0,",
+      "        0",
+      "      ],",
+      "      \"FileStartNumber\": 1,",
+      "      \"CurrentFrame\": 0,",
+      "      \"startTime\": \"0001-01-01T00:00:00\",",
+      "      \"Add\": false,",
+      "      \"Remove\": false,",
+      "      \"ResetCurrentFrame\": true,",
+      "      \"Rectangles\": null,",
+      "      \"Textures\": []",
+      "    }",
+      "  ]",
+      "}"
+    ]
+  },
+  "Entity": {
+    "prefix": "Entities",
+    "scope": "json",
+    "body": [
+      "{",
+      "  \"Extends\": ${1:\"\"},",
+      "  \"Removes\": null,",
+      "  \"Components\": [",
+      "    {}",
+      "  ]",
+      "}"
+    ]
+  }
+}

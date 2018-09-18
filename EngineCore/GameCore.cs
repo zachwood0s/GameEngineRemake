@@ -8,6 +8,7 @@ using EngineCore.Components;
 using EngineCore.Scripting;
 using EngineCore.Systems;
 using EngineCore.Systems.Character;
+using EngineCore.Systems.DebugSystems;
 using EngineCore.Systems.Global.Animation;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
@@ -47,7 +48,9 @@ namespace ExampleGame
         private Dictionary<string, Scene> _scenes;
         private Dictionary<string, EntityBuilder> _entityBuilders;
         private Dictionary<string, SystemPoolBuilder> _systemPoolBuilders;
-        private IInitializeSystem _settingsLoader; 
+        private IInitializeSystem _settingsLoader;
+        private bool _debugOn;
+
         protected Dictionary<string, Scene> Scenes => _scenes;
         protected Dictionary<string, EntityBuilder> EntityBuilders => _entityBuilders;
         protected Dictionary<string, SystemPoolBuilder> SystemPoolBuilders => _systemPoolBuilders;
@@ -209,6 +212,11 @@ namespace ExampleGame
                             Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Update").CurrentFps);
                             Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Render").CurrentFps);
                         }*/
-            base.Update(gameTime); }
+            base.Update(gameTime);
+        }
+        public void ToggleDebugMode()
+        {
+            _debugOn = !_debugOn;
+        }
     }
 }
