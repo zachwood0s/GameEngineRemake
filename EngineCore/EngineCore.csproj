@@ -128,7 +128,7 @@
     <Compile Include="Components\Animation\AnimationComponent.cs" />
     <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\CharacterMovementComponent.cs" />
-    <Compile Include="Components\EaseComponent.cs" />
+    <Compile Include="Components\CollisionDetection\CollisionBoundsComponent.cs" />
     <Compile Include="Components\Scripting\ScriptBaseComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnMouseDownComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnMouseUpComponent.cs" />
@@ -145,9 +145,10 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\Character\CharacterMovementSystem.cs" />
+    <Compile Include="Systems\Collision\CollisionDetectionSystem.cs" />
+    <Compile Include="Systems\DebugSystems\DebugDrawCollisionBoundsSystem.cs" />
     <Compile Include="Systems\DebugSystems\DebugDrawUIEventBoundsSystem.cs" />
     <Compile Include="Systems\DebugSystems\DebugModeToggleSystem.cs" />
-    <Compile Include="Systems\EasingSystem.cs" />
     <Compile Include="Systems\Global\Animation\GlobalAnimationSystem.cs" />
     <Compile Include="Systems\Global\EntityBuilderLoader\EntityBuilderLoader.cs" />
     <Compile Include="Systems\Global\InputManager\Axis.cs" />
@@ -173,7 +174,6 @@
     <Compile Include="Systems\UI\Events\UIOnClickHandlerSystem.cs" />
     <Compile Include="Systems\UI\UISolidBackgroundSystem.cs" />
     <Compile Include="Systems\UI\UITextRenderingSystem.cs" />
-    <Compile Include="Utils\Easings.cs" />
     <Compile Include="Utils\Primitives2D.cs" />
   </ItemGroup>
   <ItemGroup>
