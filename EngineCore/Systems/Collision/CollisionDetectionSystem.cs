@@ -42,11 +42,8 @@ namespace EngineCore.Systems.Collision
                         foreach (CollisionGroup collisionGroup1 in collisionComponent1.CollisionGroups)
                         {
                             foreach (CollisionGroup collisionGroup2 in collisionComponent2.CollisionGroups)
-                            {                               
-                                if (isColliding(collisionGroup1, collisionGroup2, transform2D1, transform2D2))
-                                {
-                                    Debug.WriteLine($"'{collisionGroup1.Name}' is colliding with '{collisionGroup2.Name}'");
-                                }
+                            {
+                                isColliding(collisionGroup1, collisionGroup2, transform2D1, transform2D2);
                             }
                         }
                     }
@@ -108,6 +105,7 @@ namespace EngineCore.Systems.Collision
                     }                
                 }
             }
+            cg1.Colliding = cg2.Colliding = colliding;
             return colliding;
         }
         private void project(Vector2 axis, Polygon p, out float min , out float max)

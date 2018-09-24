@@ -25,6 +25,7 @@ namespace EngineCore.Components.CollisionDetection
     {
         public string Name { get; set; }
         public List<Polygon> Colliders { get; set; }
+        public bool Colliding { get; set; }
     }
     public class Polygon
     {
