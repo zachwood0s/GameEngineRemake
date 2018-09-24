@@ -163,7 +163,8 @@ namespace ExampleGame
                 .With(s => new UISolidBackgroundSystem(s, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
-                .With(s => new DebugDrawCollisionBoundsSystem(s, _spriteBatch, () => { return _debugOn; }))
+                .With(s => new DebugDrawCollisionBoundsSystem(s, _spriteBatch, () => DebugOn))
+                .With(s => new DebugDrawUIEventBoundsSystem(s, _spriteBatch, () => DebugOn))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
