@@ -8,6 +8,7 @@ using EngineCore.Components;
 using EngineCore.Scripting;
 using EngineCore.Systems;
 using EngineCore.Systems.Character;
+using EngineCore.Systems.DebugSystems;
 using EngineCore.Systems.Global.Animation;
 using EngineCore.Systems.Global.EntityBuilderLoader;
 using EngineCore.Systems.Global.InputManager;
@@ -35,6 +36,7 @@ namespace ExampleGame
     /// </summary>
     public class GameCore : Game
     {
+        private bool _debugOn;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SystemPool _globalSystems;
@@ -42,7 +44,8 @@ namespace ExampleGame
         protected SystemPool GlobalSystems => _globalSystems;
         protected SpriteBatch SpriteBatch => _spriteBatch;
         protected GraphicsDeviceManager Graphics => _graphics;
-
+        protected bool DebugOn => _debugOn;
+        
         //Scene _testScene;
         private Dictionary<string, Scene> _scenes;
         private Dictionary<string, EntityBuilder> _entityBuilders;
@@ -59,6 +62,8 @@ namespace ExampleGame
         
         public GameCore()
         {
+            _debugOn = false;
+
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -144,6 +149,7 @@ namespace ExampleGame
             scriptManager.RootDirectory = "Content/Scripts";
             _globalSystems.Register(scriptManager);
 
+
             #endregion
 
             #region System Pools
@@ -152,17 +158,23 @@ namespace ExampleGame
                 .With(_ => new ClearScreenSystem(_graphics.GraphicsDevice, Color.CornflowerBlue))
                 .With(_ => new SpriteBatchBeginSystem(_spriteBatch))
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
+                .With(s => new UISolidBackgroundSystem(s, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
-                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
+                //.With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
+                .With(s => new DebugModeToggleSystem(inputManager, Keys.F12, ToggleDebugMode))
                 .With(s => new CharacterMovementSystem(s, inputManager))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
                 .WithFPS(200);
 
             CreateSystemPoolBuilder("UIEvents")
                 .With(s => new UIOnClickHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseEnterHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseExitHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseUpHandlerSystem(s, inputManager, scriptManager))
+                .With(s => new UIOnMouseDownHandlerSystem(s, inputManager, scriptManager))
                 .WithFPS(60);
 
             #endregion
@@ -201,12 +213,18 @@ namespace ExampleGame
         protected override void Update(GameTime gameTime)
         {
             _globalSystems.Execute();
-
+            
             /*            if (Keyboard.GetState().IsKeyDown(Keys.Space))
                         {
                             Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Update").CurrentFps);
                             Debug.WriteLine(_scenes["Scene2"].GetSystemPoolByName("Render").CurrentFps);
                         }*/
-            base.Update(gameTime); }
+            base.Update(gameTime);
+        }
+
+        public void ToggleDebugMode()
+        {
+            _debugOn = !_debugOn;
+        }
     }
 }
