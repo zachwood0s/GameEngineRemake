@@ -5,9 +5,11 @@ using ECS.Systems;
 using ECS.Systems.Interfaces;
 using ECS.Systems.SystemPools;
 using EngineCore.Components;
+using EngineCore.Components.CollisionDetection;
 using EngineCore.Scripting;
 using EngineCore.Systems;
 using EngineCore.Systems.Character;
+using EngineCore.Systems.Collision;
 using EngineCore.Systems.DebugSystems;
 using EngineCore.Systems.Global.Animation;
 using EngineCore.Systems.Global.EntityBuilderLoader;
@@ -160,12 +162,13 @@ namespace ExampleGame
                 .With(s => new BasicRenderingSystem(s, Content, _spriteBatch))
                 .With(s => new UISolidBackgroundSystem(s, _spriteBatch))
                 .With(s => new UITextRenderingSystem(s, Content, _spriteBatch))
-                //.With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
+                .With(s => new AnimationSystem(s, _spriteBatch, Content, inputManager, globalAnimationSystem))
                 .With(_ => new SpriteBatchEndSystem(_spriteBatch));
 
             CreateSystemPoolBuilder("Update")
                 .With(s => new DebugModeToggleSystem(inputManager, Keys.F12, ToggleDebugMode))
                 .With(s => new CharacterMovementSystem(s, inputManager))
+                .With(s => new CollisionDetectionSystem(s))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
                 .WithFPS(200);
 

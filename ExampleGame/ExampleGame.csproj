@@ -107,6 +107,7 @@
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\animations.json" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\RylanScenes\Collision.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\Character\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\ZachScripts\testScript.csx" />

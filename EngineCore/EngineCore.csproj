@@ -128,6 +128,7 @@
     <Compile Include="Components\Animation\AnimationComponent.cs" />
     <Compile Include="Components\BasicTextureComponent.cs" />
     <Compile Include="Components\CharacterMovementComponent.cs" />
+    <Compile Include="Components\CollisionDetection\CollisionBoundsComponent.cs" />
     <Compile Include="Components\Scripting\ScriptBaseComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnMouseDownComponent.cs" />
     <Compile Include="Components\UI\Events\UIOnMouseUpComponent.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\Character\CharacterMovementSystem.cs" />
+    <Compile Include="Systems\Collision\CollisionDetectionSystem.cs" />
     <Compile Include="Systems\DebugSystems\DebugDrawUIEventBoundsSystem.cs" />
     <Compile Include="Systems\DebugSystems\DebugModeToggleSystem.cs" />
     <Compile Include="Systems\Global\Animation\GlobalAnimationSystem.cs" />
