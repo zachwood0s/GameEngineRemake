@@ -28,7 +28,7 @@ namespace EngineCore.Systems
                 if(!ease.HasStarted)
                 {
                     var startEndDif = ease.EndValue - ease.StartValue;
-                    ease.EaseStep = (startEndDif / 100) / ease.EaseLength;
+                    ease.EaseStep = (startEndDif / ease.EaseLength / startEndDif);
                     ease.HasStarted = true;
                     ease.CurrentStep = 0;
                 }

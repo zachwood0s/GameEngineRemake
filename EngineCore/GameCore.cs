@@ -122,7 +122,7 @@ namespace ExampleGame
             _globalSystems.Register(builderLoader);
 
             SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
-            sceneLoader.RootDirectory = "Content/Scenes/RylanScenes";
+            sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
             _globalSystems.Register(sceneLoader);
 
             SceneManager sceneManager = new SceneManager(_scenes);

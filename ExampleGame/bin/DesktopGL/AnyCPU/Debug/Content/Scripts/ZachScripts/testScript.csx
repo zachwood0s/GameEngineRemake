@@ -29,10 +29,10 @@ var OnClick = new Action<Entity>(e =>
         var text = e.GetComponent<UITextComponent>();
         EaseComponent ease = new EaseComponent()
         {
-            EasingFunction = Easings.Functions.Linear,
+            EasingFunction = Easings.Functions.QuadraticEaseInOut,
             StartValue = 0,
-            EndValue = 10,
-            EaseLength = 400,
+            EndValue = 300,
+            EaseLength = 200,
             SetFunction = (double val) => text.Offset += new Vector2((float) val, 0)
         };
         e.With(ease);

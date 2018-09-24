@@ -33,7 +33,7 @@ namespace ExampleGame
         protected override void LoadScenes()
         {
             SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
-            sceneManager.ChangeScene("RylanScene");
+            sceneManager.ChangeScene("ZachScene");
             base.LoadScenes();
         }
     }
