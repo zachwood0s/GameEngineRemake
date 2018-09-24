@@ -36,7 +36,7 @@ namespace EngineCore.Systems.UI
             {
                 if(text.LoadedFont != null)
                 {
-                    _spriteBatch.DrawString(text.LoadedFont, text.Text, transform.Position, text.TextColor);
+                    _spriteBatch.DrawString(text.LoadedFont, text.Text, transform.Position + text.Offset, text.TextColor);
                 }
             });
         }

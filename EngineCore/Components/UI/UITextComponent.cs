@@ -17,6 +17,7 @@ namespace EngineCore.Components.UI
         public string FontName { get; set; }
         public SpriteFont LoadedFont { get; set; }
         public Color TextColor { get; set; }
+        public Vector2 Offset { get; set; }
         //colors 'n shit
 
         public IComponent Copy()
