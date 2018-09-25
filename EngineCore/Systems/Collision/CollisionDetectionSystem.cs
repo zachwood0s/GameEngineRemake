@@ -7,10 +7,7 @@ using EngineCore.Components.CollisionDetection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EngineCore.Systems.Collision
 {
@@ -75,6 +72,7 @@ namespace EngineCore.Systems.Collision
                 });
                 _id++;
             }
+            updatePoints(_group);
         }
 
         private bool isColliding(CollisionGroup cg1, CollisionGroup cg2, Transform2DComponent t1, Transform2DComponent t2)
@@ -97,11 +95,7 @@ namespace EngineCore.Systems.Collision
                         float min1 = 0; float min2 = 0; float max1 = 0; float max2 = 0;
                         project(axis, p1, out min1, out max1);
                         project(axis, p2, out min2, out max2);
-                        if (distance(min1, max1, min2, max2) > 0)
-                        {
-                            colliding = false;
-                            break;
-                        }
+                        if (distance(min1, max1, min2, max2) > 0){ colliding = false; break; }
                     }                
                 }
             }
@@ -133,9 +127,25 @@ namespace EngineCore.Systems.Collision
                 {
                     foreach (Polygon polygon in collisionGroup.Colliders)
                     {
+                        // Update Points
+                        List<Vector2> rotPoints = new List<Vector2>();
                         for (int i = 0; i < polygon.AbsolutePoints.Count; i++)
                         {
-                            polygon.AbsolutePoints[i] = transform2D.Position + polygon.Points[i];
+                            double newAngle = ((Math.PI * transform2D.Rotation) / 180);
+                            Matrix matrix = Matrix.Multiply(Matrix.CreateRotationZ((float)newAngle),
+                                                            new Matrix(new Vector4(polygon.Points[i].X, 0, 0, 0),
+                                                                       new Vector4(polygon.Points[i].Y, 0, 0, 0),
+                                                                       Vector4.Zero, Vector4.Zero));
+                            rotPoints.Add(new Vector2(matrix.M11, matrix.M21));
+                            polygon.AbsolutePoints[i] = new Vector2(matrix.M11, matrix.M21) + transform2D.Position;
+                        }
+                        // Update edges
+                        for (int i = 0; i < polygon.Edges.Count; i++) {
+                            int eIndex = i + 1;
+                            if ((i + 1) >= polygon.Edges.Count) eIndex = 0;
+                            float ex = rotPoints[eIndex].X - rotPoints[i].X;
+                            float ey = rotPoints[eIndex].Y - rotPoints[i].Y;
+                            polygon.Edges[i] = new Vector2(ex, ey);
                         }
                     }
                 }

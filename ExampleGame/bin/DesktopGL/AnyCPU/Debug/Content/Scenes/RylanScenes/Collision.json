@@ -47,7 +47,8 @@
         },
         {
           "$type": "EngineCore.Components.Transform2DComponent",
-          "Position": "300, 300"
+          "Position": "300, 300",
+          "Rotation":  -70
         },
         {
           "$type": "EngineCore.Components.CollisionDetection.CollisionBoundsComponent",
