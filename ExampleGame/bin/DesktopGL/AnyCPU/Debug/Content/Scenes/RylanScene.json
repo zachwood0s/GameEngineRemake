@@ -1,0 +1,27 @@
+﻿{
+  "Name": "RylanScene",
+  "SystemPools": [ "Render", "Update", "UIEvents" ],
+  "Entities": [
+    {
+      "Components": [
+        {
+          "$type": "EngineCore.Components.BasicTextureComponent",
+          "FileName": "test"
+        },
+        {
+          "$type": "EngineCore.Components.Transform2DComponent",
+          "Position": "0, 0"
+        },
+        {
+          "$type": "EngineCore.Components.Animation.AnimationComponent",
+          "Animations": [
+            {
+              "Name": "walk",
+              "EventAxis": "horizontal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
