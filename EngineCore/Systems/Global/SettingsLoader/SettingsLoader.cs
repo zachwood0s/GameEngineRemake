@@ -19,15 +19,17 @@ namespace EngineCore.Systems.Global.SettingsLoader
         protected GameCore _gameCore;
         protected GraphicsDeviceManager _graphics;
         protected ContentManager _content;
+        protected Action<string> _sceneSetFunction;
 
         public string RootDirectory { get; set; }
         public string FileName { get; set; } = "settings.json";
 
-        public SettingsLoader(GameCore core, GraphicsDeviceManager graphics, ContentManager content)
+        public SettingsLoader(GameCore core, GraphicsDeviceManager graphics, ContentManager content, Action<string> sceneSetFunction)
         {
             _gameCore = core;
             _graphics = graphics;
             _content = content;
+            _sceneSetFunction = sceneSetFunction;
         }
 
         public virtual void Initialize()
@@ -59,6 +61,8 @@ namespace EngineCore.Systems.Global.SettingsLoader
             _graphics.SynchronizeWithVerticalRetrace = construct.VSync;
 
             _graphics.ApplyChanges();
+
+            _sceneSetFunction(construct.StartingScene);
         }
     }
 
@@ -72,5 +76,6 @@ namespace EngineCore.Systems.Global.SettingsLoader
         public int WindowWidth { get; set; } = 600;
         public int WindowHeight { get; set; } = 400;
         public bool FullScreen { get; set; } = false;
+        public string StartingScene { get; set; } = "";
     }
 }

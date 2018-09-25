@@ -39,6 +39,7 @@ namespace ExampleGame
     public class GameCore : Game
     {
         private bool _debugOn;
+        private string _startingScene;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SystemPool _globalSystems;
@@ -61,6 +62,7 @@ namespace ExampleGame
             get => _settingsLoader;
             set => _settingsLoader = value;
         }
+
         
         public GameCore()
         {
@@ -77,7 +79,7 @@ namespace ExampleGame
             //IsFixedTimeStep = false;
             //TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
             //_graphics.SynchronizeWithVerticalRetrace = false;
-            _settingsLoader = new SettingsLoader(this, _graphics, Content);
+            _settingsLoader = new SettingsLoader(this, _graphics, Content, (startingScene) => _startingScene = startingScene);
             ((SettingsLoader) _settingsLoader).RootDirectory = "Content";
 
         }
@@ -125,12 +127,12 @@ namespace ExampleGame
             builderLoader.RootDirectory = "Content/EntityBuilders";
             _globalSystems.Register(builderLoader);
 
-            SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
-            sceneLoader.RootDirectory = "Content/Scenes/RylanScenes";
-            _globalSystems.Register(sceneLoader);
-
             SceneManager sceneManager = new SceneManager(_scenes);
             _globalSystems.Register(sceneManager);
+
+            SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
+            sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
+            _globalSystems.Register(sceneLoader);
 
             InputManager inputManager = new InputManager();
             inputManager.InputFile = "Content/keybindings.json";
@@ -198,6 +200,8 @@ namespace ExampleGame
             {
                 scene.Initialize();
             }
+            var sceneManager = _globalSystems.GetSystem<SceneManager>();
+            sceneManager.ChangeScene(_startingScene);
         }
 
         /// <summary>
