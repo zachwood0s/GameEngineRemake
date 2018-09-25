@@ -29,4 +29,4 @@ test-results
 !*.csx
 !*.xnb
 
-.\ExampleGame\bin\DesktopGL\AnyCPU\Debug\Content\settings.json
+ExampleGame/bin/DesktopGL/AnyCPU/Debug/Content/settings.json
