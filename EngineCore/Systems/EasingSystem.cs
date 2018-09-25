@@ -34,9 +34,7 @@ namespace EngineCore.Systems
                 ease.CurrentStep++;
                 var startEndDif = ease.EndValue - ease.StartValue;
                 double easeVal = Easings.Interpolate(ease.CurrentStep, ease.StartValue, startEndDif, ease.EaseLength, ease.EasingFunction);
-                ease.SetFunction(ease.StartValue + easeVal);
-
-                Console.WriteLine(easeVal);
+                ease.SetFunction(easeVal);
 
                 if(ease.CurrentStep >= ease.EaseLength)
                 {

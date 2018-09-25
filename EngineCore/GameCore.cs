@@ -131,7 +131,7 @@ namespace ExampleGame
             _globalSystems.Register(sceneManager);
 
             SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
-            sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
+            sceneLoader.RootDirectory = "Content/Scenes";
             _globalSystems.Register(sceneLoader);
 
             InputManager inputManager = new InputManager();
@@ -174,6 +174,7 @@ namespace ExampleGame
                 .With(s => new CharacterMovementSystem(s, inputManager))
                 .With(s => new CollisionDetectionSystem(s))
                 .With(s => new UpdateScriptSystem(s, scriptManager))
+                .With(s => new EasingSystem(s))
                 .WithFPS(200);
 
             CreateSystemPoolBuilder("UIEvents")

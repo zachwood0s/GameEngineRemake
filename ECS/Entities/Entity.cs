@@ -137,25 +137,15 @@ namespace ECS.Entities
             if (newCompIndex < 0)
                 throw new UnregisteredComponentException($"Component of type {newComp.GetType()} has not been registered with the ComponentPool.");
 
-            _readerWriterLock.EnterUpgradeableReadLock();
-            bool exitedLock = false;
+            _readerWriterLock.EnterWriteLock();
 
             try
             {
                 if (!_componentTypeIndiciesLookup.Contains(newCompIndex))
                 {
-                    _readerWriterLock.EnterWriteLock();
-
-                    try
-                    {
-                        _components.Add(newComp);
-                        _componentTypeIndicies.Add(newCompIndex);
-                        _componentTypeIndiciesLookup.Add(newCompIndex);
-                    }
-                    finally
-                    {
-                        _readerWriterLock.ExitWriteLock();
-                    }
+                    _components.Add(newComp);
+                    _componentTypeIndicies.Add(newCompIndex);
+                    _componentTypeIndiciesLookup.Add(newCompIndex);
 
                     /*
                     if (newComp is SettableComponent maybeSettable)
@@ -163,19 +153,13 @@ namespace ECS.Entities
                         maybeSettable.SubscribeToChanges(SettableComponentUpdated);
                     }
                     */
-
-                    _readerWriterLock.ExitUpgradeableReadLock();
-                    exitedLock = true;
                     _OnComponentAdded?.Invoke(this, newCompIndex, newComp);
                 }
 
             }
             finally
             {
-                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
-                {
-                    _readerWriterLock.ExitUpgradeableReadLock();
-                }
+                _readerWriterLock.ExitWriteLock();
             }
 
             return this;
@@ -210,8 +194,7 @@ namespace ECS.Entities
 
         private void _Remove(int oldCompIndex)
         {
-            _readerWriterLock.TryEnterUpgradeableReadLock(10);
-            bool exitedLock = false;
+            _readerWriterLock.EnterWriteLock();
             try
             {
                 int compIndex = _componentTypeIndicies.IndexOf(oldCompIndex);
@@ -220,19 +203,10 @@ namespace ECS.Entities
                     throw new UnregisteredComponentException($"Component of type " +
                         $"{ComponentPool.Components[oldCompIndex].GetType()} has not been added to the current entity and is trying to be removed.");
 
-                _readerWriterLock.EnterWriteLock();
-                IComponent oldComp;
-                try
-                {
-                    oldComp = _components[compIndex];
-                    _components.RemoveAt(compIndex);
-                    _componentTypeIndicies.RemoveAt(compIndex);
-                    _componentTypeIndiciesLookup.Remove(oldCompIndex);
-                }
-                finally
-                {
-                    _readerWriterLock.ExitWriteLock();
-                }
+                IComponent oldComp = _components[compIndex];
+                _components.RemoveAt(compIndex);
+                _componentTypeIndicies.RemoveAt(compIndex);
+                _componentTypeIndiciesLookup.Remove(oldCompIndex);
 
                 /*
                 SettableComponent maybeSettable = oldComp as SettableComponent;
@@ -242,16 +216,11 @@ namespace ECS.Entities
                 }
 
                 */
-                _readerWriterLock.ExitUpgradeableReadLock();
-                exitedLock = true;
                 _OnComponentRemoved?.Invoke(this, oldCompIndex, oldComp);
             }
             finally
             {
-                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
-                {
-                    _readerWriterLock.ExitUpgradeableReadLock();
-                }
+                _readerWriterLock.ExitWriteLock();
             }
         }
 
@@ -262,8 +231,7 @@ namespace ECS.Entities
         public void UpdateComponent<T>(T component) where T:class, IComponent
         {
             int newCompPoolIndex = ComponentPool.GetComponentIndex<T>();
-            bool exitedLock = false;
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
 
             try
             {
@@ -273,26 +241,12 @@ namespace ECS.Entities
                     return;
                     //throw new UnregisteredComponentException($"Component of type {typeof(T).Name} has not been added to entity and is trying to be replaced.");
 
-                _readerWriterLock.EnterWriteLock();
-
-                try
-                {
-                    _components[existingCompIndex] = component;
-                }
-                finally
-                {
-                    _readerWriterLock.ExitWriteLock();
-                }
-                _readerWriterLock.ExitUpgradeableReadLock();
-                exitedLock = true;
+                _components[existingCompIndex] = component;
                 _OnComponentUpdated(this, newCompPoolIndex, component);
             }
             finally
             {
-                if(_readerWriterLock.IsUpgradeableReadLockHeld && !exitedLock)
-                {
-                    _readerWriterLock.ExitUpgradeableReadLock();
-                }
+                _readerWriterLock.ExitWriteLock();
             }
            
         }
@@ -308,54 +262,54 @@ namespace ECS.Entities
          */
         public void UpdateComponent<T>(Action<T> updateAction) where T: class, IComponent
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             T comp = GetComponent<T>();
             if (comp != null)
             {
                 updateAction(comp);
                 UpdateComponent(comp);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
         //Only 5 cuz I don't feel like going farther. If there's a need I will
         public void UpdateComponents<T1, T2>(Action<T1, T2> updateAction) where T1: class, IComponent 
                                                                           where T2: class, IComponent
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>();
             if (c1 != null && c2 != null)
             {
                 updateAction(c1, c2);
                 UpdateComponent(c1); UpdateComponent(c2);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
         public void UpdateComponents<T1, T2, T3>(Action<T1, T2, T3> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
                                                                                   where T3: class, IComponent
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>();
             if (c1 != null && c2 != null && c3 != null)
             {
                 updateAction(c1, c2, c3);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
         public void UpdateComponents<T1, T2, T3, T4>(Action<T1, T2, T3, T4> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
                                                                                   where T3: class, IComponent
                                                                                   where T4: class, IComponent
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>();
             if (c1 != null && c2 != null && c3 != null && c4 != null)
             {
                 updateAction(c1, c2, c3, c4);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
         public void UpdateComponents<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> updateAction) where T1: class, IComponent 
                                                                                   where T2: class, IComponent
@@ -363,14 +317,14 @@ namespace ECS.Entities
                                                                                   where T4: class, IComponent
                                                                                   where T5: class, IComponent
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             T1 c1 = GetComponent<T1>(); T2 c2 = GetComponent<T2>(); T3 c3 = GetComponent<T3>(); T4 c4 = GetComponent<T4>(); T5 c5 = GetComponent<T5>();
             if (c1 != null && c2 != null && c3 != null && c4 != null && c5 != null)
             {
                 updateAction(c1, c2, c3, c4, c5);
                 UpdateComponent(c1); UpdateComponent(c2); UpdateComponent(c3); UpdateComponent(c4); UpdateComponent(c5);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
 
         /*

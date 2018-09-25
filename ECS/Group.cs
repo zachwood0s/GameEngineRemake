@@ -41,7 +41,7 @@ namespace ECS
         }
         public void AddEntity(Entity entity)
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
 
             try
             {
@@ -53,23 +53,14 @@ namespace ECS
                         _HandleEntityComponentAddedEvent
                     );
 
-                    _readerWriterLock.EnterWriteLock();
-
-                    try
+                    if (entity.IsMatch(_match)) //Entity matches filter and everything
                     {
-                        if (entity.IsMatch(_match)) //Entity matches filter and everything
-                        {
-                            _groupEntities.Add(entity);
-                        }
-                        else
-                        {
-                            //Otherwise we need to keep it for later when it could be updated
-                            _AddToCached(entity);
-                        }
+                        _groupEntities.Add(entity);
                     }
-                    finally
+                    else
                     {
-                        _readerWriterLock.ExitWriteLock();
+                        //Otherwise we need to keep it for later when it could be updated
+                        _AddToCached(entity);
                     }
 
                     _HandleEntityComponentAddedEvent(entity, 0, null);
@@ -77,7 +68,7 @@ namespace ECS
             }
             finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                _readerWriterLock.ExitWriteLock();
             }
         }
 
@@ -159,26 +150,18 @@ namespace ECS
         {
             if (_cachedEntities.Count > 0)
             {
-                _readerWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterWriteLock();
                 try
                 {
                     if (_cachedEntities.Contains(updatedEntity))
                     {
-                        _readerWriterLock.EnterWriteLock();
-                        try
-                        {
-                            _cachedEntities.Remove(updatedEntity);
-                            _groupEntities.Add(updatedEntity);
-                        }
-                        finally
-                        {
-                            _readerWriterLock.ExitWriteLock();
-                        }
+                        _cachedEntities.Remove(updatedEntity);
+                        _groupEntities.Add(updatedEntity);
                     }
                 }
                 finally
                 {
-                    _readerWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitWriteLock();
                 }
             }
         }
@@ -192,7 +175,7 @@ namespace ECS
 
         protected virtual void _RemoveAllNotValid()
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             try
             {
                 Parallel.ForEach(_groupEntities, updatedEntity =>
@@ -213,7 +196,7 @@ namespace ECS
             }
             finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                _readerWriterLock.ExitWriteLock();
             }
             
         }
@@ -222,7 +205,7 @@ namespace ECS
         {
             bool isValid = true;
 
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
 
             try
             {
@@ -246,7 +229,7 @@ namespace ECS
             }
             finally
             {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                _readerWriterLock.ExitWriteLock();
             }
 
             return isValid;
@@ -291,12 +274,12 @@ namespace ECS
         }
         public void ApplyToAllEntities(Action<Entity> action)
         {
-            _readerWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterWriteLock();
             for(int i = 0; i<_groupEntities.Count; i++)
             {
                 action(_groupEntities[i]);
             }
-            _readerWriterLock.ExitUpgradeableReadLock();
+            _readerWriterLock.ExitWriteLock();
         }
 
         public void UpdateAllEntitiesInGroup<T>(Action<Entity, T> updateAction) where T: class, IComponent
