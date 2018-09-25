@@ -4,4 +4,5 @@
 	"WindowHeight":"400",
 	"VSync":"false",
 	"LockedRenderFps": "false",
+	"StartingScene": "ZachScene"
 }

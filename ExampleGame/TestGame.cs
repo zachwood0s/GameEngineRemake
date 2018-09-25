@@ -21,20 +21,5 @@ namespace ExampleGame
     /// </summary>
     public class TestGame : GameCore
     {
-
-        protected override void LoadSystemPools()
-        {
-            base.LoadSystemPools();
-
-            InputManager inputManager = GlobalSystems.GetSystem<InputManager>();
-
-        }
-
-        protected override void LoadScenes()
-        {
-            SceneManager sceneManager = GlobalSystems.GetSystem<SceneManager>();
-            sceneManager.ChangeScene("ZachScene");
-            base.LoadScenes();
-        }
     }
 }

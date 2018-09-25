@@ -111,11 +111,11 @@
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\Character\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\testScript.csx" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scripts\ZachScripts\testScript.csx" />
-    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\settings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\keybindings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\EntityBuilders\entity.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\RylanScenes\RylanScene.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\Scenes\ZachScenes\ZachScene.json" />
+    <None Include="bin\DesktopGL\AnyCPU\Debug\Content\settings.json" />
     <None Include="bin\DesktopGL\AnyCPU\Debug\Content\test.xnb" />
   </ItemGroup>
   <ItemGroup>
