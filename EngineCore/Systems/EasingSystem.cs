@@ -23,24 +23,28 @@ namespace EngineCore.Systems
         }
         public override void Execute(Entity entity)
         {
+            var shouldRemove = false;
             entity.UpdateComponent<EaseComponent>(ease =>
             {
                 if(!ease.HasStarted)
                 {
-                    var startEndDif = ease.EndValue - ease.StartValue;
-                    ease.EaseStep = (startEndDif / ease.EaseLength / startEndDif);
                     ease.HasStarted = true;
                     ease.CurrentStep = 0;
                 }
-                double easeVal = Easings.Interpolate(ease.CurrentStep, ease.EasingFunction);
-                ease.SetFunction(easeVal + ease.StartValue);
-                ease.CurrentStep += ease.EaseStep;
+                ease.CurrentStep++;
+                var startEndDif = ease.EndValue - ease.StartValue;
+                double easeVal = Easings.Interpolate(ease.CurrentStep, ease.StartValue, startEndDif, ease.EaseLength, ease.EasingFunction);
+                ease.SetFunction(ease.StartValue + easeVal);
 
-                if(ease.CurrentStep > 1)
+                Console.WriteLine(easeVal);
+
+                if(ease.CurrentStep >= ease.EaseLength)
                 {
-                    entity.Remove<EaseComponent>();
+                    ease.SetFunction(ease.EndValue);
+                    shouldRemove = true;
                 }
             });
+            if (shouldRemove) entity.Remove<EaseComponent>();
         }
     }
 }

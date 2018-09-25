@@ -14,11 +14,11 @@ namespace EngineCore.Components
     {
         public Action<double> SetFunction { get; set; }
         public Easings.Functions EasingFunction { get; set; }
-        public double StartValue { get; set; }
-        public double EndValue { get; set; }
-        public double EaseLength { get; set; }
-        public double CurrentStep { get; set; }
-        public double EaseStep { get; set; }
+        public float StartValue { get; set; }
+        public float EndValue { get; set; }
+        public float EaseLength { get; set; }
+        public float CurrentStep { get; set; }
+        public float EaseStep { get; set; }
         public bool HasStarted { get; set; } = false;
 
         public IComponent Copy()
