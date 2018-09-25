@@ -131,7 +131,7 @@ namespace ExampleGame
             _globalSystems.Register(sceneManager);
 
             SceneLoader sceneLoader = new SceneLoader(_scenes, _systemPoolBuilders, _entityBuilders);
-            sceneLoader.RootDirectory = "Content/Scenes/ZachScenes";
+            sceneLoader.RootDirectory = "Content/Scenes/";
             _globalSystems.Register(sceneLoader);
 
             InputManager inputManager = new InputManager();
