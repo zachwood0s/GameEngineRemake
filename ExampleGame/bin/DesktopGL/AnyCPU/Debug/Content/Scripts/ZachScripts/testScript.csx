@@ -30,10 +30,10 @@ var OnClick = new Action<Entity>(e =>
         var x = text.Position.X;
         EaseComponent ease = new EaseComponent()
         {
-            EasingFunction = Easings.Functions.BackEaseInOut,
+            EasingFunction = Easings.Functions.Linear,
             StartValue = x,
-            EndValue = 200 - x+100,
-            EaseLength = 200,
+            EndValue = 400 - x+200,
+            EaseLength = 100,
             SetFunction = (double val) => text.Position = new Vector2((float) val, text.Position.Y)
         };
         e.With(ease);
