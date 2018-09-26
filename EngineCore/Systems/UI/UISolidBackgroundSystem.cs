@@ -29,7 +29,7 @@ namespace EngineCore.Systems.UI
         }
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents<UITransformComponent, UISolidBackgroundComponent>((transform, background) =>
+            entity.GetComponents<UITransformComponent, UISolidBackgroundComponent>((transform, background) =>
             {
                 Rectangle shifted = background.Bounds;
                 shifted.Offset(transform.Position);

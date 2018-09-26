@@ -31,7 +31,7 @@ namespace EngineCore.Systems.UI
 
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents<UIOnMouseDownComponent, UITransformComponent, UIEventBoundsComponent>(
+            entity.GetComponents<UIOnMouseDownComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
                 if (InputManager.WasMousePressed(MouseButtons.Left))

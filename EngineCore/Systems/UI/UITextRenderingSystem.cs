@@ -32,7 +32,7 @@ namespace EngineCore.Systems.UI
 
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents<UITransformComponent, UITextComponent>((transform, text) =>
+            entity.GetComponents<UITransformComponent, UITextComponent>((transform, text) =>
             {
                 if(text.LoadedFont != null)
                 {
