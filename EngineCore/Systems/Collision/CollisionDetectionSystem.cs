@@ -40,13 +40,13 @@ namespace EngineCore.Systems.Collision
                         {
                             foreach (CollisionGroup collisionGroup2 in collisionComponent2.CollisionGroups)
                             {
-                                isColliding(collisionGroup1, collisionGroup2, transform2D1, transform2D2);
+                                _IsColliding(collisionGroup1, collisionGroup2, transform2D1, transform2D2);
                             }
                         }
                     }
                 });
             });
-            updatePoints(_group);
+            _UpdatePoints(_group);
         }
         public void Initialize()
         {
@@ -72,10 +72,10 @@ namespace EngineCore.Systems.Collision
                 });
                 _id++;
             }
-            updatePoints(_group);
+            _UpdatePoints(_group);
         }
 
-        private bool isColliding(CollisionGroup cg1, CollisionGroup cg2, Transform2DComponent t1, Transform2DComponent t2)
+        private bool _IsColliding(CollisionGroup cg1, CollisionGroup cg2, Transform2DComponent t1, Transform2DComponent t2)
         {
             bool colliding = true;
             foreach (Polygon p1 in cg1.Colliders)
@@ -93,16 +93,16 @@ namespace EngineCore.Systems.Collision
                         Vector2 axis = new Vector2(-edge.Y, edge.X);
                         axis.Normalize();
                         float min1 = 0; float min2 = 0; float max1 = 0; float max2 = 0;
-                        project(axis, p1, out min1, out max1);
-                        project(axis, p2, out min2, out max2);
-                        if (distance(min1, max1, min2, max2) > 0){ colliding = false; break; }
+                        _Project(axis, p1, out min1, out max1);
+                        _Project(axis, p2, out min2, out max2);
+                        if (_Distance(min1, max1, min2, max2) > 0){ colliding = false; break; }
                     }                
                 }
             }
             cg1.Colliding = cg2.Colliding = colliding;
             return colliding;
         }
-        private void project(Vector2 axis, Polygon p, out float min , out float max)
+        private void _Project(Vector2 axis, Polygon p, out float min , out float max)
         {
             float dp = Vector2.Dot(axis, p.AbsolutePoints[0]);
             min = max = dp;
@@ -113,12 +113,12 @@ namespace EngineCore.Systems.Collision
                 else if (dp > max) max = dp;
             }
         }
-        private float distance(float min1, float max1, float min2, float max2)
+        private float _Distance(float min1, float max1, float min2, float max2)
         {
             if (min1 < min2) return min2 - max1;
             else return min1 - max2;
         }    
-        private void updatePoints(Group group)
+        private void _UpdatePoints(Group group)
         {
             _group.UpdateAllEntitiesInGroup((Entity entity1, CollisionBoundsComponent collisionBounds) =>
             {
