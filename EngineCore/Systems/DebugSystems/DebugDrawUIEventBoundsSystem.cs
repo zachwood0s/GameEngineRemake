@@ -35,7 +35,7 @@ namespace EngineCore.Systems.DebugSystems
         {
             if (_getDebugState())
             {
-                entity.UpdateComponents<UIEventBoundsComponent, UITransformComponent>((bounds, transform) =>
+                entity.GetComponents<UIEventBoundsComponent, UITransformComponent>((bounds, transform) =>
                 {
                     Rectangle shifted = bounds.Bounds;
                     shifted.Offset(transform.Position);

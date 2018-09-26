@@ -33,7 +33,7 @@ namespace EngineCore.Systems.Rendering
 
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponents((BasicTextureComponent tex, Transform2DComponent transform2D) =>
+            entity.GetComponents((BasicTextureComponent tex, Transform2DComponent transform2D) =>
             {
                 if(tex.Texture != null && tex.Render)
                 {

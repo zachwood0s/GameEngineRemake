@@ -120,7 +120,7 @@ namespace ECS.Entities
                 _readerWriterLock.ExitReadLock();
             }
         }
-        public void GetComponent<T1, T2>(Action<T1, T2> getAction) where T1: class, IComponent
+        public void GetComponents<T1, T2>(Action<T1, T2> getAction) where T1: class, IComponent
                                                                    where T2: class, IComponent
         {
             _readerWriterLock.EnterReadLock();
@@ -137,7 +137,7 @@ namespace ECS.Entities
                 _readerWriterLock.ExitReadLock();
             }
         }
-        public void GetComponent<T1, T2, T3>(Action<T1, T2, T3> getAction) where T1: class, IComponent
+        public void GetComponents<T1, T2, T3>(Action<T1, T2, T3> getAction) where T1: class, IComponent
                                                                            where T2: class, IComponent
                                                                            where T3: class, IComponent
         {
@@ -155,7 +155,7 @@ namespace ECS.Entities
                 _readerWriterLock.ExitReadLock();
             }
         }
-        public void GetComponent<T1, T2, T3, T4>(Action<T1, T2, T3, T4> getAction) where T1: class, IComponent
+        public void GetComponents<T1, T2, T3, T4>(Action<T1, T2, T3, T4> getAction) where T1: class, IComponent
                                                                                    where T2: class, IComponent
                                                                                    where T3: class, IComponent
                                                                                    where T4: class, IComponent
@@ -174,7 +174,7 @@ namespace ECS.Entities
                 _readerWriterLock.ExitReadLock();
             }
         }
-        public void GetComponent<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> getAction) where T1: class, IComponent
+        public void GetComponents<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> getAction) where T1: class, IComponent
                                                                                            where T2: class, IComponent
                                                                                            where T3: class, IComponent
                                                                                            where T4: class, IComponent

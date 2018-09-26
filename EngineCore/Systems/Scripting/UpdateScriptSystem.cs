@@ -36,10 +36,8 @@ namespace EngineCore.Systems.Scripting
         }
         public override void Execute(Entity entity)
         {
-            entity.UpdateComponent<UpdateScriptComponent>(scriptComponent =>
-            {
-                scriptComponent.ScriptAction?.Invoke(entity);
-            });
+            var scriptAction = entity.GetComponent<UpdateScriptComponent>()?.ScriptAction;
+            scriptAction?.Invoke(entity);
         }
 
         public void Initialize()
