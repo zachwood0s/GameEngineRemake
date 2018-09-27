@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 namespace ECS.Entities
 {
     /// <summary>
+    /// The <see cref="EntityBuilder"/> class allows you to create a prototype 
+    /// for an entity that can be created at a later time. This is very useful
+    /// for creating a lot of entities of the same type with the same components
+    /// and component starting values. 
     /// TODO: 
     /// I think I'd like to change without to returning a copy and removing
     /// and then add a separate remove function to handle just removing.
@@ -54,6 +58,12 @@ namespace ECS.Entities
             _creationFunctionReturnTypes = new List<int>(returnTypes);
         }
 
+        /// <summary>
+        /// Adds a component of type T to the EntityBuilder if it hasn't
+        /// already been added
+        /// </summary>
+        /// <typeparam name="T">Component type that must implement IComponentHasDefault</typeparam>
+        /// <returns>Returns itself so that method chaining is possible</returns>
         public EntityBuilder With<T>() where T : IComponentHasDefault
         {
             if(!_componentTypes.Contains(typeof(T)))
@@ -64,20 +74,35 @@ namespace ECS.Entities
             return this;
         }
 
+        /// <summary>
+        /// Adds a creation function to the EntityBuilder. This function
+        /// will be called when the builder is built and needs to return 
+        /// a component that implements IComponent
+        /// </summary>
+        /// <typeparam name="T">Component type that is being returned. Must implement IComponent</typeparam>
+        /// <param name="creationFunc">The funcion that is called at build time</param>
+        /// <returns>Returns itself so that method chaining is possible</returns>
         public EntityBuilder With<T>(Func<T> creationFunc) where T: IComponent
         {
             bool added = _AddTypeIndice<T>();
-            //Okay so why does this line work, and not
-            // _creationFunction.Add(creationFunc); ??
-            // why would the extra function call be necessary?
             if (added)
             {
+                //Okay so why does this line work, and not
+                // _creationFunction.Add(creationFunc); ??
+                // why would the extra function call be necessary?
                 _creationFunctions.Add(() => creationFunc());
                 _creationFunctionReturnTypes.Add(ComponentPool.GetComponentIndex<T>());
             }
             return this;
         }
 
+        /// <summary>
+        /// Adds a component that has properties set to the EntityBuilder. The component
+        /// will be copied and added to the new entity when the EntityBuilder's build method
+        /// is called
+        /// </summary>
+        /// <param name="comp">A copyable component that will be cloned and added to the new entity at build time</param>
+        /// <returns>Returns itself so that method chaining is possible</returns>
         public EntityBuilder With(ICopyableComponent comp)
         {
             bool added = _AddTypeIndice(comp.GetType());
@@ -89,11 +114,21 @@ namespace ECS.Entities
             return this;
         }
 
+        /// <summary>
+        /// Removes the component with type <typeparamref name="T"/> from the EntityBuilder
+        /// </summary>
+        /// <typeparam name="T">Component type that implements IComponent</typeparam>
+        /// <returns>Returns itself so that method chaining is possible</returns>
         public EntityBuilder Without<T>() where T : IComponent
         {
             return Without(typeof(T));
         }
 
+        /// <summary>
+        /// Removes the component with the given type from the EntityBuilder 
+        /// </summary>
+        /// <param name="t">The component type to remove</param>
+        /// <returns>Returns itself so that method chaining is possible</returns>
         public EntityBuilder Without(Type t)
         {
             int compIndex = ComponentPool.GetComponentIndex(t);
@@ -149,6 +184,13 @@ namespace ECS.Entities
             return _AddTypeIndice(typeof(T));
         }
 
+        /// <summary>
+        /// Builds a new entity with the specified components. At this
+        /// moment, all the required operations on the added components, component types, creation functions will
+        /// be applied and added to the new entity.
+        /// </summary>
+        /// <param name="scene">The scene to add the new entity to</param>
+        /// <returns>The new entity</returns>
         public Entity Build(Scene scene)
         {
             List<IComponent> components = new List<IComponent>();
@@ -179,6 +221,10 @@ namespace ECS.Entities
             return _entity;
         }
 
+        /// <summary>
+        /// Clones this EntityBuilder
+        /// </summary>
+        /// <returns>A new cloned EntityBuilder</returns>
         public EntityBuilder Copy()
         {
             return new EntityBuilder(
