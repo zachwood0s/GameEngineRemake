@@ -20,7 +20,11 @@
               "EventAxis": "horizontal"
             }
           ]
-        }
+        },
+		{
+			"$type":"EngineCore.Components.Scripting.UpdateScriptComponent",
+			"ScriptFile":"ZachScripts/testScript"
+		}
       ]
     }
   ]

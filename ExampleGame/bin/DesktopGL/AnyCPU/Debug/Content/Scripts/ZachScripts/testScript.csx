@@ -30,7 +30,7 @@ var OnClick = new Action<Entity>(e =>
         var x = text.Position.X;
         EaseComponent ease = new EaseComponent()
         {
-            EasingFunction = Easings.Functions.Linear,
+            EasingFunction = Easings.Functions.BackEaseInOut,
             StartValue = x,
             EndValue = 400 - x+200,
             EaseLength = 100,
