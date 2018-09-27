@@ -31,6 +31,7 @@ namespace EngineCore.Systems.UI
 
         public override void Execute(Entity entity)
         {
+            Action<Entity> scriptAction = null;
             entity.UpdateComponents<UIOnMouseExitComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
@@ -42,10 +43,11 @@ namespace EngineCore.Systems.UI
                 }
                 else if (button.HasAlreadyEntered)
                 {
-                    button.ScriptAction?.Invoke(entity);
+                    scriptAction = button.ScriptAction;
                     button.HasAlreadyEntered = false;
                 }
             });
+            scriptAction?.Invoke(entity);
         }
     }
 }

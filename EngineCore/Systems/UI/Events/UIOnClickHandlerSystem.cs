@@ -31,6 +31,7 @@ namespace EngineCore.Systems.UI.Events
 
         public override void Execute(Entity entity)
         {
+            Action<Entity> scriptAction = null;
             entity.UpdateComponents<UIOnClickComponent, UITransformComponent, UIEventBoundsComponent>(
             (button, transform, bounds) =>
             {
@@ -47,11 +48,12 @@ namespace EngineCore.Systems.UI.Events
                 {
                     if (shiftedBounds.Contains(InputManager.MousePosition))
                     {
-                        button.ScriptAction?.Invoke(entity);
+                        scriptAction = button.ScriptAction;
                         button.WasPressed = false;
                     }
                 }
             });
+            scriptAction?.Invoke(entity);
         }
 
     }

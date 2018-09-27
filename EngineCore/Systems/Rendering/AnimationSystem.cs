@@ -115,15 +115,15 @@ namespace EngineCore.Systems.Rendering
                 {
                     foreach (AnimationObject animation in animationComponent.Animations)
                     {
-                        _setAnimationVars(animation);
+                        _SetAnimationVars(animation);
                         if (animation.FileType == "TextureFolder")
                         {
-                            animation.Textures = _loadTextures(animation);
+                            animation.Textures = _LoadTextures(animation);
                         }
                         else if (animation.FileType == "SpriteSheet")
                         {
                             animation.Textures.Add(_contentManager.Load<Texture2D>(animation.FileLocation));
-                            _loadSprites(animation);
+                            _LoadSprites(animation);
                         }
                         else
                         {
@@ -136,7 +136,7 @@ namespace EngineCore.Systems.Rendering
 
         #region Private Helper Methods
 
-        private void _loadSprites(AnimationObject animation)
+        private void _LoadSprites(AnimationObject animation)
         {
             animation.Rectangles = new Rectangle[Convert.ToInt32(animation.FrameCount)];
             for (int i = 0; i < animation.FrameCount; i++)
@@ -145,7 +145,7 @@ namespace EngineCore.Systems.Rendering
                                             animation.SpriteStartSite[1], animation.SpriteSize[0], animation.SpriteSize[1]);
             }
         }
-        private List<Texture2D> _loadTextures(AnimationObject animation)
+        private List<Texture2D> _LoadTextures(AnimationObject animation)
         {
             List<Texture2D> textures = new List<Texture2D>();
             DirectoryInfo dir = new DirectoryInfo(_contentManager.RootDirectory + "/" + animation.FileLocation);
@@ -169,7 +169,7 @@ namespace EngineCore.Systems.Rendering
             }
             return textures;
         }
-        private void _setAnimationVars(AnimationObject animation)
+        private void _SetAnimationVars(AnimationObject animation)
         {
             foreach(AnimationContainer animationContainer in _globalAnimationSystem.Animations)
             {
