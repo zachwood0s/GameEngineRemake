@@ -8,6 +8,31 @@ using System.Threading.Tasks;
 
 namespace ECS.Matching
 {
+    /// <summary>
+    /// A Matcher is used to test an <see cref="Entity"/> for its
+    /// component composition. There are various conditions like AllOf,
+    /// NoneOf, AnyOf that it can test against and it can have a filter
+    /// to test component properties as well. These operations can be chained
+    /// together to get a complicated matching process
+    /// 
+    /// <example>
+    /// An example of chaining match operations
+    /// <code>
+    /// new Matcher().AllOf(typeof(Component1), typeof(Component2))
+    ///              .NoneOf(typeof(NoneOfComponent))
+    ///              .AnyOf(typeof(Component3), typeof(Component4))
+    /// </code>
+    /// Cases where this matcher would succeed: (listing the components that are contained in an entity)
+    /// - Component1, Component2, Component3
+    /// - Component1, Component2, Component4
+    /// - Component1, Component2, Component3, Component4
+    ///
+    /// Cases where this matcher would fail:
+    /// - Component1
+    /// - Component1, Component2, NoneOfComponent, Component3
+    /// - Component1, Component2, NoneOfComponent, Component3
+    /// </example>
+    /// </summary>
     public class Matcher
     {
         private List<int> _allOfTypeIndicies;
@@ -52,6 +77,15 @@ namespace ECS.Matching
         #endregion
 
         #region Adders
+        /// <summary>
+        /// Sets up the matcher to where an entity needs all of the
+        /// provided component types to be a match. If the entity
+        /// doesn't have one or more of the types, it will fail the
+        /// match. The entity can have types other than the ones provided
+        /// and still be a match.
+        /// </summary>
+        /// <param name="types">The component types that the entity needs to match all of</param>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public Matcher AllOf(params Type[] types)
         {
             if(types != null)
@@ -69,6 +103,13 @@ namespace ECS.Matching
             return this;
         }
 
+        /// <summary>
+        /// Sets up the matcher to where an entity needs any of the provided
+        /// component types to be a match. If the entity doesn't have any of the
+        /// components, it will fail the match. If it has one or more, it will succeed.
+        /// </summary>
+        /// <param name="types">The component types that the entity needs to match any of</param>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public Matcher AnyOf(params Type[] types)
         {
             if(types != null)
@@ -85,6 +126,14 @@ namespace ECS.Matching
             }
             return this;
         }
+
+        /// <summary>
+        /// Sets up the matcher to where an entity cannot have any of the 
+        /// provided component types to be a match. If the entity has any of the components,
+        /// it will fail the match. If it has none, it will succeed.
+        /// </summary>
+        /// <param name="types">The component types that the entity can have none of</param>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public Matcher NoneOf(params Type[] types)
         {
             if(types != null)
@@ -102,11 +151,30 @@ namespace ECS.Matching
             return this;
         }
 
+        /// <summary>
+        /// This is just a simpler way of writing 
+        /// <code>new Matcher().AllOf(typeof(<typeparamref name="T"/>));</code>
+        /// vs
+        /// <code>new Matcher().Of<typeparamref name="T"/>();</code>
+        /// </summary>
+        /// <typeparam name="T">The type to match</typeparam>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public Matcher Of<T>()
         {
             return AllOf(typeof(T));
         }
 
+        /// <summary>
+        /// Filters allow you to match a condition along side the 
+        /// typical matching of component types. You could test to
+        /// make sure that a TransformComponent2D has an X position > 100
+        /// or anything along those lines. Keep in mind, there will
+        /// most likely be a slight performance hit by using these compared
+        /// to regular matching, but if you're going to check the condition
+        /// in the system anyway then I don't see a problem.
+        /// </summary>
+        /// <param name="conditions">The conditions that need to succeed to make a match</param>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public Matcher WithFilter(params Predicate<Entity>[] conditions)
         {
             if(conditions != null)
