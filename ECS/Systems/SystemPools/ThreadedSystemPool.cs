@@ -42,11 +42,17 @@ namespace ECS.Systems
         public ThreadedSystemPool(string poolName, int fps):base(poolName)
         {
             _SetTargetFPS(fps);
-            _thread = new Thread(_ThreadUpdate);
+            _thread = new Thread(_ThreadUpdate)
+            {
+                Name = poolName
+            };
         }
         public ThreadedSystemPool(string poolName):base(poolName)
         {
-            _thread = new Thread(_ThreadUpdate);
+            _thread = new Thread(_ThreadUpdate)
+            {
+                Name = poolName
+            };
             _noFpsLimit = true;
         }
         public override void Execute()
