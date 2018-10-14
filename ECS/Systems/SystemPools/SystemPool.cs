@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace ECS.Systems
 {
+    /// <summary>
+    /// A system pool holds a group of systems, whether they be
+    /// execute/initialize systems. When execute is called, it will
+    /// call execute on all of it's execute systems and the same for
+    /// initialize systems.
+    /// </summary>
     public class SystemPool
     {
         private List<IExecuteSystem> _executeSystems;
@@ -38,6 +44,9 @@ namespace ECS.Systems
             _otherSystems = new List<ISystem>();
         }
 
+        /// <summary>
+        /// Run the Initialize method for all stored IInitializeSystems
+        /// </summary>
         public virtual void Initialize()
         {
             foreach(IInitializeSystem iSystem in _initializeSystems)
@@ -45,6 +54,10 @@ namespace ECS.Systems
                 iSystem.Initialize();
             }
         }
+
+        /// <summary>
+        /// Run the Execute method for all stored IExecuteSystems
+        /// </summary>
         public virtual void Execute()
         {
             _frameCount++;
@@ -66,6 +79,12 @@ namespace ECS.Systems
         {
 
         }
+
+        /// <summary>
+        /// Adds the provided system to the SystemPool
+        /// </summary>
+        /// <param name="system">The system to add</param>
+        /// <returns>Returns itself so that method chaining is possibe</returns>
         public SystemPool Register(ISystem system)
         {
             if(system is IExecuteSystem eSystem)
@@ -79,6 +98,12 @@ namespace ECS.Systems
             return this;
         }
 
+        /// <summary>
+        /// Get the system of the specified type that's stored within
+        /// this SystemPool
+        /// </summary>
+        /// <typeparam name="T">The type of system to retrieve</typeparam>
+        /// <returns>The system that was found</returns>
         public T GetSystem<T>() where T: class, ISystem
         {
             foreach (IExecuteSystem e in _executeSystems)

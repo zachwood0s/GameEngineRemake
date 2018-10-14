@@ -9,6 +9,11 @@ using Microsoft.Xna.Framework;
 
 namespace ECS.Systems
 {
+    /// <summary>
+    /// Essentially the same as a regular <see cref="SystemPool"/> but
+    /// it runs on it's own thread. It can have a target fps or can run
+    /// unmanaged.
+    /// </summary>
     public class ThreadedSystemPool: SystemPool
     {
         private Thread _thread;
@@ -55,6 +60,11 @@ namespace ECS.Systems
             };
             _noFpsLimit = true;
         }
+
+        /// <summary>
+        /// Starts the thread and executes all the systems contained
+        /// in the pool
+        /// </summary>
         public override void Execute()
         {
             if (!_isRunning)
@@ -156,6 +166,9 @@ namespace ECS.Systems
 
         }
 
+        /// <summary>
+        /// Stops the system pool and it's thread
+        /// </summary>
         public override void CleanUp()
         {
             base.CleanUp();
